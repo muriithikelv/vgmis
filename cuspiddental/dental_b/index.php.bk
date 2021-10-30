@@ -1,0 +1,4347 @@
+<?php
+/*
+include_once  '../../dental_includes/magicquotes.inc.php'; 
+include_once   '../../dental_includes/db.inc.php'; 
+include_once   '../../dental_includes/DatabaseSession.class.php';
+include_once   '../../dental_includes/access.inc.php';
+include_once   '../../dental_includes/encryption.php';
+include_once    '../../dental_includes/helpers.inc.php';*/
+include_once     '../../dental_includes/includes_file2.php';
+//include_once     '../../dental_includes/includes_file.php';
+$encrypt = new Encryption();
+if(!isset($_SESSION))
+{
+session_start();
+}
+if(!userIsLoggedIn() ){exit;}
+if(isset($_POST['get_company']) and $_POST['get_company']!=''){
+	//get companies covered by this ptype
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select id,name from covered_company where insurer_id=:insurer_id";
+	$error="Unable to get covered companies";
+	$placeholders[':insurer_id']=$encrypt->decrypt($_POST['get_company']);
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+	if($s->rowCount() > 0){
+	echo "<option></option>";
+	foreach($s as $row){
+		$name=html($row['name']);
+		$val=$encrypt->encrypt(html($row['id']));
+		echo "<option value='$val'>$name</option>";
+	}
+	}
+	if($s->rowCount() > 0){	echo "<option></option>";}
+}
+
+//this will determine oif teeth need to be specified for a procedure
+if(isset($_POST['add_procedure']) and $_POST['add_procedure']!=''){
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select all_teeth from procedures where id=:procedure_id";
+	$error="Unable to determine if procedure needs for teeth to be specified";
+	$placeholders[':procedure_id']=$encrypt->decrypt($_POST['add_procedure']);
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+	foreach($s as $row){
+		if($row['all_teeth']=='yes'){echo "show_teeth";}
+		elseif($row['all_teeth']=='no'){echo "do_not_show_teeth";}
+	}
+}
+
+
+//this will add extra procedure in treatment plan
+if(isset($_POST['extra_procedure']) and $_POST['extra_procedure']!=''){
+				//show procedures
+				$i = $_POST['extra_procedure'] + 1;
+				echo "<div class='grid-100 tplan_procedures hover '>";
+					echo "<div class='grid-5 procedure_count'>$i<input type=hidden name=nisiana[] /></div>";
+					echo "<div class='grid-45 grid-parent'>";
+						$sql2=$error2=$s2='';$placeholders2=array();
+						$sql2="select name,id,all_teeth from procedures order by name";
+						$error2="Unable to get prodcedures";
+						$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);	
+						if($s2->rowCount()>0){
+							echo "<select name=procedure$i class='input_in_table_cell select_procedure' ><option></option>";
+							foreach($s2 as $row2){
+								$procedure=html($row2['name']);
+								$val2=$encrypt->encrypt(html($row2['id']));
+								echo "<option value='$val2'>$procedure</option>"; 
+							}
+							echo "</select>";
+						}
+					else{echo "&nbsp;";}?>
+					<div class='grid-100 teeth_div '>
+						<div class='teeth_row'>
+							<div class='hover  teeth_heading_cell'>Upper Right - 1x
+								<div class='teeth_body'>
+								<?php
+								$i2=8;
+								$teeth_specified="teeth_specified$i"."[]";
+								while($i2 >= 1){
+									$number="1$i2";
+									$name="tooth$number";
+									//echo "<td>$number<br><input type=checkbox name=teeth_specified[] value=$_SESSION[$name] /></td>";
+									echo "<div class='hover-row tooth_number'>$number<br><input  class=tooth_checkbox type=checkbox name=$teeth_specified value=$_SESSION[$name] /></div>";
+									$i2--;
+								}	?>
+								</div>
+							</div>
+							<div class='hover teeth_heading_cell'>Upper Left - 2x
+								<div class='teeth_body'>
+								<?php
+								$i2=1;
+								while($i2 <= 8){
+									$number="2$i2";
+									$name="tooth$number";
+									//echo "<td>$number<br><input type=checkbox name=teeth_specified[] value=$_SESSION[$name] /></td>";
+									echo "<div class='hover-row tooth_number'>$number<br><input class=tooth_checkbox type=checkbox name=$teeth_specified value=$_SESSION[$name] /></div>";
+									$i2++;
+								}	?>
+								</div>
+							</div>							
+						</div>
+						<!-- second row -->
+						<div class='teeth_row'>
+							<div class='hover  no_padding teeth_heading_cell'>Lower Right - 4x
+								<div class='teeth_body'>
+								<?php
+								$i2=8;
+								while($i2 >= 1){
+									$number="1$i2";
+									$name="tooth$number";
+									//echo "<td>$number<br><input type=checkbox name=teeth_specified[] value=$_SESSION[$name] /></td>";
+									echo "<div class='hover-row tooth_number'>$number<br><input  class=tooth_checkbox type=checkbox name=$teeth_specified value=$_SESSION[$name] /></div>";
+									$i2--;
+								}	?>
+								</div>
+							</div>
+							<div class='hover  no_padding teeth_heading_cell'>Lower Left - 3x
+								<div class='teeth_body'>
+								<?php
+								$i2=1;
+								while($i2 <= 8){
+									$number="3$i2";
+									$name="tooth$number";
+									//echo "<td>$number<br><input type=checkbox name=teeth_specified[] value=$_SESSION[$name] /></td>";
+									echo "<div class='hover-row tooth_number'>$number<br><input  class=tooth_checkbox type=checkbox name=$teeth_specified value=$_SESSION[$name] /></div>";
+									$i2++;
+								}	?>
+								</div>
+							</div>							
+						</div>						
+					
+					</div>
+					
+					<?php
+					echo "</div>";
+					echo "<div class='grid-20'><textarea   rows='' name=details$i ></textarea></div>";
+					echo "<div class='grid-10'>";
+						$invoice_pay=$encrypt->encrypt("1");
+						$cash_pay=$encrypt->encrypt("2");
+						$points_pay=$encrypt->encrypt("3");
+						echo "<select name=pay_method$i class='input_in_table_cell' ><option></option>
+								<option value='$invoice_pay'>Invoice</option>
+								<option value='$cash_pay'>Cash</option>
+								<option value='$points_pay'>Points</option>";
+						echo "</select>";
+					echo "</div>";
+					echo "<div class='grid-10'><input type=text name=cost$i /></div>";
+					echo "<div class='grid-10'><input type=text name=discount$i /></div>";
+				echo "</div>";	
+				echo "<div class=clear></div>";
+
+}
+
+//this will set the tab id to be submitted to for patient tabs
+if(isset($_POST['get_patient_balance']) and $_POST['get_patient_balance']=='yes'){
+	show_patient_balance($pdo,'a');
+	//echo "set";
+}
+
+//this is for submitting patient diseases
+if(isset($_SESSION['token_1e_patinet']) and 	isset($_POST['token_1e_patinet']) and $_POST['token_1e_patinet']==$_SESSION['token_1e_patinet']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	global $exit_flag;
+
+//sleep(5);
+	function check_yes_no($parameter){
+		//check bleeding
+		global $pdo, $message;
+		if("$parameter" !='yes' and "$parameter" !='no'  ){	
+			$message="bad#Unable to save details as some parameters may not be properly set. Please recheck the Yes/No values";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into patient diseases for a yes no value";
+			log_security($pdo,$security_log);
+			return true;
+		}
+		else{return false;}
+	}
+
+	if(!$exit_flag and isset($_POST['bleeding'])) {$exit_flag=check_yes_no($_POST['bleeding']);} else {$_POST['bleeding']='';}
+	if(!$exit_flag and isset($_POST['drug'])) {$exit_flag=check_yes_no($_POST['drug']);} else {$_POST['drug']='';}
+	if(!$exit_flag and isset($_POST['Neurological'])) {$exit_flag=check_yes_no($_POST['Neurological']);} else {$_POST['Neurological']='';}
+	if(!$exit_flag and isset($_POST['HIV'])) {$exit_flag=check_yes_no($_POST['HIV']);} else {$_POST['HIV']='';}
+	if(!$exit_flag and isset($_POST['Diabetes'])) {$exit_flag=check_yes_no($_POST['Diabetes']);} else {$_POST['Diabetes']='';}
+	if(!$exit_flag and isset($_POST['Osteoporosis'])) {$exit_flag=check_yes_no($_POST['Osteoporosis']);} else {$_POST['Osteoporosis']='';}
+	if(!$exit_flag and isset($_POST['anemia'])) {$exit_flag=check_yes_no($_POST['anemia']);} else {$_POST['anemia']='';}
+	if(!$exit_flag and isset($_POST['dry'])) {$exit_flag=check_yes_no($_POST['dry']);} else {$_POST['dry']='';}
+	if(!$exit_flag and isset($_POST['Persistents'])) {$exit_flag=check_yes_no($_POST['Persistents']);} else {$_POST['Persistents']='';}
+	if(!$exit_flag and isset($_POST['arthritis'])) {$exit_flag=check_yes_no($_POST['arthritis']);} else {$_POST['arthritis']='';}
+	if(!$exit_flag and isset($_POST['Eating'])) {$exit_flag=check_yes_no($_POST['Eating']);} else {$_POST['Eating']='';}
+	if(!$exit_flag and isset($_POST['Respiratory'])) {$exit_flag=check_yes_no($_POST['Respiratory']);} else {$_POST['Respiratory']='';}
+	if(!$exit_flag and isset($_POST['rarthritis'])) {$exit_flag=check_yes_no($_POST['rarthritis']);} else {$_POST['rarthritis']='';}
+	if(!$exit_flag and isset($_POST['Epilepsy'])) {$exit_flag=check_yes_no($_POST['Epilepsy']);} else {$_POST['Epilepsy']='';}
+	if(!$exit_flag and isset($_POST['Severe'])) {$exit_flag=check_yes_no($_POST['Severe']);} else {$_POST['Severe']='';}
+	if(!$exit_flag and isset($_POST['asthma'])) {$exit_flag=check_yes_no($_POST['asthma']);} else {$_POST['asthma']='';}
+	
+	if(!$exit_flag and isset($_POST['Fainting'])) {$exit_flag=check_yes_no($_POST['Fainting']);} else {$_POST['Fainting']='';}
+	if(!$exit_flag and isset($_POST['weight'])) {$exit_flag=check_yes_no($_POST['weight']);} else {$_POST['weight']='';}
+	if(!$exit_flag and isset($_POST['transfusion'])) {$exit_flag=check_yes_no($_POST['transfusion']);} else {$_POST['transfusion']='';}
+	if(!$exit_flag and isset($_POST['reflux'])) {$exit_flag=check_yes_no($_POST['reflux']);} else {$_POST['reflux']='';}
+	if(!$exit_flag and isset($_POST['Sexually'])) {$exit_flag=check_yes_no($_POST['Sexually']);} else {$_POST['Sexually']='';}
+	if(!$exit_flag and isset($_POST['chemotherapy'])) {$exit_flag=check_yes_no($_POST['chemotherapy']);} else {$_POST['chemotherapy']='';}
+	if(!$exit_flag and isset($_POST['Glaucoma'])) {$exit_flag=check_yes_no($_POST['Glaucoma']);} else {$_POST['Glaucoma']='';}
+	if(!$exit_flag and isset($_POST['Sinus'])) {$exit_flag=check_yes_no($_POST['Sinus']);} else {$_POST['Sinus']='';}
+	if(!$exit_flag and isset($_POST['Chronic'])) {$exit_flag=check_yes_no($_POST['Chronic']);} else {$_POST['Chronic']='';}
+	if(!$exit_flag and isset($_POST['Hemophilia'])) {$exit_flag=check_yes_no($_POST['Hemophilia']);} else {$_POST['Hemophilia']='';}
+	if(!$exit_flag and isset($_POST['Sleep'])) {$exit_flag=check_yes_no($_POST['Sleep']);} else {$_POST['Sleep']='';}
+	if(!$exit_flag and isset($_POST['Persistent'])) {$exit_flag=check_yes_no($_POST['Persistent']);} else {$_POST['Persistent']='';}
+	if(!$exit_flag and isset($_POST['Hepatitis'])) {$exit_flag=check_yes_no($_POST['Hepatitis']);} else {$_POST['Hepatitis']='';}
+	if(!$exit_flag and isset($_POST['Sores'])) {$exit_flag=check_yes_no($_POST['Sores']);} else {$_POST['Sores']='';}
+	if(!$exit_flag and isset($_POST['Cardiovascular'])) {$exit_flag=check_yes_no($_POST['Cardiovascular']);} else {$_POST['Cardiovascular']='';}
+	if(!$exit_flag and isset($_POST['Recurent'])) {$exit_flag=check_yes_no($_POST['Recurent']);} else {$_POST['Recurent']='';}
+	if(!$exit_flag and isset($_POST['Kidney'])) {$exit_flag=check_yes_no($_POST['Kidney']);} else {$_POST['Kidney']='';}
+	if(!$exit_flag and isset($_POST['Low'])) {$exit_flag=check_yes_no($_POST['Low']);} else {$_POST['Low']='';}
+	if(!$exit_flag and isset($_POST['Malnutrition'])) {$exit_flag=check_yes_no($_POST['Malnutrition']);} else {$_POST['Malnutrition']='';}
+	if(!$exit_flag and isset($_POST['Migraines'])) {$exit_flag=check_yes_no($_POST['Migraines']);} else {$_POST['Migraines']='';}
+	if(!$exit_flag and isset($_POST['Night'])) {$exit_flag=check_yes_no($_POST['Night']);} else {$_POST['Night']='';}
+	if(!$exit_flag and isset($_POST['Mental'])) {$exit_flag=check_yes_no($_POST['Mental']);} else {$_POST['Mental']='';}
+	if(!$exit_flag and isset($_POST['Stroke'])) {$exit_flag=check_yes_no($_POST['Stroke']);} else {$_POST['Stroke']='';}
+	if(!$exit_flag and isset($_POST['Systematic'])) {$exit_flag=check_yes_no($_POST['Systematic']);} else {$_POST['Systematic']='';}
+	if(!$exit_flag and isset($_POST['Thyroid'])) {$exit_flag=check_yes_no($_POST['Thyroid']);} else {$_POST['Thyroid']='';}
+	if(!$exit_flag and isset($_POST['Tuberculosis'])) {$exit_flag=check_yes_no($_POST['Tuberculosis']);} else {$_POST['Tuberculosis']='';}
+	if(!$exit_flag and isset($_POST['Ulcers'])) {$exit_flag=check_yes_no($_POST['Ulcers']);} else {$_POST['Ulcers']='';}
+	if(!$exit_flag and isset($_POST['urination'])) {$exit_flag=check_yes_no($_POST['urination']);} else {$_POST['urination']='';}	
+//empty of needed
+//empty the unset ones
+if(!isset($_POST['bleeding']))  {$_POST['bleeding']='';}
+	if(!isset($_POST['drug'])) {$_POST['drug']='';}
+	if(!isset($_POST['Neurological'])) {$_POST['Neurological']='';}
+	if(!isset($_POST['HIV']))  {$_POST['HIV']='';}
+	if(!isset($_POST['Diabetes'])) {$_POST['Diabetes']='';}
+	if(!isset($_POST['Osteoporosis'])) {$_POST['Osteoporosis']='';}
+	if(!isset($_POST['anemia'])) {$_POST['anemia']='';}
+	if(!isset($_POST['dry']))  {$_POST['dry']='';}
+	if(!isset($_POST['Persistents']))  {$_POST['Persistents']='';}
+	if(!isset($_POST['arthritis']))  {$_POST['arthritis']='';}
+	if(!isset($_POST['Eating']))  {$_POST['Eating']='';}
+	if(!isset($_POST['Respiratory'])) {$_POST['Respiratory']='';}
+	if(!isset($_POST['rarthritis'])) {$_POST['rarthritis']='';}
+	if(!isset($_POST['Epilepsy']))  {$_POST['Epilepsy']='';}
+	if(!isset($_POST['Severe']))  {$_POST['Severe']='';}
+	if(!isset($_POST['asthma']))  {$_POST['asthma']='';}
+	
+	if(!isset($_POST['Fainting']))  {$_POST['Fainting']='';}
+	if(!isset($_POST['weight']))  {$_POST['weight']='';}
+	if(!isset($_POST['transfusion']))  {$_POST['transfusion']='';}
+	if(!isset($_POST['reflux'])) {$_POST['reflux']='';}
+	if(!isset($_POST['Sexually']))  {$_POST['Sexually']='';}
+	if(!isset($_POST['chemotherapy'])) {$_POST['chemotherapy']='';}
+	if(!isset($_POST['Glaucoma']))  {$_POST['Glaucoma']='';}
+	if(!isset($_POST['Sinus']))  {$_POST['Sinus']='';}
+	if(!isset($_POST['Chronic']))  {$_POST['Chronic']='';}
+	if(!isset($_POST['Hemophilia']))  {$_POST['Hemophilia']='';}
+	if(!isset($_POST['Sleep'])) {$_POST['Sleep']='';}
+	if(!isset($_POST['Persistent']))  {$_POST['Persistent']='';}
+	if(!isset($_POST['Hepatitis']))  {$_POST['Hepatitis']='';}
+	if(!isset($_POST['Sores']))  {$_POST['Sores']='';}
+	if(!isset($_POST['Cardiovascular']))  {$_POST['Cardiovascular']='';}
+	if(!isset($_POST['Recurent']))  {$_POST['Recurent']='';}
+	if(!isset($_POST['Kidney']))  {$_POST['Kidney']='';}
+	if(!isset($_POST['Low'])){$_POST['Low']='';}
+	if(!isset($_POST['Malnutrition']))  {$_POST['Malnutrition']='';}
+	if(!isset($_POST['Migraines']))  {$_POST['Migraines']='';}
+	if(!isset($_POST['Night']))  {$_POST['Night']='';}
+	if(!isset($_POST['Mental']))  {$_POST['Mental']='';}
+	if(!isset($_POST['Stroke']))  {$_POST['Stroke']='';}
+	if(!isset($_POST['Systematic'])) {$_POST['Systematic']='';}
+	if(!isset($_POST['Thyroid']))  {$_POST['Thyroid']='';}
+	if(!isset($_POST['Tuberculosis']))  {$_POST['Tuberculosis']='';}
+	if(!isset($_POST['Ulcers']))  {$_POST['Ulcers']='';}
+	if(!isset($_POST['urination']))  {$_POST['urination']='';}	
+	
+	//chreck cardiovascular
+	if(!$exit_flag and isset($_POST['Angina']) and $_POST['Angina']!='Angina'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Angina']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Angina'])){$_POST['Angina']='';}
+	if(!$exit_flag and isset($_POST['Arteriosclerosis']) and $_POST['Arteriosclerosis']!='Arteriosclerosis'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Arteriosclerosis']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Arteriosclerosis'])){$_POST['Arteriosclerosis']='';}
+	if(!$exit_flag and isset($_POST['Artificial']) and $_POST['Artificial']!='Artificial heart valves'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Artificial']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Artificial'])){$_POST['Artificial']='';}
+	if(!$exit_flag and isset($_POST['Coronary']) and $_POST['Coronary']!='Coronary insufficiency'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Coronary']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Coronary'])){$_POST['Coronary']='';}
+	if(!$exit_flag and isset($_POST['occlusion']) and $_POST['occlusion']!='Coronary occlusion'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['occlusion']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['occlusion'])){$_POST['occlusion']='';}
+	if(!$exit_flag and isset($_POST['Damaged']) and $_POST['Damaged']!='Damaged heart valves'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Damaged']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Damaged'])){$_POST['Damaged']='';}
+	if(!$exit_flag and isset($_POST['heart_attack']) and $_POST['heart_attack']!='Heart attack'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['heart_attack']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['heart_attack'])){$_POST['heart_attack']='';}
+	if(!$exit_flag and isset($_POST['murmur']) and $_POST['murmur']!='Heart murmur'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['murmur']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['murmur'])){$_POST['murmur']='';}
+	if(!$exit_flag and isset($_POST['Inborn']) and $_POST['Inborn']!='Inborn heart defects'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Inborn']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Inborn'])){$_POST['Inborn']='';}
+	if(!$exit_flag and isset($_POST['Mitral']) and $_POST['Mitral']!='Mitral valve prolapse'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Mitral']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Mitral'])){$_POST['Mitral']='';}
+	if(!$exit_flag and isset($_POST['Pacemaker']) and $_POST['Pacemaker']!='Pacemaker'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Pacemaker']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Pacemaker'])){$_POST['Pacemaker']='';}
+	if(!$exit_flag and isset($_POST['Rheumatic']) and $_POST['Rheumatic']!='Rheumatic heart disease'){
+			$message="bad#Unable to save details as some Cartdiovascular disease details may not be properly set. 
+			Please recheck the cardiovascular disease section values";
+			$var=html($_POST['Rheumatic']);
+			$security_log="sombody tried to input $var into patient diseases cardiovascular";
+			log_security($pdo,$security_log);	
+	}
+	elseif(!$exit_flag and !isset($_POST['Rheumatic'])){$_POST['Rheumatic']='';}
+
+	//diabetes type
+	if(!$exit_flag and isset($_POST['Type']) and $_POST['Type']!='I'  and $_POST['Type']!='II'){
+			$message="bad#Unable to save details as some Diabetes details may not be properly set. 
+			Please recheck the Diabetes section values";
+			$var=html($_POST['Type']);
+			$security_log="sombody tried to input $var into patient diseases diabetes";
+			log_security($pdo,$security_log);	
+	}	
+	elseif(!$exit_flag and !isset($_POST['Type'])){$_POST['Type']='';}
+
+	//respiratoty problems
+	if(!$exit_flag and isset($_POST['yes']) and $_POST['yes']!='Emphysema'  and $_POST['yes']!='Bronchitis, etc'){
+			$message="bad#Unable to save details as some Diabetes details may not be properly set. 
+			Please recheck the Diabetes section values";
+			$var=html($_POST['yes']);
+			$security_log="sombody tried to input $var into patient diseases respiratoty problems";
+			log_security($pdo,$security_log);	
+	}	
+	elseif(!$exit_flag and !isset($_POST['yes'])){$_POST['yes']='';}
+
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_disease where pid=:pid";
+			$error="Unable to update patient disease form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into patient_disease set
+				bleeding=:bleeding,
+			  aids=:aids,
+			  anaemia=:anaemia,
+			  arthritis=:arthritis,
+			  rarthritis=:rarthritis,
+			  asthma=:asthma,
+			  transfusion=:transfusion,
+			  tdate=:tdate,
+			  cancer=:cancer,
+			  chronic=:chronic,
+			  diarea=:diarea,
+			  cardio_disease=:cardio_disease,
+			  angina =:angina,
+			  arteriosclerosis =:arteriosclerosis,
+			  hvalves =:hvalves,
+			  cinsuff =:cinsuff,
+			  cocclus =:cocclus,
+			  dhvalve =:dhvalve,
+			  hattack =:hattack,
+			  hmurmur =:hmurmur,
+			 
+			  inborn =:inborn,
+			  prolapse =:prolapse,
+			  pacemaker =:pacemaker,
+			  rhdisease =:rhdisease,
+			  drug=:drug,
+			  diab1 =:diab1,
+			  diabetes=:diabetes,
+			  dry=:dry,
+			  eating=:eating,
+			  especify =:especify,
+			  epilepsy=:epilepsy,
+			  faint=:faint,
+			  reflux=:reflux,
+			  glaucoma=:glaucoma,
+			  hemophilia=:hemophilia,
+			  hepatitis=:hepatitis,
+			  recurent=:recurent,
+			  rtype =:rtype,
+			  kidney=:kidney,
+			  low_blood=:low_blood,
+			  
+			  malnutrition=:malnutrition,
+			  migrain=:migrain,
+			  night_sweat=:night_sweat,
+			  mental=:mental,
+			  mspecify =:mspecify,
+			  neuro=:neuro,
+			  nspecify =:nspecify,
+			  osteoporosis=:osteoporosis,
+			  swollen=:swollen,
+			  rproblems=:rproblems,
+			  emphysema =:emphysema,
+			  headaches=:headaches,
+			  wloss=:wloss,
+			  std=:std,
+			  sinus=:sinus,
+			  sleep=:sleep,
+			  sores=:sores,
+			  stroke=:stroke,
+			  systematic=:systematic,
+			  thyroid=:thyroid,
+			  
+			  tb=:tb,
+			  ulcers=:ulcers,
+			  urination=:urination,
+			  other=:other,
+			  pid =:pid,
+			  when_added=now()
+			  ";//66
+			$error="Unable to update patient completion form";
+			$placeholders[':bleeding']=$_POST['bleeding'];
+			$placeholders[':aids']=$_POST['HIV'];
+			$placeholders[':anaemia']=$_POST['anemia'];
+			$placeholders[':arthritis']=$_POST['arthritis'];
+			$placeholders[':rarthritis']=$_POST['rarthritis'];
+			$placeholders[':asthma']=$_POST['asthma'];
+			$placeholders[':transfusion']=$_POST['transfusion'];
+			$placeholders[':tdate']=$_POST['blood'];
+			$placeholders[':cancer']=$_POST['chemotherapy'];
+			$placeholders[':chronic']=$_POST['Chronic'];
+			$placeholders[':diarea']=$_POST['Persistent'];
+			$placeholders[':cardio_disease']=$_POST['Cardiovascular'];
+			$placeholders[':angina']=$_POST['Angina'];
+			$placeholders[':arteriosclerosis']=$_POST['Arteriosclerosis'];
+			$placeholders[':hvalves']=$_POST['Artificial'];
+			$placeholders[':cinsuff']=$_POST['Coronary'];
+			$placeholders[':cocclus']=$_POST['occlusion'];
+			$placeholders[':dhvalve']=$_POST['Damaged'];
+			$placeholders[':hattack']=$_POST['heart_attack'];
+			$placeholders[':hmurmur']=$_POST['murmur'];
+			
+		//	$placeholders[':blood_pressure']=$_POST['xxx'];
+			$placeholders[':inborn']=$_POST['Inborn'];
+			$placeholders[':prolapse']=$_POST['Mitral'];
+			$placeholders[':pacemaker']=$_POST['Pacemaker'];
+			$placeholders[':rhdisease']=$_POST['Rheumatic'];
+			$placeholders[':drug']=$_POST['drug'];
+			$placeholders[':diab1']=$_POST['Diabetes'];
+			$placeholders[':diabetes']=$_POST['Type'];
+			$placeholders[':dry']=$_POST['dry'];
+			$placeholders[':eating']=$_POST['Eating'];
+			$placeholders[':especify']=$_POST['disorder'];
+			$placeholders[':epilepsy']=$_POST['Epilepsy'];
+			$placeholders[':faint']=$_POST['Fainting'];
+			$placeholders[':reflux']=$_POST['reflux'];
+			$placeholders[':glaucoma']=$_POST['Glaucoma'];
+			$placeholders[':hemophilia']=$_POST['Hemophilia'];
+			$placeholders[':hepatitis']=$_POST['Hepatitis'];
+			$placeholders[':recurent']=$_POST['Recurent'];
+			$placeholders[':rtype']=$_POST['infections'];
+			$placeholders[':kidney']=$_POST['Kidney'];
+			$placeholders[':low_blood']=$_POST['Low'];
+			
+			$placeholders[':malnutrition']=$_POST['Malnutrition'];
+			$placeholders[':migrain']=$_POST['Migraines'];
+			$placeholders[':night_sweat']=$_POST['Night'];
+			$placeholders[':mental']=$_POST['Mental'];
+			$placeholders[':mspecify']=$_POST['mental_disorder'];
+			$placeholders[':neuro']=$_POST['Neurological'];
+			$placeholders[':nspecify']=$_POST['neuro'];
+			$placeholders[':osteoporosis']=$_POST['Osteoporosis'];
+			$placeholders[':swollen']=$_POST['Persistents'];
+			$placeholders[':rproblems']=$_POST['Respiratory'];
+			$placeholders[':emphysema']=$_POST['yes'];
+			$placeholders[':headaches']=$_POST['Severe'];
+			$placeholders[':wloss']=$_POST['weight'];
+			$placeholders[':std']=$_POST['Sexually'];
+			$placeholders[':sinus']=$_POST['Sinus'];
+			$placeholders[':sleep']=$_POST['Sleep'];
+			$placeholders[':sores']=$_POST['Sores'];
+			$placeholders[':stroke']=$_POST['Stroke'];
+			$placeholders[':systematic']=$_POST['Systematic'];
+			$placeholders[':thyroid']=$_POST['Thyroid'];
+			
+			$placeholders[':tb']=$_POST['Tuberculosis'];
+			$placeholders[':ulcers']=$_POST['Ulcers'];
+			$placeholders[':urination']=$_POST['urination'];
+			$placeholders[':other']=$_POST['other']; 
+			$placeholders[':pid']=$_SESSION['pid'];
+			//$placeholders[':when_added']=now();
+			//print_r($placeholders);
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#Patient disease details saved. ";}
+			elseif(!$s){$message="bad#Unable to save Patient disease details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient disease details  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+
+//this is for submitting medical patient details
+if(isset($_SESSION['token_1c_patinet']) and 	isset($_POST['token_1c_patinet']) and $_POST['token_1c_patinet']==$_SESSION['token_1c_patinet']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	global $exit_flag;
+
+//sleep(5);
+	function check_yes_no($parameter){
+		//check bleeding
+		global $pdo, $message;
+		if("$parameter" !='yes' and "$parameter" !='no'  ){	
+			$message="bad#Unable to save details as some parameters may not be properly set. Please recheck the Yes/No values";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into patient_medical for a yes no value";
+			log_security($pdo,$security_log);
+			return true;
+		}
+		else{return false;}
+	}
+
+	if(!$exit_flag and isset($_POST['good_health'])) {$exit_flag=check_yes_no($_POST['good_health']);} else {$_POST['good_health']='';}
+	if(!$exit_flag and isset($_POST['change'])) {$exit_flag=check_yes_no($_POST['change']);} else {$_POST['change']='';}
+	if(!$exit_flag and isset($_POST['tubercolosis'])) {$exit_flag=check_yes_no($_POST['tubercolosis']);} else {$_POST['tubercolosis']='';}
+	if(!$exit_flag and isset($_POST['Persistent'])) {$exit_flag=check_yes_no($_POST['Persistent']);} else {$_POST['Persistent']='';}
+	if(!$exit_flag and isset($_POST['blood'])) {$exit_flag=check_yes_no($_POST['blood']);} else {$_POST['blood']='';}
+	if(!$exit_flag and isset($_POST['care'])) {$exit_flag=check_yes_no($_POST['care']);} else {$_POST['care']='';}if(!$exit_flag and isset($_POST['good_health'])) {$exit_flag=check_yes_no($_POST['good_health']);} else {$_POST['good_health']='';}
+	if(!$exit_flag and isset($_POST['hospitalized'])) {$exit_flag=check_yes_no($_POST['hospitalized']);} else {$_POST['hospitalized']='';}
+	if(!$exit_flag and isset($_POST['prescription'])) {$exit_flag=check_yes_no($_POST['prescription']);} else {$_POST['prescription']='';}
+	if(!$exit_flag and isset($_POST['diet'])) {$exit_flag=check_yes_no($_POST['diet']);} else {$_POST['diet']='';}
+	if(!$exit_flag and isset($_POST['drink'])) {$exit_flag=check_yes_no($_POST['drink']);} else {$_POST['drink']='';}
+	if(!$exit_flag and isset($_POST['alcohol'])) {$exit_flag=check_yes_no($_POST['alcohol']);} else {$_POST['alcohol']='';}
+	if(!$exit_flag and isset($_POST['treatment'])) {$exit_flag=check_yes_no($_POST['treatment']);} else {$_POST['treatment']='';}
+	if(!$exit_flag and isset($_POST['substances'])) {$exit_flag=check_yes_no($_POST['substances']);} else {$_POST['substances']='';}
+	if(!$exit_flag and isset($_POST['tobacco'])) {$exit_flag=check_yes_no($_POST['tobacco']);} else {$_POST['tobacco']='';}
+	if(!$exit_flag and isset($_POST['contact'])) {$exit_flag=check_yes_no($_POST['contact']);} else {$_POST['contact']='';}
+	if(!$exit_flag and isset($_POST['anaethesia'])) {$exit_flag=check_yes_no($_POST['anaethesia']);} else {$_POST['anaethesia']='';}
+	if(!$exit_flag and isset($_POST['asprin'])) {$exit_flag=check_yes_no($_POST['asprin']);} else {$_POST['asprin']='';}
+	if(!$exit_flag and isset($_POST['antibiotics'])) {$exit_flag=check_yes_no($_POST['antibiotics']);} else {$_POST['antibiotics']='';}
+	if(!$exit_flag and isset($_POST['sedatives'])) {$exit_flag=check_yes_no($_POST['sedatives']);} else {$_POST['sedatives']='';}
+	if(!$exit_flag and isset($_POST['sulfa'])) {$exit_flag=check_yes_no($_POST['sulfa']);} else {$_POST['sulfa']='';}
+	if(!$exit_flag and isset($_POST['narcotics'])) {$exit_flag=check_yes_no($_POST['narcotics']);} else {$_POST['narcotics']='';}
+	if(!$exit_flag and isset($_POST['Latex'])) {$exit_flag=check_yes_no($_POST['Latex']);} else {$_POST['Latex']='';}
+	if(!$exit_flag and isset($_POST['iodine'])) {$exit_flag=check_yes_no($_POST['iodine']);} else {$_POST['iodine']='';}
+	if(!$exit_flag and isset($_POST['fever'])) {$exit_flag=check_yes_no($_POST['fever']);} else {$_POST['fever']='';}
+	if(!$exit_flag and isset($_POST['animals'])) {$exit_flag=check_yes_no($_POST['animals']);} else {$_POST['animals']='';}
+	if(!$exit_flag and isset($_POST['food'])) {$exit_flag=check_yes_no($_POST['food']);} else {$_POST['food']='';}
+	if(!$exit_flag and isset($_POST['other'])) {$exit_flag=check_yes_no($_POST['other']);} else {$_POST['other']='';}
+
+	
+	
+	//empty the unset ones
+	if(!isset($_POST['good_health']))  {$_POST['good_health']='';}
+	if(!isset($_POST['change'])) {$_POST['change']='';}
+	if(!isset($_POST['tubercolosis'])) {$_POST['tubercolosis']='';}
+	if(!isset($_POST['Persistent'])) {$_POST['Persistent']='';}
+	if(!isset($_POST['blood']))  {$_POST['blood']='';}
+	if(!isset($_POST['care']))  {$_POST['care']='';}
+	if(!isset($_POST['hospitalized']))  {$_POST['hospitalized']='';}
+	if(!isset($_POST['prescription']))  {$_POST['prescription']='';}
+	if(!isset($_POST['diet'])) {$_POST['diet']='';}
+	if(!isset($_POST['drink']))  {$_POST['drink']='';}
+	if(!isset($_POST['alcohol']))  {$_POST['alcohol']='';}
+	if(!isset($_POST['treatment']))  {$_POST['treatment']='';}
+	if(!isset($_POST['substances']))  {$_POST['substances']='';}
+	if(!isset($_POST['tobacco'])) {$_POST['tobacco']='';}
+	if(!isset($_POST['contact']))  {$_POST['contact']='';}
+	if(!isset($_POST['anaethesia'])) {$_POST['anaethesia']='';}
+	if(!isset($_POST['asprin']))  {$_POST['asprin']='';}
+	if(!isset($_POST['antibiotics'])) {$_POST['antibiotics']='';}
+	if(!isset($_POST['sedatives']))  {$_POST['sedatives']='';}
+	if(!isset($_POST['sulfa']))  {$_POST['sulfa']='';}
+	if(!isset($_POST['narcotics']))  {$_POST['narcotics']='';}
+	if(!isset($_POST['Latex']))  {$_POST['Latex']='';}
+	if(!isset($_POST['iodine']))  {$_POST['iodine']='';}
+	if(!isset($_POST['fever']))  {$_POST['fever']='';}
+	if(!isset($_POST['animals']))  {$_POST['animals']='';}
+	if(!isset($_POST['food']))  {$_POST['food']='';}
+	if(!isset($_POST['other']))  {$_POST['other']='';}
+	if(!isset($_POST['how']))  {$_POST['how']='';}
+	if(!isset($_POST['blood_groups']))  {$_POST['blood_groups']='';}
+	
+	//chreck opeartion date isa  date
+	if(!$exit_flag and isset($_POST['date_last_exam']) and $_POST['date_last_exam']!='')	{
+		$date='';
+		$date=explode('-',$_POST['date_last_exam']);
+		if(!checkdate( $date[1],$date[2],$date[0] )){
+		$date_last_exam=html($_POST['date_last_exam']);
+		$message="bad#Unable to save details as date of last examination $date_last_exam is not in the correct format";
+		$exit_flag=true;
+		$security_log="somebody tried to input $date_last_exam as date of last examintaion for patient_medical";
+		log_security($pdo,$security_log);		
+		}
+	}	
+	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_medical where pid=:pid";
+			$error="Unable to update patient medical form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into patient_medical set
+					care_yes_no=:care_yes_no,
+					cblood=:cblood,
+					when_added=now(),
+					good_health=:good_health,
+					care=:care,
+					illness=:illness,
+					medicine=:medicine,
+					prescribed=:prescribed,
+					natural1=:natural,
+					diet=:diet,
+					alcoholic=:alcoholic,
+					l24=:l24,
+					lmonth=:lmonth,
+					ndrinks=:ndrinks,
+					nyrs=:nyrs,
+					adependent=:adependent,
+					treatment=:treatment,
+					substance_yes_no=:substance_yes_no,
+					substances=:substances,
+					frequency=:frequency,
+					years=:years,
+					tobacco=:tobacco,
+					pid=:pid,
+					change1=:change,
+					tb=:tb,
+					persistent=:persistent,
+					ldate=:ldate,
+					pname=:pname,
+					pphone=:pphone,
+					paddress=:paddress,
+					illnes_yes_no=:illnes_yes_no,
+					stoping=:stoping,
+					lenses=:lenses,
+					anaethesia=:anaethesia,
+					Asprin=:Asprin,
+					penicilin=:penicilin,
+					sedatives=:sedatives,
+					sulfa=:sulfa,
+					codeine=:codeine,
+					latex=:latex,
+					iodine=:iodine,
+					hay=:hay,
+					animals=:animals,
+					food=:food,
+					food_specify=:food_specify,
+					other=:other,
+					other_specify=:other_specify,
+					bgroup=:bgroup,
+					counter=:Counter";
+			$error="Unable to update medical patient form";
+			$placeholders[':good_health']=$_POST['good_health'];
+			$placeholders[':change']=$_POST['change'];
+			$placeholders[':tb']=$_POST['tubercolosis'];
+			$placeholders[':persistent']=$_POST['Persistent'];
+			$placeholders[':cblood']=$_POST['blood'];
+			$placeholders[':care_yes_no']=$_POST['care'];
+			$placeholders[':care']=$_POST['pcare'];
+			$placeholders[':ldate']=$_POST['date_last_exam'];
+			$placeholders[':pname']=$_POST['pname'];
+			$placeholders[':pphone']=$_POST['pphone'];
+			$placeholders[':paddress']=$_POST['paddress'];
+			$placeholders[':illnes_yes_no']=$_POST['hospitalized'];
+			$placeholders[':illness']=$_POST['operation'];
+			$placeholders[':medicine']=$_POST['prescription'];
+			$placeholders[':prescribed']=$_POST['prescribed'];
+			$placeholders[':Counter']=$_POST['Counter'];
+			$placeholders[':natural']=$_POST['herbal'];
+			$placeholders[':diet']=$_POST['diet'];
+			$placeholders[':alcoholic']=$_POST['drink'];
+			$placeholders[':l24']=$_POST['l24'];
+			$placeholders[':lmonth']=$_POST['month'];
+			$placeholders[':ndrinks']=$_POST['day'];
+			$placeholders[':nyrs']=$_POST['years1'];
+			$placeholders[':adependent']=$_POST['alcohol'];
+			$placeholders[':treatment']=$_POST['treatment'];
+			$placeholders[':substance_yes_no']=$_POST['substances'];
+			$placeholders[':substances']=$_POST['list'];
+			$placeholders[':frequency']=$_POST['frequency'];
+			$placeholders[':years']=$_POST['years2'];
+			$placeholders[':tobacco']=$_POST['tobacco'];
+			$placeholders[':stoping']=$_POST['how'];
+			$placeholders[':lenses']=$_POST['contact'];
+			$placeholders[':bgroup']=$_POST['blood_groups'];
+			$placeholders[':anaethesia']=$_POST['anaethesia'];
+			$placeholders[':Asprin']=$_POST['asprin'];
+			$placeholders[':penicilin']=$_POST['antibiotics'];
+			$placeholders[':sedatives']=$_POST['sedatives'];
+			$placeholders[':sulfa']=$_POST['sulfa'];
+			$placeholders[':codeine']=$_POST['narcotics'];
+			$placeholders[':latex']=$_POST['Latex'];
+			$placeholders[':iodine']=$_POST['iodine'];
+			$placeholders[':hay']=$_POST['fever'];
+			$placeholders[':animals']=$_POST['animals'];
+			$placeholders[':food']=$_POST['food'];
+			$placeholders[':food_specify']=$_POST['food_specify'];
+			$placeholders[':other']=$_POST['other'];
+			$placeholders[':other_specify']=$_POST['other_specify'];
+			//$placeholders[':type']=$_POST['pregnant'];
+			$placeholders[':pid']=$_SESSION['pid'];
+			//$placeholders[':when_added']=now();
+			//print_r($placeholders);
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#Patient details saved. ";}
+			elseif(!$s){$message="bad#Unable to save patient details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient details  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+
+//this is for submitting  patient examination
+if(isset($_SESSION['token_g_patinet']) and 	isset($_POST['token_g_patinet']) and $_POST['token_g_patinet']==$_SESSION['token_g_patinet']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	global $exit_flag;
+
+//sleep(5);
+	function check_yes_no($parameter){
+		global $pdo, $message;
+		if("$parameter" !='yes' and "$parameter" !='no'  ){	
+			$message="bad#Unable to save details as some parameters may not be properly set. Please recheck the Yes/No values";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into on_examination for a yes no value";
+			log_security($pdo,$security_log);
+			
+			return true;
+		}
+		else{return false;}
+	}
+
+	if(!$exit_flag and isset($_POST['swelling'])) {$exit_flag=check_yes_no($_POST['swelling']);} else {$_POST['swelling']='';}
+	if(!$exit_flag and isset($_POST['lymph'])) {$exit_flag=check_yes_no($_POST['lymph']);} else {$_POST['lymph']='';}
+	if(!$exit_flag and isset($_POST['pocket'])) {$exit_flag=check_yes_no($_POST['pocket']);} else {$_POST['pocket']='';}
+	if(!$exit_flag and isset($_POST['bone'])) {$exit_flag=check_yes_no($_POST['bone']);} else {$_POST['bone']='';}
+	if(!$exit_flag and isset($_POST['ging'])) {$exit_flag=check_yes_no($_POST['ging']);} else {$_POST['ging']='';}
+	if(!$exit_flag and isset($_POST['per'])) {$exit_flag=check_yes_no($_POST['per']);} else {$_POST['per']='';}
+	if(!$exit_flag and isset($_POST['ulcers'])) {$exit_flag=check_yes_no($_POST['ulcers']);} else {$_POST['ulcers']='';}
+	//check psecifiy
+	if(!$exit_flag and $_POST['per']!='' and $_POST['pspecify'] !='slight' and $_POST['pspecify'] !='moderate' and $_POST['pspecify'] !='severe'   ){	
+		$message="bad#Unable to save details as Periodontis is not corretcly specified";
+		$var=html($_POST['pspecify']);
+		$security_log="sombody tried to input $var for periodontis psecification in on_examination";
+		log_security($pdo,$security_log);
+		$exit_flag=true;
+	}
+	//check oh
+	if(!$exit_flag and $_POST['oh'] !='good' and $_POST['oh'] !='fair' and $_POST['oh'] !='poor'   ){	
+		$message="bad#Unable to save details as OH is not corretcly specified";
+		$var=html($_POST['oh']);
+		$security_log="sombody tried to input $var for OH in on_examination";
+		log_security($pdo,$security_log);
+		$exit_flag=true;
+	}
+	//check dentition
+	if(!$exit_flag and $_POST['dentition'] !='adult' and $_POST['dentition'] !='mixed' and $_POST['dentition'] !='pedo'   ){	
+		$message="bad#Unable to save details as dentition is not corretcly specified";
+		$var=html($_POST['dentition']);
+		$security_log="sombody tried to input $var for dentition  in on_examination";
+		log_security($pdo,$security_log);
+		$exit_flag=true;
+	}	
+
+	//now check if teeth specified are correct
+	function check_teeth($teeth){
+		global $pdo, $exit_flag,$encrypt;
+		$meno='';
+		$n2=count($teeth);
+		$i2=0;
+		while($i2 < $n2){
+			if($i2==0){$meno=$encrypt->decrypt($teeth[$i2]);}
+			else{$meno="$meno,".$encrypt->decrypt($teeth[$i2]);}
+			if (!in_array($encrypt->decrypt($teeth[$i2]), $_SESSION['meno_yote'])) {
+				$message="bad#Unable to save details as some teeth values for dentition are not correctly set";
+				$var=html($encrypt->decrypt($teeth[$i2]));
+				$security_log="sombody tried to input $var into on_examination for teeth value under dentition";
+				log_security($pdo,$security_log);
+				$exit_flag=true;
+				break;
+			}	
+			$i2++;
+		}
+		return "$meno";
+	}//end function	
+		
+	if(!$exit_flag and isset($_POST['adult_missing'])){$_POST['adult_missing']=check_teeth($_POST['adult_missing']);}
+	if(!$exit_flag and isset($_POST['adult_roots'])){$_POST['adult_roots']=check_teeth($_POST['adult_roots']);}	
+	if(!$exit_flag and isset($_POST['adult_occlusal'])){$_POST['adult_occlusal']=check_teeth($_POST['adult_occlusal']);}	
+	if(!$exit_flag and isset($_POST['adult_docclusal'])){$_POST['adult_docclusal']=check_teeth($_POST['adult_docclusal']);}	
+	if(!$exit_flag and isset($_POST['adult_mocclusal'])){$_POST['adult_mocclusal']=check_teeth($_POST['adult_mocclusal']);}	
+	if(!$exit_flag and isset($_POST['adult_root'])){$_POST['adult_root']=check_teeth($_POST['adult_root']);}	
+	if(!$exit_flag and isset($_POST['adult_cervical'])){$_POST['adult_cervical']=check_teeth($_POST['adult_cervical']);}	
+	if(!$exit_flag and isset($_POST['adult_crown'])){$_POST['adult_crown']=check_teeth($_POST['adult_crown']);}	
+	if(!$exit_flag and isset($_POST['adult_implant'])){$_POST['adult_implant']=check_teeth($_POST['adult_implant']);}	
+	if(!$exit_flag and isset($_POST['adult_danturv'])){$_POST['adult_danturv']=check_teeth($_POST['adult_danturv']);}	
+	if(!$exit_flag and isset($_POST['adult_bridge'])){$_POST['adult_bridge']=check_teeth($_POST['adult_bridge']);}	
+	if(!$exit_flag and isset($_POST['adult_rcanal'])){$_POST['adult_rcanal']=check_teeth($_POST['adult_rcanal']);}	
+	if(!$exit_flag and isset($_POST['adult_amalgam'])){$_POST['adult_amalgam']=check_teeth($_POST['adult_amalgam']);}	
+	if(!$exit_flag and isset($_POST['adult_composite'])){$_POST['adult_composite']=check_teeth($_POST['adult_composite']);}	
+	if(!$exit_flag and isset($_POST['adult_gic'])){$_POST['adult_gic']=check_teeth($_POST['adult_gic']);}	
+	if(!$exit_flag and isset($_POST['pedo_missing_teeth'])){$_POST['pedo_missing_teeth']=check_teeth($_POST['pedo_missing_teeth']);}	
+	if(!$exit_flag and isset($_POST['pedo_roots'])){$_POST['pedo_roots']=check_teeth($_POST['pedo_roots']);}	
+	if(!$exit_flag and isset($_POST['pedo_occlusal'])){$_POST['pedo_occlusal']=check_teeth($_POST['pedo_occlusal']);}	
+	if(!$exit_flag and isset($_POST['pedo_distal_occlusal'])){$_POST['pedo_distal_occlusal']=check_teeth($_POST['pedo_distal_occlusal']);}	
+	if(!$exit_flag and isset($_POST['pedo_mesial_occlusal'])){$_POST['pedo_mesial_occlusal']=check_teeth($_POST['pedo_mesial_occlusal']);}	
+	if(!$exit_flag and isset($_POST['pedo_root_carious'])){$_POST['pedo_root_carious']=check_teeth($_POST['pedo_root_carious']);}	
+	if(!$exit_flag and isset($_POST['pedo_cervical'])){$_POST['pedo_cervical']=check_teeth($_POST['pedo_cervical']);}	
+	if(!$exit_flag and isset($_POST['pedo_crown'])){$_POST['pedo_crown']=check_teeth($_POST['pedo_crown']);}	
+	if(!$exit_flag and isset($_POST['pedo_implant'])){$_POST['pedo_implant']=check_teeth($_POST['pedo_implant']);}	
+	if(!$exit_flag and isset($_POST['pedo_denture'])){$_POST['pedo_denture']=check_teeth($_POST['pedo_denture']);}	
+	if(!$exit_flag and isset($_POST['pedo_bridge'])){$_POST['pedo_bridge']=check_teeth($_POST['pedo_bridge']);}	
+	if(!$exit_flag and isset($_POST['pedo_root_canal'])){$_POST['pedo_root_canal']=check_teeth($_POST['pedo_root_canal']);}	
+	if(!$exit_flag and isset($_POST['pedo_amalgam'])){$_POST['pedo_amalgam']=check_teeth($_POST['pedo_amalgam']);}	
+	if(!$exit_flag and isset($_POST['pedo_composite'])){$_POST['pedo_composite']=check_teeth($_POST['pedo_composite']);}	
+	if(!$exit_flag and isset($_POST['pedo_gic'])){$_POST['pedo_gic']=check_teeth($_POST['pedo_gic']);}	
+
+	//check xrayus
+	//get xray types
+	$xray='';
+	if(!$exit_flag and isset($_POST['xrays'])){
+		$sql=$error=$s='';$placeholders=array();
+		$sql="select id from teeth_and_xray_types";
+		$error="Unable to get xray types";
+		$s = select_sql($sql, $placeholders, $error, $pdo);
+		$xray_id=array();
+		foreach($s as $row){
+			$xray_id[]=$row['id'];
+		}
+		$meno='';
+		$xrays=$_POST['xrays'];
+		$n2=count($xrays);
+		$i2=0;
+		
+		while($i2 < $n2){
+			if($i2==0){$xray=$encrypt->decrypt($xrays[$i2]);}
+			else{$xray="$xray,".$encrypt->decrypt($xrays[$i2]);}
+			if (!in_array($encrypt->decrypt($xrays[$i2]), $xray_id)) {
+				$message="bad#Unable to save details as some x-ray values are not correctly set";
+				$var=html($encrypt->decrypt($xrays[$i2]));
+				$security_log="sombody tried to input $var into on_examination for xray types";
+				log_security($pdo,$security_log);
+				$exit_flag=true;
+				break;
+			}	
+			$i2++;
+		}		
+	}
+	
+	//check amount
+	if(!$exit_flag and $_POST['xray_cost']!=''){
+		//remove commas
+		$amount=str_replace(",", "", $_POST['xray_cost']);
+			//check if amount is integer
+		if(!ctype_digit($amount)){//echo "ooooo $unit_price[$i] ";
+			//check if it has only 2 decimal places
+			$data=explode('.',$amount);
+			$invalid_amount=html("$amount");
+			if ( count($data) != 2 ){
+			
+			$message="bad#Unable to save details as cost $invalid_amount is not a valid number. ";
+			$exit_flag=true;
+			}
+			elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+			$message="bad#Unable to save details as cost $invalid_amount is not a valid number. ";
+			$exit_flag=true;
+			}
+		}
+	}
+	
+	//check if amount is set without xray 
+	if(!$exit_flag and $_POST['xray_cost']!='' and !isset($_POST['xrays'])){
+			$message="bad#Unable to save details as X-ray cost is given but no xray has been selected";
+			$exit_flag=true;			
+	}	
+
+	//check if xray is set without amount 
+	if(!$exit_flag and $_POST['xray_cost']=='' and isset($_POST['xrays'])){
+			$message="bad#Unable to save details as X-ray cost is not specified but an X-ray has been selected";
+			$exit_flag=true;			
+	}	
+
+	//check if xray payment method is set  
+	if(!$exit_flag and $_POST['pay_type']=='' and $_POST['xray_cost']!=''){
+			$message="bad#Unable to save details as X-ray cost is specified but an payment method is not set";
+			$exit_flag=true;			
+	}	
+	
+	//set field to empty if they are not set
+	if(!$exit_flag and !isset($_POST['swell_specify'])){$_POST['swell_specify']='';}
+	if(!$exit_flag and !isset($_POST['lymph_specify'])){$_POST['lymph_specify']='';}
+	if(!$exit_flag and !isset($_POST['lips'])){$_POST['lips']='';}
+	if(!$exit_flag and !isset($_POST['other'])){$_POST['other']='';}
+	if(!$exit_flag and !isset($_POST['uspecify'])){$_POST['uspecify']='';}
+	if(!$exit_flag and !isset($_POST['pockspec'])){$_POST['pockspec']='';}
+	if(!$exit_flag and !isset($_POST['bspecify'])){$_POST['bspecify']='';}
+	if(!$exit_flag and !isset($_POST['pspecify'])){$_POST['pspecify']='';}
+	if(!$exit_flag and !isset($_POST['oh'])){$_POST['oh']='';}
+	if(!$exit_flag and !isset($_POST['dentition'])){$_POST['dentition']='';}
+	if(!$exit_flag and !isset($_POST['orth'])){$_POST['orth']='';}
+	if(!$exit_flag and !isset($_POST['otherprob'])){$_POST['otherprob']='';}	
+	if(!$exit_flag and !isset($_POST['adult_missing'])){$_POST['adult_missing']='';}
+	if(!$exit_flag and !isset($_POST['adult_roots'])){$_POST['adult_roots']='';}
+	if(!$exit_flag and !isset($_POST['adult_occlusal'])){$_POST['adult_occlusal']='';}
+	if(!$exit_flag and !isset($_POST['adult_docclusal'])){$_POST['adult_docclusal']='';}
+	if(!$exit_flag and !isset($_POST['adult_mocclusal'])){$_POST['adult_mocclusal']='';}
+	if(!$exit_flag and !isset($_POST['adult_root'])){$_POST['adult_root']='';}
+	if(!$exit_flag and !isset($_POST['adult_cervical'])){$_POST['adult_cervical']='';}
+	if(!$exit_flag and !isset($_POST['adult_crown'])){$_POST['adult_crown']='';}
+	if(!$exit_flag and !isset($_POST['adult_implant'])){$_POST['adult_implant']='';}
+	if(!$exit_flag and !isset($_POST['adult_danturv'])){$_POST['adult_danturv']='';}
+	if(!$exit_flag and !isset($_POST['adult_bridge'])){$_POST['adult_bridge']='';}
+	if(!$exit_flag and !isset($_POST['adult_rcanal'])){$_POST['adult_rcanal']='';}
+	if(!$exit_flag and !isset($_POST['adult_amalgam'])){$_POST['adult_amalgam']='';}
+	if(!$exit_flag and !isset($_POST['adult_composite'])){$_POST['adult_composite']='';}
+	if(!$exit_flag and !isset($_POST['adult_gic'])){$_POST['adult_gic']='';}
+	if(!$exit_flag and !isset($_POST['pedo_missing_teeth'])){$_POST['pedo_missing_teeth']='';}
+	if(!$exit_flag and !isset($_POST['pedo_roots'])){$_POST['pedo_roots']='';}
+	if(!$exit_flag and !isset($_POST['pedo_occlusal'])){$_POST['pedo_occlusal']='';}
+	if(!$exit_flag and !isset($_POST['pedo_distal_occlusal'])){$_POST['pedo_distal_occlusal']='';}
+	if(!$exit_flag and !isset($_POST['pedo_mesial_occlusal'])){$_POST['pedo_mesial_occlusal']='';}
+	if(!$exit_flag and !isset($_POST['pedo_root_carious'])){$_POST['pedo_root_carious']='';}
+	if(!$exit_flag and !isset($_POST['pedo_cervical'])){$_POST['pedo_cervical']='';}
+	if(!$exit_flag and !isset($_POST['pedo_crown'])){$_POST['pedo_crown']='';}
+	if(!$exit_flag and !isset($_POST['pedo_implant'])){$_POST['pedo_implant']='';}
+	if(!$exit_flag and !isset($_POST['pedo_denture'])){$_POST['pedo_denture']='';}
+	if(!$exit_flag and !isset($_POST['pedo_bridge'])){$_POST['pedo_bridge']='';}
+	if(!$exit_flag and !isset($_POST['pedo_root_canal'])){$_POST['pedo_root_canal']='';}
+	if(!$exit_flag and !isset($_POST['pedo_amalgam'])){$_POST['pedo_amalgam']='';}
+	if(!$exit_flag and !isset($_POST['pedo_composite'])){$_POST['pedo_composite']='';}
+	if(!$exit_flag and !isset($_POST['pedo_gic'])){$_POST['pedo_gic']='';}
+
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from on_examination where pid=:pid";
+			$error="Unable to update on_examination form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into on_examination set
+					swelling=:swelling,
+					swell_specify=:swell_specify,
+					lymph=:lymph,
+					lymph_specify=:lymph_specify,
+					lips=:lips,
+					other=:other,
+					oh=:oh,
+					ulcers=:ulcers,
+					uspecify=:uspecify,
+					pocket=:pocket,
+					pockspec=:pockspec,
+					bone=:bone,
+					bspecify=:bspecify,
+					ging=:ging,
+					per=:per,
+					pspecify=:pspecify,
+					dentition=:dentition,
+
+					adult_missing=:adult_missing,
+					adult_occlusal=:adult_occlusal,
+					adult_docclusal=:adult_docclusal,
+					adult_mocclusal=:adult_mocclusal,
+					adult_root=:adult_root,
+					adult_cervical=:adult_cervical,
+					adult_crown=:adult_crown,
+					adult_implant=:adult_implant,
+					adult_danturv=:adult_danturv,
+					adult_bridge=:adult_bridge,
+					adult_rcanal=:adult_rcanal,
+					adult_amalgam=:adult_amalgam,
+					adult_composite=:adult_composite,
+					adult_gic=:adult_gic,
+					orth=:orth,
+					otherprob=:otherprob,
+					doc_id=:doc_id,
+					pid=:pid,
+					when_added=now(),
+					
+					adult_roots=:adult_roots,
+					mixed_missing_teeth=:mixed_missing_teeth,
+					mixed_roots=:mixed_roots,
+					mixed_occlusal=:mixed_occlusal,
+					mixed_distal_occlusal=:mixed_distal_occlusal,
+					mixed_mesial_occlusal=:mixed_mesial_occlusal,
+					mixed_root_carious=:mixed_root_carious,
+					mixed_cervical=:mixed_cervical,
+					mixed_crown=:mixed_crown,
+					mixed_implant=:mixed_implant,
+					mixed_denture=:mixed_denture,
+					mixed_bridge=:mixed_bridge,
+					mixed_root_canal=:mixed_root_canal,
+					mixed_amalgam=:mixed_amalgam,
+					mixed_composite=:mixed_composite,
+					mixed_gic=:mixed_gic,
+					pedo_missing_teeth=:pedo_missing_teeth,
+					pedo_gic=:pedo_gic,
+					pedo_roots=:pedo_roots,
+					pedo_occlusal=:pedo_occlusal,
+					pedo_distal_occlusal=:pedo_distal_occlusal,
+					pedo_mesial_occlusal=:pedo_mesial_occlusal,
+					pedo_root_carious=:pedo_root_carious,
+					pedo_cervical=:pedo_cervical,
+					pedo_crown=:pedo_crown,
+					pedo_implant=:pedo_implant,
+					pedo_denture=:pedo_denture,
+					pedo_bridge=:pedo_bridge,
+					pedo_root_canal=:pedo_root_canal,
+					pedo_amalgam=:pedo_amalgam,
+					pedo_composite=:pedo_composite
+					";
+			$error="Unable to update on_examination patient form";
+					$placeholders['swelling']=$_POST['swelling'];
+					$placeholders['swell_specify']=$_POST['swell_specify'];
+					$placeholders['lymph']=$_POST['lymph'];
+					$placeholders['lymph_specify']=$_POST['lymph_specify'];
+					$placeholders['lips']=$_POST['lips'];
+					$placeholders['other']=$_POST['other'];
+					$placeholders['oh']=$_POST['oh'];
+					$placeholders['ulcers']=$_POST['ulcers'];
+					$placeholders['uspecify']=$_POST['uspecify'];
+					$placeholders['pocket']=$_POST['pocket'];
+					$placeholders['pockspec']=$_POST['pockspec'];
+					$placeholders['bone']=$_POST['bone'];
+					$placeholders['bspecify']=$_POST['bspecify'];
+					$placeholders['ging']=$_POST['ging'];
+					$placeholders['per']=$_POST['per'];
+					$placeholders['pspecify']=$_POST['pspecify'];
+					$placeholders['dentition']=$_POST['dentition'];
+
+					$placeholders['adult_missing']=$_POST['adult_missing'];
+					$placeholders['adult_occlusal']=$_POST['adult_occlusal'];
+					$placeholders['adult_docclusal']=$_POST['adult_docclusal'];
+					$placeholders['adult_mocclusal']=$_POST['adult_mocclusal'];
+					$placeholders['adult_root']=$_POST['adult_root'];
+					$placeholders['adult_cervical']=$_POST['adult_cervical'];
+					$placeholders['adult_crown']=$_POST['adult_crown'];
+					$placeholders['adult_implant']=$_POST['adult_implant'];
+					$placeholders['adult_danturv']=$_POST['adult_danturv'];
+					$placeholders['adult_bridge']=$_POST['adult_bridge'];
+					$placeholders['adult_rcanal']=$_POST['adult_rcanal'];
+					$placeholders['adult_amalgam']=$_POST['adult_amalgam'];
+					$placeholders['adult_composite']=$_POST['adult_composite'];
+					$placeholders['adult_gic']=$_POST['adult_gic'];
+					$placeholders['orth']=$_POST['orth'];
+					$placeholders['otherprob']=$_POST['otherprob'];
+					$placeholders['doc_id']=$_SESSION['id'];
+					$placeholders['pid']=$_SESSION['pid'];
+					$placeholders['adult_roots']=$_POST['adult_roots'];
+					$placeholders['mixed_missing_teeth']=$_POST['mixed_missing_teeth'];
+					$placeholders['mixed_roots']=$_POST['mixed_roots'];
+					$placeholders['mixed_occlusal']=$_POST['mixed_occlusal'];
+					$placeholders['mixed_distal_occlusal']=$_POST['mixed_distal_occlusal'];
+					$placeholders['mixed_mesial_occlusal']=$_POST['mixed_mesial_occlusal'];
+					$placeholders['mixed_root_carious']=$_POST['mixed_root_carious'];
+					$placeholders['mixed_cervical']=$_POST['mixed_cervical'];
+					$placeholders['mixed_crown']=$_POST['mixed_crown'];
+					$placeholders['mixed_implant']=$_POST['mixed_implant'];
+					$placeholders['mixed_denture']=$_POST['mixed_denture'];
+					$placeholders['mixed_bridge']=$_POST['mixed_bridge'];
+					$placeholders['mixed_root_canal']=$_POST['mixed_root_canal'];
+					$placeholders['mixed_amalgam']=$_POST['mixed_amalgam'];
+					$placeholders['mixed_composite']=$_POST['mixed_composite'];
+					$placeholders['mixed_gic']=$_POST['mixed_gic'];
+					$placeholders['pedo_missing_teeth']=$_POST['pedo_missing_teeth'];
+					$placeholders['pedo_gic']=$_POST['pedo_gic'];
+					$placeholders['pedo_roots']=$_POST['pedo_roots'];
+					$placeholders['pedo_occlusal']=$_POST['pedo_occlusal'];
+					$placeholders['pedo_distal_occlusal']=$_POST['pedo_distal_occlusal'];
+					$placeholders['pedo_mesial_occlusal']=$_POST['pedo_mesial_occlusal'];
+					$placeholders['pedo_root_carious']=$_POST['pedo_root_carious'];
+					$placeholders['pedo_cervical']=$_POST['pedo_cervical'];
+					$placeholders['pedo_crown']=$_POST['pedo_crown'];
+					$placeholders['pedo_implant']=$_POST['pedo_implant'];
+					$placeholders['pedo_denture']=$_POST['pedo_denture'];
+					$placeholders['pedo_bridge']=$_POST['pedo_bridge'];
+					$placeholders['pedo_root_canal']=$_POST['pedo_root_canal'];
+					$placeholders['pedo_amalgam']=$_POST['pedo_amalgam'];
+					$placeholders['pedo_composite']=$_POST['pedo_composite'];
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+
+			//now insert xrays
+			if($xray!=''){
+				$sql=$error=$s='';$placeholders=array();
+				$sql="insert into xray_holder set
+						pid=:pid,
+						doc_id=:doc_id,
+						date_taken=now(),
+						xrays_done=:xrays,
+						cost=:xray_cost,
+						pay_type=:pay_type,
+						status=2,
+						
+						xray_comments=:xray_comments";
+				$error="Unable to add xray to tplan procedure";
+						$placeholders['pid']=$_SESSION['pid'];
+						$placeholders['doc_id']=$_SESSION['id'];
+						$placeholders['pay_type']=$encrypt->decrypt($_POST['pay_type']);
+						$placeholders['xray_cost']=$_POST['xray_cost'];
+						$placeholders['xrays']="$xray";
+						$placeholders['xray_comments']=$_POST['xray_comment'];						
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+			}
+					
+			if($s){$message="good#Patient details saved. ";}
+			elseif(!$s){$message="bad#Unable to save patient details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient details  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+//this is for paying labs
+if(isset($_POST['token_lab_pay2']) and isset($_SESSION['token_lab_pay2']) and $_POST['token_lab_pay2']==$_SESSION['token_lab_pay2'] ){
+	//$_SESSION['token_lab_pay2']='';
+	/*print_r($_SESSION['balance_lab']);
+	echo "$_SESSION[balance_lab][0][1635]";
+	foreach($_SESSION['balance_lab'] as $balance_lab_array ){
+		echo "$balance_lab_array[1635]";
+	}*/
+	$amount=$_POST['lab_paymnet'];
+	$lab=$_POST['ninye'];
+	$n=count($lab);
+	$i=$total=0;
+	$exit_flag=false;
+	if(!isset($_POST['total_amount']) and $_POST['total_amount']==''){
+		echo "bad#The total value of the payment must be specified. ";
+		exit;
+	}
+	$invalid_amount=html($_POST['total_amount']);
+	//check if total is a a valid number
+	$_POST['total_amount']=str_replace(",", "", $_POST['total_amount']);
+		//check if amount is integer
+	
+	if(!ctype_digit($_POST['total_amount'])){//echo "ooooo $unit_price[$i] ";
+		//check if it has only 2 decimal places
+		$data=explode('.',$_POST['total_amount']);
+		
+		if ( count($data) != 2 ){
+			echo "bad#The total value of the payment,  $invalid_amount is not a valid payment. ";
+			exit;
+		}
+		elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+			echo "bad#The total value of the payment,  $invalid_amount is not a valid payment. ";
+			exit;
+		}
+	}	
+	try{
+			$pdo->beginTransaction();
+			
+			while($i < $n){
+				$lab_id = $encrypt->decrypt($lab[$i]);	
+				if(!$exit_flag and $amount[$i]=='') {
+					$i++;
+					continue;
+				}
+				//check if amount paid is integer
+				elseif(!$exit_flag and $amount[$i]!=''){
+					$invalid_amount=html("$amount[$i]");
+					//remove commas
+					$amount[$i]=str_replace(",", "", $amount[$i]);
+						//check if amount is integer
+					if(!ctype_digit($amount[$i])){//echo "ooooo $unit_price[$i] ";
+						//check if it has only 2 decimal places
+						$data=explode('.',$amount[$i]);
+						
+						if ( count($data) != 2 ){
+						
+						$message="bad#Unable to make payments as $invalid_amount is not a valid payment. ";
+						$exit_flag=true;
+						break;
+						}
+						elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+						$message="bad#Unable to make payments as $invalid_amount is not a valid payment. ";
+						$exit_flag=true;
+						break;
+						}
+					}
+				}
+				//check if amount paid is more than required
+			//	print_r( $_SESSION['balance_lab']);
+				if(!$exit_flag and $amount[$i] > $_SESSION['balance_lab'][$lab_id]){
+					$message="bad#Unable to make payments as $invalid_amount is greater than amount due of ".number_format($_SESSION['balance_lab'][$lab_id],2);
+					$exit_flag=true;	
+					break;					
+				}
+				
+				if(!$exit_flag and !isset($_POST['receipt_number'])){$_POST['receipt_number']='';}
+				
+				//now insert payment
+				if(!$exit_flag){
+					
+					$sql=$error=$s='';$placeholders=array();
+					$sql = "insert into lab_payments set lab_id=:lab_id, 
+													amount_paid=:amount_paid, 
+													user_id=:user_id, 
+													receipt_number=:receipt_number,
+													date_of_payment=now()";
+					$error = "Unable to receive lab";
+					$placeholders[':lab_id']=$lab_id ;		
+					$placeholders[':amount_paid']=$amount[$i];		
+					$placeholders[':user_id']=$_SESSION['id'];		
+					$placeholders[':receipt_number']=$_POST['receipt_number'] ;		
+					$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+					$total = $total + $amount[$i];
+				}
+				$i++;
+			}
+			
+			
+			//check if totals match
+			if(!$exit_flag and $total != $_POST['total_amount']){
+				$message="bad#You have specified the total value of the payment as ".number_format(html($_POST['total_amount']),2)." but you want to
+				pay lab work worth ".number_format($total,2)." !!!";
+				$exit_flag=true;			
+			}
+			
+			if(!$exit_flag){
+				$tx_result = $pdo->commit();
+				if($tx_result){$message="good#lab-payments#Payments saved";$_SESSION['balance_lab']=array();}
+				elseif(!$tx_result){$message="bad#Unable to save payments";}
+			}
+			else{$pdo->rollBack();}
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save payments";
+		}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}			
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}	
+	echo "$message";
+}
+
+//this is for submitting  lab work
+if(isset($_SESSION['token_add_lab']) and 	isset($_POST['token_add_lab']) and 
+	$_POST['token_add_lab']==$_SESSION['token_add_lab'])
+	{
+	//$_SESSION['token_f_patient']=''
+	$exit_flag=false;
+	global $exit_flag;
+
+	//check if this user is a doctor
+	if($_SESSION['logged_in_user_type']!=1){
+		$exit_flag=true;
+		$message="bad#Only a doctor can request for lab work.";	
+	}
+	
+	//check if technician exists
+	if(!$exit_flag and $_POST['technician']==''){
+		$exit_flag=true;
+		$message="bad#Please select a technician.";	
+	}
+	get_technician_exists($pdo);
+	if (!$exit_flag){
+		$_POST['technician']=$encrypt->decrypt($_POST['technician']);
+		if(!in_array($_POST['technician'], $_SESSION['technician_array'])) {
+		$message="bad#Please select a valid technician ";
+		$var=html($_POST['technician']);
+		$security_log="sombody tried to input $var into lab work as technician";
+		log_security($pdo,$security_log);
+		$exit_flag=true;
+		}
+	}	
+
+	//check bleaching trays
+	if(!$exit_flag and isset($_POST['bleach']) and $_POST['bleach']!=''){
+		$_POST['bleach']=$encrypt->decrypt($_POST['bleach']);
+		//echo "bleach is $_POST[bleach]";
+		if($_POST['bleach']!='.035 Std. Bleach Tray'  and $_POST['bleach']!='.060 Bruxers'){
+				$message="bad#Unable to save lab work as bleaching trays are not correctly set";
+				$var=html($_POST['bleach']);
+				$security_log="sombody tried to input $var into lab work as bleaching trays";
+				log_security($pdo,$security_log);
+				$exit_flag=true;	
+		}
+	}
+
+	//check night gurads
+	if(!$exit_flag and isset($_POST['night']) and $_POST['night']!=''){
+		$_POST['night']=$encrypt->decrypt($_POST['night']);
+	//	echo "bleach is $_POST[bleach]";
+		if($_POST['night']!='articulated'  and $_POST['night']!='non-articulated'){
+				$message="bad#Unable to save lab work as night gurads are not correctly set";
+				$var=html($_POST['night']);
+				$security_log="sombody tried to input $var into lab work as night gurads";
+				log_security($pdo,$security_log);
+				$exit_flag=true;
+		}
+	}
+
+	//check fluoride
+	if(!$exit_flag and isset($_POST['fluoride']) and $_POST['fluoride']!=''){
+		$_POST['fluoride']=$encrypt->decrypt($_POST['fluoride']);
+		//echo "bleach is $_POST[bleach]";
+		if($_POST['fluoride']!='standard'){
+				$message="bad#Unable to save lab work as fluoride is not correctly set";
+				$var=html($_POST['fluoride']);
+				$security_log="sombody tried to input $var into lab work as fluoride";
+				log_security($pdo,$security_log);	
+				$exit_flag=true;
+		}
+	}
+
+	//check mouth gurads
+	if(!$exit_flag and isset($_POST['mouth']) and $_POST['mouth']!=''){
+		$_POST['mouth']=$encrypt->decrypt($_POST['mouth']);
+		//echo "bleach is $_POST[bleach]";
+		if($_POST['mouth']!='non-articulated'  and $_POST['mouth']!='.060 articulated'){
+				$message="bad#Unable to save lab work as mouth guard is not correctly set";
+				$var=html($_POST['mouth']);
+				$security_log="sombody tried to input $var into lab work as mouth gurad";
+				log_security($pdo,$security_log);	
+				$exit_flag=true;
+		}
+	}
+
+	//check trays
+	$trays=$_POST['trays'];
+	$n2=count($trays);
+	$i2=0;
+	
+	while($i2 < $n2){
+		if($trays[$i2]==''){$i2++;continue;}
+		else{
+			if(!ctype_digit($trays[$i2])){
+				$message="bad#Unable to save lab work as tray numbers are not correctly set. Please ensure only numbers are used";
+				$exit_flag=true;
+				break;
+			}
+		}
+		$i2++;
+	}	
+	
+	//now check if teeth specified are correct
+	function check_teeth_lab($teeth,$teeth_type){
+		global $pdo, $exit_flag,$encrypt;
+		$meno='';
+		$n2=count($teeth);
+		$i2=0;
+		while($i2 < $n2){
+			if($i2==0){$meno=$encrypt->decrypt($teeth[$i2]);}
+			else{$meno="$meno,".$encrypt->decrypt($teeth[$i2]);}
+			if (!in_array($encrypt->decrypt($teeth[$i2]), $_SESSION['meno_yote'])) {
+				$message="bad#Unable to save lab work as as some teeth values for $teeth_type are not correctly set";
+				$var=html($encrypt->decrypt($teeth[$i2]));
+				$security_log="sombody tried to input $var into lab work for $teeth_type";
+				log_security($pdo,$security_log);
+				$exit_flag=true;
+				break;
+			}	
+			$i2++;
+		}
+		return "$meno";
+	}//end function	
+	if(!$exit_flag and isset($_POST['crowns']) and $_POST['crowns']!=''){
+		$_POST['crowns'] = check_teeth_lab($_POST['crowns'],"crowns");
+	}		
+	if(!$exit_flag and isset($_POST['bridge']) and $_POST['bridge']!=''){
+		$_POST['bridge'] = check_teeth_lab($_POST['bridge'],"bridge");
+	}	
+	
+	//check full denture
+	if(!$exit_flag and isset($_POST['full_denture']) and $_POST['full_denture']!=''){
+		$_POST['full_denture']=$encrypt->decrypt($_POST['full_denture']);
+		//echo "bleach is $_POST[bleach]";
+		if($_POST['full_denture']!='full_denture'){
+				$message="bad#Unable to save lab work as full denture is not correctly set";
+				$var=html($_POST['full_denture']);
+				$security_log="sombody tried to input $var into lab work as full denture";
+				log_security($pdo,$security_log);	
+				$exit_flag=true;
+		}
+	}
+
+
+	//check cost is a valid number
+	if(!$exit_flag and $_POST['amount']==''){
+		$exit_flag=true;
+		$message="bad#Please specify the cost for the lab work.";	
+	}	
+	if(!$exit_flag and $_POST['amount']!=''){
+		//remove commas
+		$_POST['amount']=str_replace(",", "", $_POST['amount']);
+			//check if amount is integer
+		if(!ctype_digit($_POST['amount'])){//echo "ooooo $unit_price[$i] ";
+			//check if it has only 2 decimal places
+			$data=explode('.',$_POST['amount']);
+			$invalid_amount=html("$_POST[amount]");
+			if ( count($data) != 2 ){
+			
+			$message="bad#Unable to save lab work as cost $invalid_amount is not a valid number. ";
+			$exit_flag=true;
+			}
+			elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+			$message="bad#Unable to save lab work as cost $invalid_amount is not a valid number. ";
+			$exit_flag=true;
+			}
+		}
+	}	
+	
+	//check date of return	
+	if(!$exit_flag and $_POST['date_required']==''){
+		$exit_flag=true;
+		$message="bad#Please specify the return date for the lab work.";	
+	}		
+	if(!$exit_flag and isset($_POST['date_required']) and $_POST['date_required']!='')	{
+		$date='';
+		$date=explode('-',$_POST['date_required']);
+		if(!checkdate( $date[1],$date[2],$date[0] )){
+		$dob=html($_POST['date_required']);
+		$error_message="Unable to save b work as return date $dob is not in the correct format";
+		$exit_flag=true;
+		$message="somebody tried to input $dob as return date for lab work";
+		log_security($pdo,$message);		
+		}
+	}
+	
+	//empty the unset ones
+	if(!isset($_POST['bleach']))  {$_POST['bleach']='';}
+	if(!isset($_POST['night']))  {$_POST['night']='';}
+	if(!isset($_POST['fluoride']))  {$_POST['fluoride']='';}
+	if(!isset($_POST['mouth']))  {$_POST['mouth']='';}
+	if(!isset($_POST['trays']))  {$_POST['trays']='';}
+	if(!isset($_POST['crowns']))  {$_POST['crowns']='';}
+	if(!isset($_POST['bridge']))  {$_POST['bridge']='';}
+	if(!isset($_POST['ortho']))  {$_POST['ortho']='';}
+	if(!isset($_POST['postcore']))  {$_POST['postcore']='';}
+	if(!isset($_POST['full_denture']))  {$_POST['full_denture']='';}
+	if(!isset($_POST['partial_denture']))  {$_POST['partial_denture']='';}
+	if(!isset($_POST['shade']))  {$_POST['shade']='';}
+	if(!isset($_POST['description']))  {$_POST['description']='';}
+	//now insert	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into labs set when_added=now(),
+			pid=:pid,
+			doc_id=:doc_id,
+			technician=:technician,
+			bleach=:bleach,
+			night=:night,
+			fluoride=:fluoride,
+			mouth=:mouth,
+			description=:description,
+			shade=:shade,
+			crowns=:crowns,
+			bridge=:bridge,
+			ortho=:ortho,
+			post_core=:post_core,
+			full_denture=:full_denture,
+			partial_denture=:partial_denture,
+			amount=:amount,
+			date_required=:date_required";
+			$error="Unable to update labs";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$placeholders[':doc_id']=$_SESSION['id'];
+			$placeholders[':technician']=$_POST['technician'];
+			$placeholders[':bleach']=$_POST['bleach'];
+			$placeholders[':night']=$_POST['night'];
+			$placeholders[':fluoride']=$_POST['fluoride'];
+			$placeholders[':mouth']=$_POST['mouth'];
+			$placeholders[':description']=$_POST['description'];
+			$placeholders[':shade']=$_POST['shade'];
+			$placeholders[':crowns']=$_POST['crowns'];
+			$placeholders[':bridge']=$_POST['bridge'];
+			$placeholders[':ortho']=$_POST['ortho'];
+			$placeholders[':post_core']=$_POST['postcore'];
+			$placeholders[':full_denture']=$_POST['full_denture'];
+			$placeholders[':partial_denture']=$_POST['partial_denture'];
+			$placeholders[':amount']=$_POST['amount'];
+			$placeholders[':date_required']=$_POST['date_required'];
+			$s = 	get_insert_id($sql, $placeholders, $error, $pdo);	
+
+			//now insert trays
+			$trays=$_POST['trays'];
+			$n2=count($trays);
+			$i2=0;
+			
+			while($i2 < $n2){
+				if($trays[$i2]==''){$i2++;continue;}
+				else{
+					$sql2=$error2=$s2='';$placeholders2=array();
+					$sql2="insert into lab_trays set
+					lab_id=:lab_id,
+					tray_number=:tray_number";
+					$error2="Unable to update lab_trays";
+					$placeholders2[':lab_id']=$s;
+					$placeholders2[':tray_number']=$trays[$i2];
+					$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);
+				}
+				$i2++;
+			}
+			
+			if($s){$message="good#lab_work#Lab work saved. ";}
+			elseif(!$s){$message="bad#Unable to save lab work ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save lab work  ";
+		}
+	}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}	
+	echo "$message";
+}
+
+//this is for viewwing a lab
+if(isset($_POST['view_lab']) and $_POST['view_lab']!='')
+	{	$lab_id=$_POST['view_lab'];
+		$sql=$error1=$s='';$placeholders=array();
+		$sql="select a.when_added, a.lab_id, a.bleach, a.night, a.fluoride, a.mouth, a.description, a.shade, a.crowns, a.bridge, a.ortho,
+		a.post_core, a.full_denture, a.partial_denture, a.date_required, a.amount, b.first_name, b.middle_name, b.last_name, c.first_name, c.middle_name, 
+		c.last_name, d.technician_name from labs a, patient_details_a b, users c, lab_technicians d where d.id=a.technician and a.pid=b.pid and 
+		a.doc_id=c.id  and a.lab_id=:lab_id";
+		
+		$error="Unable to get lab";
+		$placeholders[':lab_id']=$_POST['view_lab'];
+		$s = select_sql($sql, $placeholders, $error, $pdo);	
+		foreach($s as $row){
+			$when_added=html("$row[when_added]");
+			$bleach=html("$row[bleach]");
+			$night=html("$row[night]");
+			$fluoride=html("$row[fluoride]");
+			$mouth=html("$row[mouth]");
+			$description=html("$row[description]");
+			$shade=html("$row[shade]");
+			$crowns=html("$row[crowns]");
+			$bridge=html("$row[bridge]");
+			$ortho=html("$row[ortho]");
+			$post_core=html("$row[post_core]");
+			$full_denture=html("$row[full_denture]");
+			$partial_denture=html("$row[partial_denture]");
+			$date_required=html("$row[date_required]");
+			$amount=number_format(html("$row[amount]"),2);
+			$patient=html("$row[16] $row[17] $row[18]");
+			$doctor=html("$row[19] $row[20] $row[21]");
+			$technician=html("$row[technician_name]"); ?>
+			<!--doctor-->
+			<div class='grid-15'><label for="" class="label">Requesting Doctor:</label></div>
+			<div class='grid-30'><label for="" class="label2"><?php echo "$doctor"; ?></label></div>
+			<!--technician-->
+			<div class='prefix-10 grid-15'><label for="" class="label">Technician:</label></div>
+			<div class='grid-30'><label for="" class="label2"><?php echo "$technician"; ?></label></div>	
+			<div class=clear></div><br>
+				<!--BLEACHING  TRAYS -->
+				<div class='grid-25 grid-parent'>
+					<div class='grid-100 '><label class="label">BLEACHING  TRAYS</label></div>
+					<div class=grid-100><label for="" class="label2"><?php echo "$bleach"; ?></label></div>
+				</div>
+				
+				<!--NIGHT GUARDS -->
+				<div class='grid-25 grid-parent'>
+					<div class='grid-100 label'>NIGHT GUARDS</div>
+					<div class=grid-100><div class=grid-100><label for="" class="label2"><?php echo "$night"; ?></label></div></div>
+				</div>
+				
+				<!--FLUORIDE  TRAYS -->
+				<div class='grid-25 grid-parent'>
+					<div class='grid-100 label'>FLUORIDE  TRAYS</div>
+					<div class=grid-100><div class=grid-100><label for="" class="label2"><?php echo "$fluoride"; ?></label></div></div>
+				</div>
+				
+				<!--MOUTH GUARDS -->
+				<div class='grid-25 grid-parent'>
+					<div class='grid-100 label'>MOUTH GUARDS</div>
+					<div class=grid-100><div class=grid-100><label for="" class="label2"><?php echo "$mouth"; ?></label></div></div>
+				</div>
+				<div class=clear></div>
+				<br>
+				<!--trays-->
+				<?php
+					$trays='';
+					$sql2=$error2=$s2='';$placeholders2=array();
+					$sql2 = "select tray_number from lab_trays where lab_id=:lab_id";
+					$error2 = "Unable to get trays for lab";
+					$placeholders2[':lab_id']=$_POST['view_lab'];
+					$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);	
+					foreach($s2 as $row2){
+						$val=html($row2['tray_number']);
+						if($trays==''){$trays="$val";}
+						else{$trays="$trays, $val";}						
+					}					
+				?>
+				<div class='grid-15'><label for="" class="label">Trays:</label></div>
+				<div class=grid-20><label for="" class="label2"><?php echo "$trays"; ?></label></div>
+				<div class=clear></div><br>
+				<!--crowns-->
+				<div class='grid-15'><label for="" class="label">Crowns:</label></div>
+				<div class=grid-30><label for="" class="label2"><?php echo "$crowns"; ?></label></div>
+				<!--bridge-->
+				<div class='prefix-10 grid-15'><label for="" class="label">Bridge:</label></div>
+				<div class=grid-30><label for="" class="label2"><?php echo "$bridge"; ?></label></div>
+				<div class=clear></div><br>
+				<!--ortho-->
+				<div class='grid-45 suffix-5 remove_left_padding'>
+					<div class=grid-100><label class="label">Ortho:</label></div>
+					<div class='grid-100'><label for="" class="label2"><?php echo "$ortho"; ?></label></div>
+				</div>
+
+				<!--Post core-->
+				<div class='grid-45 prefix-5 remove_left_padding'>
+					<div class=grid-100><label class="label">Post Core</label></div>
+					<div class='grid-100'><label for="" class="label2"><?php echo "$post_core"; ?></label></div>
+				</div>				
+				<div class=clear></div><br>
+				<!--denture and shaed-->
+				<div class='grid-45 suffix-5 remove_left_padding'>
+
+						<div class=grid-30><label class="label">Full Denture</label></div>
+						<div class=grid-70><label for="" class="label2"><?php echo "$full_denture"; ?></label></div>
+
+						<br>
+						<div class=grid-30><label class="label">Partial Denture</label></div>
+						<div class=grid-70><label for="" class="label2"><?php echo "$partial_denture"; ?></label></div>
+						<div class=clear></div><br>
+						<div class=grid-30><label class="label">Shade</label></div>
+						<div class='grid-70'><label for="" class="label2"><?php echo "$shade"; ?></label></div>
+				
+				</div>	
+				<!--description-->
+				<div class='grid-45 prefix-5 remove_left_padding'>
+					<div class=grid-100><label class="label">Description of service requested</label></div>
+					<div class='grid-100'><label for="" class="label2"><?php echo "$description"; ?></label></div>
+					<div class=clear></div><br>
+					<div class=grid-10><label class="label">Cost</label></div>
+					<div class=grid-30><label for="" class="label2"><?php echo "$amount"; ?></label></div>
+
+					<div class=grid-25><label class="label">Date Required</label></div>
+					<div class=grid-35><label for="" class="label2"><?php echo "$date_required"; ?></label></div>
+				</div>	
+					<?php
+		}
+	}
+
+//this will check if a user has any role
+if(isset($_POST['check_for_roles']) and $_POST['check_for_roles']!=''){
+			//echo $_SESSION['user_set_privilege'];
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="select role_id from user_roles where user_id=:user_id";
+			$error2="Unable to check for user role ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);
+			if($s2->rowCount() > 0){echo "has_role";}
+			else{echo "no_role";}
+}	
+
+//this will check if a user has any individual privileges
+if(isset($_POST['check_for_individual_privileges']) and $_POST['check_for_individual_privileges']!=''){
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="select menu_id from privileges where user_id=:user_id";
+			$error2="Unable to check for user privileges ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);
+			if($s2->rowCount() > 0){echo "has_privilege";}
+			else{echo "no_privilege";}
+}
+
+//this is for adding/editing a role
+if(isset($_SESSION['token_role2']) and 	isset($_POST['token_role2']) and $_POST['token_role2']==$_SESSION['token_role2'])
+	{
+	//$_SESSION['token_f_patient']=''
+	$exit_flag=false;
+	$user_priv_array = array();
+	//global $exit_flag;
+	
+			//get parent menus and insert them if they are missing so that sub-menus will still be availlable afetr assignment
+			function insert_parent_menus($menu_id,$role_id,$user_priv_array,$pdo){
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="select parent_id from menus where id=:menu_id";
+				$error2="Unable to get menu parent ";
+				$placeholders2[':menu_id']=$menu_id; 
+				$s2 = select_sql($sql2, $placeholders2, $error2, $pdo);
+				foreach($s2 as $row2){
+					if($row2['parent_id']!=0){
+						//check if menu _id is in array
+						$sql3=$error3=$s3='';$placeholders2=array();
+						$sql3="select menu_id from role_privileges where role_id=:user_id and menu_id=:menu_id";
+						$error3="Unable to get role privileges ";
+						$placeholders3[':role_id']=$role_id; 
+						$placeholders3[':menu_id']=$row2['parent_id']; 
+						$s3 = select_sql($sql3, $placeholders3, $error3, $pdo);						
+						if($s3->rowCount() > 0){insert_parent_menus($row2['parent_id'],$role_id,$user_priv_array,$pdo);}						
+						//if(in_array($row2['parent_id'], $user_priv_array)){insert_parent_menus($row2['parent_id'],$role_id,$user_priv_array,$pdo);}
+						else{
+							$sql=$error=$s='';$placeholders=array();
+							$sql="insert into role_privileges set role_id=:role_id, menu_id=:menu_id";
+							$error="Unable to add parent menu  ";
+							$placeholders[':menu_id']=$row2['parent_id'];
+							$placeholders[':role_id']=$role_id;
+							$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+							$user_priv_array[]=$row2['parent_id'];
+							insert_parent_menus($row2['parent_id'],$role_id,$user_priv_array,$pdo);
+						}
+					}
+				}
+			}	
+	
+	//empty the unset ones
+	if(!isset($_POST['description']))  {$_POST['description']='';}
+
+	//check if role name is set
+	if(!isset($_POST['role_name']) or $_POST['role_name']=='' ){
+		$exit_flag=true;
+		$message="bad#The role name must be specified";
+	}
+	if(!$exit_flag){
+		//start transaction
+		try{
+			$pdo->beginTransaction();	
+
+			//now do insert for existing role
+		if($_SESSION['role_id']!=''){
+
+			
+			//update role name and privilege
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="update roles set name=:name , description=:description where id=:role_id";
+			$error2="Unable to update role name";
+			$placeholders2[':name']=$_POST['role_name'];
+			$placeholders2[':description']=$_POST['description'];
+			$placeholders2[':role_id']=$_SESSION['role_id'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);	
+			
+			//now update role privileges
+			//first remove current roles
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="delete from role_privileges where  role_id=:role_id";
+			$error2="Unable to delete privileges for role";
+			$placeholders2[':role_id']=$_SESSION['role_id'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);			
+			
+			//now add the new privileges for the role
+			$privilege=$_POST['privileges'];
+			$n=count($privilege);
+			$i=0;
+			while($i < $n){
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="insert into role_privileges set role_id=:role_id , menu_id=:menu_id";
+				$error2="Unable to update role privileges";
+				$menu_item=$encrypt->decrypt($privilege[$i]);
+				$placeholders2[':menu_id']=$menu_item;
+				$placeholders2[':role_id']=$_SESSION['role_id'];
+				$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);	
+				//now insert parent menus
+				$user_priv_array[]=$menu_item;
+				insert_parent_menus($menu_item,$_SESSION['role_id'],$user_priv_array,$pdo);
+				$i++;
+			}
+		}	
+		//now do insert for new role
+		elseif($_SESSION['role_id']==''){
+			//check if the role name exists
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="select name from roles where upper(name)=:name ";
+			$error2="Unable to check if role name exists";
+			$placeholders2[':name']=strtoupper($_POST['role_name']);
+			$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);
+			if($s2->rowCount() > 0){
+				$name=html($_POST['role_name']);
+				$exit_flag=true;
+				$message="bad#Role, $name already exists";		
+			}
+			else{
+				//insert role name and privilege
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="insert into roles set name=:name , description=:description ";
+				$error2="Unable to insert role name";
+				$placeholders2[':name']=$_POST['role_name'];
+				$placeholders2[':description']=$_POST['description'];
+				$role_id = 	get_insert_id($sql2, $placeholders2, $error2, $pdo);	
+				
+				//now add the new privileges for the role
+				$privilege=$_POST['privileges'];
+				$n=count($privilege);
+				$i=0;
+				while($i < $n){
+					$sql2=$error2=$s2='';$placeholders2=array();
+					$sql2="insert into role_privileges set role_id=:role_id , menu_id=:menu_id";
+					$error2="Unable to update role privileges";
+					$placeholders2[':menu_id']=$encrypt->decrypt($privilege[$i]);
+					$placeholders2[':role_id']=$role_id;
+					$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);			
+					$i++;
+				}
+			}
+		}		
+
+
+			
+				if(!$exit_flag){
+					$tx_result = $pdo->commit();
+					if($tx_result){$message="good#roles#Role privileges saved. ";}
+					//elseif(!$tx_result){//$message="bad#Unable to save role privileges ";}
+				}
+				else{$pdo->rollBack();}
+
+			}
+			catch (PDOException $e)
+			{
+			$pdo->rollBack();
+			//$message="bad#Unable to save role privileges ";
+			}
+	}
+		$data=explode('#',"$message");
+		/*if($data[0]=='bad'){$_SESSION['result_class']='error_response';
+							$_SESSION['result_message']="$data[1]";
+		}*/
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo "$message";
+		
+}	
+	
+	
+//this is for adding/editing a user roles/ privileges
+if(isset($_SESSION['token_privilege2']) and 	isset($_POST['token_privilege2']) and $_POST['token_privilege2']==$_SESSION['token_privilege2'])
+	{
+	//$_SESSION['token_f_patient']=''
+	$exit_flag=false;
+	$user_priv_array = array();
+	global  $user_priv_array;
+	
+	
+	
+	if(!$exit_flag){
+		//start transaction
+		try{
+			$pdo->beginTransaction();	
+
+			
+			//get parent menus and insert them if they are missing so that sub-menus will still be availlable afetr assignment
+			function insert_parent_menus($menu_id,$user_id,$user_priv_array,$pdo){
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="select parent_id from menus where id=:menu_id";
+				$error2="Unable to get menu parent ";
+				$placeholders2[':menu_id']=$menu_id; 
+				$s2 = select_sql($sql2, $placeholders2, $error2, $pdo);
+				foreach($s2 as $row2){
+					if($row2['parent_id']!=0){
+						//check if menu _id is in array
+						$sql3=$error3=$s3='';$placeholders2=array();
+						$sql3="select menu_id from privileges where user_id=:user_id and menu_id=:menu_id";
+						$error3="Unable to get user privileges ";
+						$placeholders3[':user_id']=$user_id; 
+						$placeholders3[':menu_id']=$row2['parent_id']; 
+						$s3 = select_sql($sql3, $placeholders3, $error3, $pdo);						
+						if($s3->rowCount() > 0){insert_parent_menus($row2['parent_id'],$user_id,$user_priv_array,$pdo);}
+						else{
+							$sql=$error=$s='';$placeholders=array();
+							$sql="insert into privileges set user_id=:user_id, menu_id=:menu_id";
+							$error="Unable to add parent menu  ";
+							$placeholders[':menu_id']=$row2['parent_id'];
+							$placeholders[':user_id']=$user_id;
+							$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+							$user_priv_array[]=$row2['parent_id'];
+							insert_parent_menus($row2['parent_id'],$user_id,$user_priv_array,$pdo);
+						}
+					}
+				}
+			}
+
+			//check if we are inserting roles and begin by deleting individial privikges
+		if(isset($_POST['roles']) and !isset($_POST['privileges'])){
+			//deleet individual privileges to avoid conflict
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="delete from privileges where  user_id=:user_id";
+			$error2="Unable to delete user privileges ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);
+
+			//deleet user roles also as they may have changed
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="delete from user_roles where  user_id=:user_id";
+			$error2="Unable to delete role privileges ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);			
+			
+			//now add the new role privileges 
+			$role=$_POST['roles'];
+			$n=count($role);
+			$i=0;
+			while($i < $n){
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="insert into user_roles set role_id=:role_id , user_id=:user_id";
+				$error2="Unable to update user role privileges";
+				$placeholders2[':role_id']=$encrypt->decrypt($role[$i]);
+				$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+				$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);			
+				$i++;
+			}
+		}	
+		//check if we are inserting privileges and begin by deleting user roles for this guy
+		elseif(!isset($_POST['roles']) and isset($_POST['privileges'])){
+			//deleet user privileges individually as they may have changed
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="delete from privileges where  user_id=:user_id";
+			$error2="Unable to delete user privileges ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);
+
+			//deleet user roles  for this guy to avoid conflict
+			$sql2=$error2=$s2='';$placeholders2=array();
+			$sql2="delete from user_roles where  user_id=:user_id";
+			$error2="Unable to delete role privileges ";
+			$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+			$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);			
+			
+			//now add the new individual privileges 
+			$privilege=$_POST['privileges'];
+			$n=count($privilege);
+			$i=0;
+			while($i < $n){
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="insert into privileges set menu_id=:menu_id , user_id=:user_id";
+				$error2="Unable to update user individual privileges";
+				$menu_item=$encrypt->decrypt($privilege[$i]);
+				$placeholders2[':menu_id']=$menu_item;
+				$placeholders2[':user_id']=$_SESSION['user_set_privilege'];
+				$s2 = 	insert_sql($sql2, $placeholders2, $error2, $pdo);
+				//insert parent menus as well
+				$user_priv_array[]=$menu_item;
+				insert_parent_menus($menu_item,$_SESSION['user_set_privilege'],$user_priv_array,$pdo);
+				$i++;
+			}
+		}	
+
+				if(!$exit_flag){
+					$tx_result = $pdo->commit();
+					if($tx_result){$message="good#user_privileges#User privileges saved. ";}
+					//elseif(!$tx_result){//$message="bad#Unable to save role privileges ";}
+				}
+				else{$pdo->rollBack();}
+
+			}
+			catch (PDOException $e)
+			{
+			$pdo->rollBack();
+			$message="bad#Unable to save user privileges ";
+			}
+	}
+		$data=explode('#',"$message");
+		/*if($data[0]=='bad'){$_SESSION['result_class']='error_response';
+							$_SESSION['result_message']="$data[1]";
+		}*/
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo "$message";
+		
+}		
+
+//this is for submitting  a user
+if(isset($_SESSION['token_add_user2']) and 	isset($_POST['token_add_user2']) and 
+	$_POST['token_add_user2']==$_SESSION['token_add_user2'])
+	{
+	//$_SESSION['token_f_patient']=''
+	$exit_flag=false;
+	global $exit_flag;
+	$status="active";
+	$password_reset='';
+	
+	//get action type
+	$action=$encrypt->decrypt("$_POST[to_do]");
+	if($action=='add_user'){
+		//check if user_name exists
+		if(!$exit_flag and isset($_POST['user_login_name']) and $_POST['user_login_name']!=''){
+			$sql=$error1=$s='';$placeholders=array();
+			$sql="select upper(user_name) from users where upper(user_name)=:user_name";
+			$error="Unable to checkif user name already exists";
+			$placeholders[':user_name']=strtoupper($_POST['user_login_name']);
+			$s = select_sql($sql, $placeholders, $error, $pdo);	
+			if($s->rowCount() > 0){
+				$exit_flag=true;
+				$message="bad#Login name specified is already in use";
+			}
+		}		
+		//set sql
+		$sql_var="insert into users set
+				user_name=:user_name,
+				password=:password,
+					status=:status,
+				first_name=:first_name,
+				address=:address,
+				middle_name=:middle_name,
+				last_name=:last_name,
+				gender=:gender,
+				home_phone=:home_phone,
+				mobile_number=:mobile_number,
+					email_address=:email_address,
+				photo_image=:photo_image,
+				user_type=:user_type,
+				when_added=now(),
+				reset_password=1
+				";
+					
+		
+		//check password if they match
+		if(!$exit_flag and (!isset($_POST['user_password1']) or $_POST['user_password1']=='') or 
+			(!isset($_POST['user_password2']) or $_POST['user_password2']=='')){
+			$exit_flag=true;
+			$message="bad#User's password must be specified";
+		}	
+		if(!$exit_flag and $_POST['user_password1']!=$_POST['user_password2']){
+			$exit_flag=true;
+			$message="bad#Passwords given do not match";
+		}
+		//check password complexity
+		/*if(!password_complexity($_POST['user_password1'])){
+			$message="bad#$_SESSION[password_complexity_error]";
+			$_SESSION['password_complexity_error']='';
+		}*/
+	}
+	elseif($action=='edit_user' and !$exit_flag){
+		//check if user_name exists
+		if(!$exit_flag and isset($_POST['user_login_name']) and $_POST['user_login_name']!=''){
+			$sql=$error1=$s='';$placeholders=array();
+			$sql="select upper(user_name) from users where upper(user_name)=:user_name and id!=:id";
+			$error="Unable to checkif user name already exists";
+			$placeholders[':user_name']=strtoupper($_POST['user_login_name']);
+			$placeholders[':id']=$_SESSION['user_login_id'];
+			$s = select_sql($sql, $placeholders, $error, $pdo);	
+			if($s->rowCount() > 0){
+				$exit_flag=true;
+				$message="bad#Login name specified is already in use";
+			}
+		}	
+		//check password reset
+		$password_variable=$password_reset='';
+		if(!$exit_flag and isset($_POST['reset_password']) and $_POST['reset_password']=='reset'){
+			$password_reset=hash_hmac('sha1', $_SESSION['user_login_name'], $salt);
+			$password_variable=" password=:password_reset, reset_password=1,";
+		}	
+		//check account lock
+		if(!$exit_flag and isset($_POST['lock_account']) and $_POST['lock_account']=='lock_account'){
+			$status="locked";
+		}		
+		//set sql
+		$sql_var="update users set
+				user_name=:user_name,
+				$password_variable
+					status=:status,
+				first_name=:first_name,
+				address=:address,
+				middle_name=:middle_name,
+				last_name=:last_name,
+				gender=:gender,
+				home_phone=:home_phone,
+				mobile_number=:mobile_number,
+					email_address=:email_address,
+				photo_image=:photo_image,
+				user_type=:user_type
+				where id=:id
+				";
+		
+	}	
+
+	//check first name
+	if(!$exit_flag and (!isset($_POST['first_name']) or $_POST['first_name']=='')) {
+		$exit_flag=true;
+		$message="bad#User's first name must be specified";
+	}
+	//check user type
+	if(!$exit_flag and (!isset($_POST['user_type']) or $_POST['user_type']=='')) {
+		$exit_flag=true;
+		$message="bad#The user type must be specified";
+	}
+	//check login name
+	if(!$exit_flag and (!isset($_POST['user_login_name']) or $_POST['user_login_name']=='')) {
+		$exit_flag=true;
+		$message="bad#User's login name must be specified";
+	}	
+
+	
+	//empty the unset ones
+	if(!isset($_POST['middle_name']))  {$_POST['middle_name']='';}
+	if(!isset($_POST['last_name'])) {$_POST['last_name']='';}
+	if(!isset($_POST['gender']))  {$_POST['gender']='';}
+	if(!isset($_POST['address']))  {$_POST['address']='';}
+	if(!isset($_POST['user_mobile_no']))  {$_POST['user_mobile_no']='';}
+	if(!isset($_POST['user_home_phone']))  {$_POST['user_home_phone']='';}
+	if(!isset($_POST['user_email_address']))  {$_POST['user_email_address']='';}
+	if(!isset($_POST['image_upload']))  {$_POST['image_upload']='';}
+	
+	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			/*$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_dental where pid=:pid";
+			$error="Unable to update patient dental form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	*/
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="$sql_var";
+			$error="Unable to update user details";
+			$placeholders[':user_type']=$encrypt->decrypt("$_POST[user_type]");
+			$placeholders[':address']=$_POST['address'];
+			$placeholders[':user_name']=$_POST['user_login_name'];
+			
+			if($action=='add_user'){
+			$placeholders[':password']= hash_hmac('sha1', $_POST['user_password1'], $salt);
+			}
+			elseif($action=='edit_user'){
+				if($password_reset!=''){$placeholders[':password_reset']= "$password_reset";}
+			$placeholders[':id']= $_SESSION['user_login_id'];
+			}			
+			$placeholders[':status']="$status";
+			$placeholders[':first_name']=$_POST['first_name'];
+			$placeholders[':middle_name']=$_POST['middle_name'];
+			$placeholders[':last_name']=$_POST['last_name'];
+			$placeholders[':gender']=$_POST['gender'];
+			$placeholders[':home_phone']=$_POST['user_home_phone'];
+			$placeholders[':mobile_number']=$_POST['user_mobile_no'];
+			$placeholders[':photo_image']=$_POST['image_upload'];
+			$placeholders[':email_address']=$_POST['user_email_address'];
+			
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#add_user#User details saved. ";}
+			elseif(!$s){$message="bad#Unable to save user details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save user details  ";
+		}
+	}	
+		$data=explode('#',"$message");
+		/*if($data[0]=='bad'){$_SESSION['result_class']='error_response';
+							$_SESSION['result_message']="$data[1]";
+		}*/
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo "$message";
+		
+}
+
+//edit lab technicinas
+if( isset($_SESSION['token_technician_2']) and isset($_POST['token_technician_2']) 
+	and $_SESSION['token_technician_2']==$_POST['token_technician_2']){
+	//$_SESSION['token2']='';
+	//save entries
+	$n=count($_POST['ninye']);
+	$tech_id=$_POST['ninye'];
+	$tech_name=$_POST['old_tech'];
+	$tech_email=$_POST['old_email'];
+	$tech_tel=$_POST['old_tel'];
+	$i=0;
+	$exit_flag=false;
+	try{
+		$pdo->beginTransaction();	
+			while($i < $n){
+				if($tech_name[$i]==''){
+					$exit_flag=true;
+					$message="bad#Technician name must be specified for all entries";	
+					break;
+				}
+				//check email format
+				$email_address=html("$tech_email[$i]");
+				if(!$exit_flag and $email_address!=''){
+					if(!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+						$message="bad#Unable to save details as the email $email_address  is not correctly specified. ";
+						$exit_flag=true;
+						break;
+					}	
+				}			
+			
+			
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update lab_technicians set technician_name=:name , telephone=:tel, email_address=:email where id=:id";
+					$error="Unable to edit lab technicians";
+					$placeholders[':name']="$tech_name[$i]";
+					$placeholders[':tel']="$tech_tel[$i]";
+					$placeholders[':email']="$tech_email[$i]";
+					$placeholders[':id']=$encrypt->decrypt($tech_id[$i]);
+					$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+					if(!$s and $exit_flag){$exit_flag=false;}		
+					$i++;
+			}
+		
+				//now delete entries
+			if(!$exit_flag and isset($_POST['del'])){
+				$n=count($_POST['del']);
+				$tech_id=$_POST['del'];
+				$i=0;
+				while($i < $n){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="delete from lab_technicians  where id=:id";
+						$error="Unable to delete lab technician";
+						$placeholders[':id']=$encrypt->decrypt($tech_id[$i]);
+					//	$s = 	insert_sql($sql, $placeholders, $error, $pdo);	first chck if the compnay has patients
+						if(!$s and $exit_flag){$exit_flag=false;}	
+						$i++;
+				}	
+			}
+			
+			if(!$exit_flag){$tx_result = $pdo->commit();}
+			elseif($exit_flag){$pdo->rollBack();$tx_result=false;}
+			if($tx_result){$message="good#Lab Technicians Edited  ";}
+			//elseif(!$tx_result){}	
+		//$tx_result = $pdo->commit();
+		}
+	catch (PDOException $e)
+	{
+	$pdo->rollBack();
+	//$message="bad#Unable to edit Lab Technicians  ";
+	}
+		echo "$message";
+}
+
+//add lab technician
+if(isset($_SESSION['token_technician_1']) and isset($_POST['token_technician_1'])  and
+ $_SESSION['token_technician_1']==$_POST['token_technician_1']){
+			//$_SESSION['token']='';
+	$exit_flag=false;
+	if(!isset($_POST['tech_name']) or $_POST['tech_name']==''){
+		$exit_flag=true;
+		$message="bad#Technician name must be specified";	
+	}
+	//check email format
+	$email_address=html($_POST['email_address']);
+	if(!$exit_flag and isset($_POST['email_address']) and $_POST['email_address']!=''){
+		if(!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+			$message="bad#Unable to save details as the email $email_address  is not correctly specified. ";
+			$exit_flag=true;
+		}	
+	}	
+
+	
+	//empty the unset ones
+	if(!isset($_POST['email_address']))  {$_POST['email_address']='';}
+	if(!isset($_POST['telephone_no'])) {$_POST['telephone_no']='';}	
+
+	//check thata the technician is not entered twice
+	if(!$exit_flag){
+		$sql=$error=$s='';$placeholders=array();
+		$sql="select technician_name from lab_technicians where upper(technician_name)=:name";
+		$error="Unable to get technician name";
+		$placeholders[':name']=strtoupper($_POST['tech_name']);
+		$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+		if($s->rowCount()>0){
+			$name=html($_POST['tech_name']);
+			$message="bad#Unable to add lab techician $name as that name already exists";
+		}
+		else{
+			//insert lab technician value
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into lab_technicians set technician_name=:name, telephone=:telephone, email_address=:email";
+			$error="Unable to add lab technician";
+			$placeholders[':name']=$_POST['tech_name'];
+			$placeholders[':telephone']=$_POST['telephone_no'];
+			$placeholders[':email']=$_POST['email_address'];
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+			if($s){$message="good#add_technician#Lab Technician  added ";}
+				elseif(!$s){$message="bad#Unable to add Lab Technician ";}			
+		}
+	}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+	echo "$message";
+}
+
+//edit xray referrer
+if( isset($_SESSION['token_xray_ref_2']) and isset($_POST['token_xray_ref_2']) 
+	and $_SESSION['token_xray_ref_2']==$_POST['token_xray_ref_2']){
+	//$_SESSION['token2']='';
+	//save entries
+	$n=count($_POST['ninye']);
+	$ref_id=$_POST['ninye'];
+	$ref_name=$_POST['old_ref'];
+	$ref_email=$_POST['old_email'];
+	$ref_tel=$_POST['old_tel'];
+	$i=0;
+	$exit_flag=false;
+	try{
+		$pdo->beginTransaction();	
+			while($i < $n){
+				if($ref_name[$i]==''){
+					$exit_flag=true;
+					$message="bad#Reffere name must be specified for all entries";	
+					break;
+				}
+				//check email format
+				$email_address=html("$ref_email[$i]");
+				if(!$exit_flag and $email_address!=''){
+					if(!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+						$message="bad#Unable to save details as the email $email_address  is not correctly specified. ";
+						$exit_flag=true;
+						break;
+					}	
+				}			
+			
+			
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update xray_refering_doc set referrer_name=:name , telephone=:tel, email_address=:email where id=:id";
+					$error="Unable to edit xray referrers";
+					$placeholders[':name']="$ref_name[$i]";
+					$placeholders[':tel']="$ref_tel[$i]";
+					$placeholders[':email']="$ref_email[$i]";
+					$placeholders[':id']=$encrypt->decrypt($ref_id[$i]);
+					$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+					if(!$s and $exit_flag){$exit_flag=false;}		
+					$i++;
+			}
+		
+				//now delete entries
+			if(!$exit_flag and isset($_POST['del'])){
+				$n=count($_POST['del']);
+				$ref_id=$_POST['del'];
+				$i=0;
+				while($i < $n){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="delete from xray_refering_doc  where id=:id";
+						$error="Unable to delete xray referrers";
+						$placeholders[':id']=$encrypt->decrypt($ref_id[$i]);
+					//	$s = 	insert_sql($sql, $placeholders, $error, $pdo);	first chck if the compnay has patients
+						if(!$s and $exit_flag){$exit_flag=false;}	
+						$i++;
+				}	
+			}
+			
+			if(!$exit_flag){$tx_result = $pdo->commit();}
+			elseif($exit_flag){$pdo->rollBack();$tx_result=false;}
+			if($tx_result){$message="good#X-ray referrers Edited  ";}
+			//elseif(!$tx_result){}	
+		//$tx_result = $pdo->commit();
+		}
+	catch (PDOException $e)
+	{
+	$pdo->rollBack();
+	//$message="bad#Unable to edit Lab Technicians  ";
+	}
+		$_SESSION['result_class']=$_SESSION['result_message']='bad';
+		echo "$message";
+}
+
+function check_if_patient_exists($search_by,$search_criteria,$pdo,$encrypt){
+	//this will do patient seraches and return pid and names or not found
+	if($search_by!='' and $search_criteria!=''){
+		/*and isset($_POST['token_search_patient2']) and 
+		isset($_SESSION['token_search_patient2']) and $_POST['token_search_patient2']==$_SESSION['token_search_patient2'])*/
+		//get patient details 
+		//echo "ddddd -- $_POST[search_by] --  $_POST[search_ciretia]";exit;
+		$criteria=html($search_by);
+		$sql=$error=$s='';$placeholders=array();	
+		if($criteria=="patient_number"){
+			$sql="select first_name, middle_name, last_name, pid, patient_number from patient_details_a where patient_number=:patient_number";
+			$placeholders[':patient_number']=$search_criteria;
+		}
+		elseif($criteria=="first_name" or $criteria=="middle_name" or $criteria=="last_name"  ){
+			$sql="select first_name, middle_name, last_name, pid, patient_number from patient_details_a where upper($criteria) like :criteria";
+			$placeholders[':criteria']=strtoupper("%$search_criteria%");
+		}
+		//elseif($criteria=="pid"){$sql="select * from patient_details_a where pid=:patient_number";}
+		
+		$error="Error: Unable to get patient details for patient search";
+		$s = 	select_sql($sql, $placeholders, $error, $pdo);
+		if($s->rowCount() == 1){
+			foreach($s as $row){
+				$_SESSION['searched_patient_last_name']=ucfirst(html($row['last_name']));
+				$_SESSION['searched_patient_middle_name']=ucfirst(html($row['middle_name']));
+				$_SESSION['searched_patient_first_name']=ucfirst(html($row['first_name']));
+				$_SESSION['searched_patient_patient_number']=html($row['patient_number']);
+				$_SESSION['searched_patient_pid']=html($row['pid']);
+			}
+			//echo "good#<label class=label>Patient Names: $_SESSION[searched_patient_first_name] $_SESSION[searched_patient_middle_name] $_SESSION[searched_patient_last_name]</label>";
+			return "1#$_SESSION[searched_patient_pid]";
+		}
+		else if($s->rowCount() > 1){
+			//show table with mutile results
+			echo "wagonjwawengi<table class='normal_table'><caption>Patient Search Results</caption><thead>
+			<tr><th class='patient_result_first_name'>FIRST NAME</th>
+			<th class='patient_result_middle_name'>MIDDLE NAME</th><th class='patient_result_last_name'>LAST NAME</th>
+			<th class='patient_result_number'>PATIENT NUMBER</th>
+			<th class='patient_result_select'>SELECT PATIENT</th></tr>
+			</thead><tbody>";
+			foreach($s as $row){	
+				$first_name=ucfirst(html($row['first_name']));
+				$middle_name=ucfirst(html($row['middle_name']));
+				$last_name=ucfirst(html($row['last_name']));
+				$pid=html($row['pid']);
+				$patient_number=html($row['patient_number']);
+				$val=$encrypt->encrypt("$pid");
+				echo "<tr><td>$first_name</td><td>$middle_name</td><td>$last_name</td></td><td>$patient_number</td>
+						<td><input type=hidden class=ninye value=$val />
+						<input type=button class='button_style selected_pt' value=Select /></td></tr>";
+			}
+			echo "</tbody></table>";
+			exit;//return "many";
+			
+		}
+		else{return 2;}
+	}
+}
+
+//get the tab am supposed to go to if it is set e.g. if i am supposed to go to en examination from waiting list
+if(isset($_POST['get_tab_id']) and $_POST['get_tab_id']=='koo'){
+	if(isset($_SESSION['get_tab_id']) and $_SESSION['get_tab_id']!=''){
+		echo html($_SESSION['get_tab_id']);
+		$_SESSION['get_tab_id']=0; 
+	}
+	else{
+		$_SESSION['get_tab_id']=0; 
+		echo html($_SESSION['get_tab_id']);
+	}
+}
+
+//this is for starting a treatment for waiting list
+if(isset($_POST['token_allocate4']) and isset($_SESSION['token_allocate4']) and $_POST['token_allocate4']==$_SESSION['token_allocate4']){
+			//start a atreatment
+			if(isset($_POST['start_treatment']) and  $_POST['start_treatment']!=''){
+				$allocation_id=$encrypt->decrypt($_POST['start_treatment']);
+				$sql=$error=$s='';$placeholders=array();
+				$sql="update patient_allocations set time_start_treatment=now(), treatment_status=1 where id=:allocation_id";
+				$error="Unable to start waiting list treatment";
+				$placeholders[':allocation_id']=$allocation_id;
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+				
+				if($s){$message='good#go_to_examination';}
+				elseif(!$s){$message='bad#Unable to update waiting list';}	
+
+				//get pid since we will go on examination tab
+				$sql=$error=$s='';$placeholders=array();
+				$sql="select pid from  patient_allocations where patient_type=1 and id=:allocation_id";
+				$error="Unable to get patient id to start waiting list treatment";
+				$placeholders[':allocation_id']=$allocation_id;
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);
+				if($s->rowCount() == 1){
+					foreach($s as $row){
+						$_SESSION['pid']=$row['pid'];
+						$_SESSION['get_tab_id']=6;//this is where the on examination tab is located
+						get_patient($pdo,"pid",$_SESSION['pid']);
+					}
+				}
+				else{$_SESSION['pid']='';}
+				echo "$message";
+			}
+			
+			//suspend or put a treatment on hold
+			if(isset($_POST['treatment_status']) and  $_POST['treatment_status']!='' and isset($_POST['hold_finish']) and  $_POST['hold_finish']!='' ){
+				$allocation_id=$encrypt->decrypt($_POST['treatment_status']);
+				$sql=$error=$s='';$placeholders=array();
+				if($_POST['hold_finish']=='hold'){$sql="update patient_allocations set pause_treatment=now(), treatment_status=2 where id=:allocation_id";}
+				elseif($_POST['hold_finish']=='finish'){$sql="update patient_allocations set treatment_finish=now(), treatment_status=3 where id=:allocation_id";}
+				$error="Unable to edit treatment status in waiting list ";
+				$placeholders[':allocation_id']=$allocation_id;
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+				
+				if($s){$message='good#patient_allocation#Waiting list updated';}
+				elseif(!$s){$message='bad#Unable to update waiting list';}	
+
+				$data=explode('#',"$message");
+				if($data[0]=='bad'){$_SESSION['result_class']='bad';
+									$_SESSION['result_message']="$data[1]";
+				}
+				if($data[0]=='good'){$_SESSION['result_class']='success_response';
+									$_SESSION['result_message']="$data[2]";
+				}
+				echo "$message";
+			}	
+
+			//resume a atreatment
+			if(isset($_POST['resume_treatment']) and  $_POST['resume_treatment']!=''){
+				$allocation_id=$encrypt->decrypt($_POST['resume_treatment']);
+				$sql=$error=$s='';$placeholders=array();
+				$sql="update patient_allocations set resume_treatment=now(), treatment_status=1 where id=:allocation_id";
+				$error="Unable to resume waiting list treatment";
+				$placeholders[':allocation_id']=$allocation_id;
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+				
+				if($s){$message='good#go_to_examination';}
+				elseif(!$s){$message='bad#Unable to resume waiting list treatment';}	
+
+				//get pid since we will go on examination tab
+				$sql=$error=$s='';$placeholders=array();
+				$sql="select pid from  patient_allocations where patient_type=1 and id=:allocation_id";
+				$error="Unable to get patient id to start waiting list treatment";
+				$placeholders[':allocation_id']=$allocation_id;
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);
+				if($s->rowCount() == 1){
+					foreach($s as $row){
+						$_SESSION['pid']=$row['pid'];
+						$_SESSION['get_tab_id']=6;//this is where the on examination tab is located
+						get_patient($pdo,"pid",$_SESSION['pid']);
+					}
+				}
+				else{$_SESSION['pid']='';}
+				echo "$message";
+			}			
+			
+}
+
+
+//this is for adding patient to waitng list
+if(isset($_POST['token_allocate3']) and isset($_SESSION['token_allocate3']) and $_POST['token_allocate3']==$_SESSION['token_allocate3']){
+	//print_r($_POST);
+	$exit_flag=false;
+			//check edit type is set
+			if(!$exit_flag and (!isset($_POST['edit_type']) or $_POST['edit_type']=='')){
+				$exit_flag=true;
+				$message="bad#Please select the action type to perform.";			
+			}
+			//check if patient is set
+			if(!$exit_flag and (!isset($_POST['allocated_patient']) or $_POST['allocated_patient']=='')){
+				$exit_flag=true;
+				$message="bad#Please select the patient to edit.";			
+			}
+			//check surgery is set
+			if(!$exit_flag and $_POST['edit_type']=='change_surgery' and (!isset($_POST['allocate_surgery']) or $_POST['allocate_surgery']=='')){
+				$exit_flag=true;
+				$message="bad#Please select the surgery to allocate the patient to.";			
+			}			
+			//now perform update action
+			if(!$exit_flag){
+				$criteria=$_POST['edit_type'];
+				$sql=$error=$s='';$placeholders=array();	
+				if($criteria=="patient_left"){
+					$sql="update patient_allocations set patient_left=1, discharge_time=now() where id=:id";
+					$placeholders[':id']=$encrypt->decrypt($_POST['allocated_patient']);
+				}
+				elseif($criteria=="change_surgery"  ){
+					$sql="update patient_allocations set surgery_id=:surgery_id where id=:id";
+					$placeholders[':id']=$encrypt->decrypt($_POST['allocated_patient']);
+					$placeholders[':surgery_id']=$encrypt->decrypt($_POST['allocate_surgery']);
+				}
+				elseif($criteria=="remove_patient"  ){
+					$sql="delete from  patient_allocations  where id=:id";
+					$placeholders[':id']=$encrypt->decrypt($_POST['allocated_patient']);
+				}			
+				//elseif($criteria=="pid"){$sql="select * from patient_details_a where pid=:patient_number";}
+				
+				$error="Error: Unable to edit waiting list";
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);
+				if($s){$message='good#patient_allocation#Waiting list updated';}
+				elseif(!$s){$message='bad#Unable to update waiting list';}	
+				$data=explode('#',"$message");
+				if($data[0]=='bad'){$_SESSION['result_class']='bad';
+									$_SESSION['result_message']="$data[1]";
+				}
+				if($data[0]=='good'){$_SESSION['result_class']='success_response';
+									$_SESSION['result_message']="$data[2]";
+				}
+			}
+			echo $message;				
+}
+
+//this is for adding patient to waitng list
+if(isset($_POST['token_allocate1']) and isset($_SESSION['token_allocate1']) and $_POST['token_allocate1']==$_SESSION['token_allocate1']){
+	//print_r($_POST);
+	$exit_flag=false;
+	$result='';
+			//check if selectefd  patient is set
+			if(isset($_POST['selected_patient']) and $_POST['selected_patient']!=''){
+				$searched_patient_pid=$encrypt->decrypt($_POST['selected_patient']);
+				$result=1;
+				//echo "kk";
+			}
+			//check surgery is set
+			if(!$exit_flag and (!isset($_POST['allocate_surgery']) or $_POST['allocate_surgery']=='')){
+				$exit_flag=true;
+				$message="bad#Please select the surgery to allocate the patient to.";			
+			}
+			//check patient type is set
+			if(!$exit_flag and $_POST['patient_type']=='' and $_POST['patient_type']!='registered' and $_POST['patient_type']!='unregistered'){
+				$exit_flag=true;
+				$message="bad#Please select the patient type";			
+			}
+			if(!$exit_flag and $_POST['patient_type']=='registered' and (!isset($_POST['selected_patient']) or $_POST['selected_patient']=='')){
+				$result  = check_if_patient_exists($_POST['search_by'], $_POST['search_ciretia'],$pdo,$encrypt);
+				$data = explode('#',$result);
+				$result=$data[0];
+				if(isset($data[1])){$searched_patient_pid=$data[1];}
+			}
+			//check if unregisterd is selected and patient selected
+			if(!$exit_flag and  $_POST['patient_type']=='unregistered' and isset($_POST['unregistered_patient']) and $_POST['unregistered_patient']==''){
+				$exit_flag=true;
+				$message="bad#Please select the unregistered patient to allocate";		
+			}	
+			if(!$exit_flag and $_POST['patient_type']=='unregistered' and $_POST['unregistered_patient']!=''){
+				$result=1;
+			}	
+	if(!$exit_flag){		
+		//if one patient is found then do submit
+		if(!$exit_flag and  $result == 1){
+			//check if this patient is already allocated and has not been discharged or has not left
+			if(!$exit_flag and $_POST['patient_type']=='registered'){
+				$sql=$error=$s='';$placeholders=array();
+				$sql="select pid from patient_allocations where pid=:pid and date(time_allocated)=curdate() and date(time_start_treatment)='0000-00-00' and 
+						date(discharge_time)='0000-00-00'";
+				$error="Unable to check if patient is already allocated";
+				$placeholders[':pid']=$searched_patient_pid;
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);
+				if($s->rowCount() > 0){
+					$exit_flag=true;
+					$message="bad#That patient has already been allocated.";
+				}
+			}
+			//perform insert
+			if(!$exit_flag){
+
+				//now insert
+				
+					//get points per minute
+					$points_per_minute='';
+					$sql=$error=$s='';$placeholders=array();
+					$sql="select points from points_per_time";
+					$error="Unable to get points per time";
+					$s = 	select_sql($sql, $placeholders, $error, $pdo);
+					foreach($s as $row){
+						$points_per_minute=html($row['points']);
+					}
+					//check if points per minutre has a value
+					if(!$exit_flag and $points_per_minute==''){
+						$exit_flag=true;
+						$message="bad#Unable to get points per time";			
+					}				
+					if(!$exit_flag){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="insert into patient_allocations set surgery_id=:surgery_id, pid=:pid, time_allocated=current_timestamp(), 
+							patient_type=:patient_type,		 points_per_min=:points_per_min";
+						$error="Unable to get referrer name";
+						$placeholders[':surgery_id']=$encrypt->decrypt($_POST['allocate_surgery']);
+						$placeholders[':points_per_min']=$points_per_minute;
+						//check pid
+						if($_POST['patient_type']=='registered'){$placeholders[':pid']=$searched_patient_pid;}
+						elseif($_POST['patient_type']=='unregistered'){$placeholders[':pid']=$encrypt->decrypt($_POST['unregistered_patient']);}
+						//check patient type
+						if($_POST['patient_type']=='registered'){$placeholders[':patient_type']=1;}
+						elseif($_POST['patient_type']=='unregistered'){$placeholders[':patient_type']=0;}
+						$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+						if($s){$message='good#patient_allocation#Patient allocated';}
+						elseif(!$s){$message='bad#Unable to allocate patient';}
+					}
+				
+			}
+		}
+		elseif(!$exit_flag and $result == 2){$message= "bad#No such patient";}
+		else{
+			$message="bad#Please specify the patient to allocate";
+		}
+	}		$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo $message;	
+	
+}
+
+//this is for editing procedures already in points cover
+if(isset($_POST['token_loyal2']) and isset($_SESSION['token_loyal2']) and $_POST['token_loyal2']==$_SESSION['token_loyal2']){
+		$exit_flag=false;
+		//update points per minute
+
+		try{
+			$pdo->beginTransaction();
+			//first edit entries
+			$n=count($_POST['ninye']);
+			$old_points=$_POST['old_points'];
+			$ninye=$_POST['ninye'];
+			$i=0;
+			while($i < $n){
+				//check if value is specified
+				if(!$exit_flag and !isset($old_points[$i]) or $old_points[$i]==''){
+					$exit_flag=true;
+					$message="bad#Please specify number of points for each procedure in the loyalty scheme. "; 
+					break;
+				}	
+
+				//checkif value is a number				
+				if(!$exit_flag and !ctype_digit($old_points[$i])){//echo "ooooo $unit_price[$i] ";
+					//check if it has only 2 decimal places
+					$data=explode('.',$old_points[$i]);
+					$invalid_value=html($old_points[$i]);
+					if ( count($data) != 2 ){
+					
+					$message="bad#Points per procedure specified, $invalid_value is not a valid number. ";
+					$exit_flag=true;
+					break;
+					}
+					elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+					$message="bad#Points per procedure specified, $invalid_value is not a valid number. ";
+					$exit_flag=true;
+					break;
+					}
+				}
+
+				//now update old entries
+				if(!$exit_flag){
+					$id=$encrypt->decrypt($ninye[$i]);
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update  procedures_in_points_scheme set  points=:points where id=:id";
+					$error="Unable to edit procedure in  points scheme";
+					$placeholders[':points']=$old_points[$i];
+					$placeholders[':id']=$id;
+					$s = insert_sql($sql, $placeholders, $error, $pdo);					
+				}
+				$i++;
+			}//end while for editing
+			
+			//now remove those that are marked for deletion
+			if(!$exit_flag and isset($_POST['remove_procedure'])){
+				
+				$n=count($_POST['remove_procedure']);
+				$remove_procedure=$_POST['remove_procedure'];
+				$i=0;
+				while($i < $n){
+					//now update old entries
+					
+						$id=$encrypt->decrypt($remove_procedure[$i]);
+						$sql=$error=$s='';$placeholders=array();
+						$sql="delete from  procedures_in_points_scheme where id=:id";
+						$error="Unable to remove  procedure fromn  points scheme";
+						$placeholders[':id']=$id;
+						$s = insert_sql($sql, $placeholders, $error, $pdo);					
+					
+					$i++;
+				}//end while for editing		
+			}
+			if(!$exit_flag){$tx_result = $pdo->commit();}
+			elseif($exit_flag){$pdo->rollBack();$tx_result=false;}
+			if($tx_result){$message="good#loyalty_points#Changes saved";}
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		//$message="bad#Unable to edit Lab Technicians  ";
+		}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo $message;
+}
+
+
+	//submit points per minute or add new procedure to cover
+	if(isset($_POST['token_loyal1']) and isset($_SESSION['token_loyal1']) and $_POST['token_loyal1']==$_SESSION['token_loyal1']){
+		$exit_flag=false;
+		//update points per minute
+		//check if value is specified
+		if(!isset($_POST['points_per_time']) or $_POST['points_per_time']==''){
+			$exit_flag=true;
+			$message="bad#Please specify a value for points gained per minute. If you don't want points to be awarded then please type the number zero"; 
+		}
+		
+		//check if value is integer
+		if(!$exit_flag){
+			if(!ctype_digit($_POST['points_per_time'])){//echo "ooooo $unit_price[$i] ";
+				//check if it has only 2 decimal places
+				$data=explode('.',$_POST['points_per_time']);
+				$invalid_value=html($_POST['points_per_time']);
+				if ( count($data) != 2 ){
+				
+				$message="bad#Points per minute specified, $invalid_value is not a valid number. ";
+				$exit_flag=true;
+				}
+				elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+				$message="bad#Points per minute specified, $invalid_value is not a valid number. ";
+				$exit_flag=true;
+				}
+			}
+		}
+			//echo "eee-$_POST[points_per_procedure]-$_POST[procedure_added]";
+		//check if procedure and it's points are both specified and not just one
+		if( $_POST['procedure_added']=='' and (isset($_POST['points_per_procedure']) or $_POST['points_per_procedure']!='')){
+			$exit_flag=true;
+			$message="bad#Please select a procedure"; 
+		}  
+		if((!isset($_POST['points_per_procedure']) or $_POST['points_per_procedure']=='') and (isset($_POST['procedure_added']) and $_POST['procedure_added']!='')){
+			$exit_flag=true;
+			$message="bad#Please specify points needed to cover the selected a procedure"; 
+		}
+		try{
+			$pdo->beginTransaction();
+			//update points per minute table
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from points_per_time";
+			$error="Unable to delete points per time table";
+			$s = insert_sql($sql, $placeholders, $error, $pdo);			
+
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into   points_per_time set points=:points";
+			$error="Unable to add points per time table";
+			$placeholders[':points']=$_POST['points_per_time'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);
+
+			//check if there a procedure to add to the scheme as well
+			if(isset($_POST['points_per_procedure']) and $_POST['points_per_procedure']!='' and 
+			isset($_POST['procedure_added']) and $_POST['procedure_added']!=''){
+				//check if points is an inetegr
+				if(!ctype_digit($_POST['points_per_procedure'])){//echo "ooooo $unit_price[$i] ";
+					//check if it has only 2 decimal places
+					$data=explode('.',$_POST['points_per_procedure']);
+					$invalid_value=html($_POST['points_per_procedure']);
+					if ( count($data) != 2 ){
+					
+					$message="bad#The points specified, $invalid_value , for the selected procedure is not a valid number. ";
+					$exit_flag=true;
+					}
+					elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+					$message="bad#The points specified, $invalid_value , for the selected procedure is not a valid number. ";
+					$exit_flag=true;
+					}
+				}
+				//perform addition
+				if(!$exit_flag  ){
+					$procedure_id=$encrypt->decrypt($_POST['procedure_added']);
+					if(!in_array($procedure_id, $_SESSION['procedures_array'])){
+						$message="bad#Unable to add procedure to points scheme, please try again";
+						$exit_flag=true;						
+					}
+					if(!$exit_flag){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="insert into  procedures_in_points_scheme set procedure_id=:procedure_id, points=:points";
+						$error="Unable to add procedure to points scheme";
+						$placeholders[':points']=$_POST['points_per_procedure'];
+						$placeholders[':procedure_id']=$procedure_id;
+						$s = insert_sql($sql, $placeholders, $error, $pdo);					
+					}
+				}
+			}
+			if(!$exit_flag){$tx_result = $pdo->commit();}
+			elseif($exit_flag){$pdo->rollBack();$tx_result=false;}
+			if($tx_result){$message="good#loyalty_points#Changes saved";}
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		//$message="bad#Unable to edit Lab Technicians  ";
+		}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+		echo $message;
+}
+
+//add xray referrer
+if(isset($_SESSION['token_xray_ref_1']) and isset($_POST['token_xray_ref_1'])  and
+ $_SESSION['token_xray_ref_1']==$_POST['token_xray_ref_1']){
+			//$_SESSION['token']='';
+	$exit_flag=false;
+	if(!isset($_POST['ref_name']) or $_POST['ref_name']==''){
+		$exit_flag=true;
+		$message="bad#Referrer's name must be specified";	
+	}
+	//check email format
+	$email_address=html($_POST['email_address']);
+	if(!$exit_flag and isset($_POST['email_address']) and $_POST['email_address']!=''){
+		if(!filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
+			$message="bad#Unable to save details as the email $email_address  is not correctly specified. ";
+			$exit_flag=true;
+		}	
+	}	
+
+	
+	//empty the unset ones
+	if(!isset($_POST['email_address']))  {$_POST['email_address']='';}
+	if(!isset($_POST['telephone_no'])) {$_POST['telephone_no']='';}	
+
+	//check thata the referrers is not entered twice
+	if(!$exit_flag){
+		$sql=$error=$s='';$placeholders=array();
+		$sql="select referrer_name from xray_refering_doc where upper(referrer_name)=:name";
+		$error="Unable to get referrer name";
+		$placeholders[':name']=strtoupper($_POST['ref_name']);
+		$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+		if($s->rowCount()>0){
+			$name=html($_POST['ref_name']);
+			$message="bad#Unable to add referrer $name as that name already exists";
+		}
+		else{
+			//insert xray referrer value
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into xray_refering_doc set referrer_name=:name, telephone=:telephone, email_address=:email";
+			$error="Unable to add xray refferer";
+			$placeholders[':name']=$_POST['ref_name'];
+			$placeholders[':telephone']=$_POST['telephone_no'];
+			$placeholders[':email']=$_POST['email_address'];
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+			if($s){$message="good#add_referrer#X-ray referrer  added ";}
+				elseif(!$s){$message="bad#Unable to add X-ray referrer ";}			
+		}
+	}
+			$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+	echo "$message";
+}
+
+//this is for submitting  patient dental information
+if(isset($_SESSION['token_1b_patinet']) and 	isset($_POST['token_1b_patinet']) and $_POST['token_1b_patinet']==$_SESSION['token_1b_patinet']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	global $exit_flag;
+
+//sleep(5);
+	function check_yes_no($parameter){
+		//check bleeding
+		global $pdo, $message;
+		if("$parameter" !='yes' and "$parameter" !='no'  ){	
+			$message="bad#Unable to save details as some parameters may not be properly set. Please recheck the Yes/No values";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into patient_dental for a yes no value";
+			log_security($pdo,$security_log);
+			return true;
+		}
+		else{return false;}
+	}
+
+	if(!$exit_flag and isset($_POST['gums'])) {$exit_flag=check_yes_no($_POST['gums']);} else {$_POST['gums']='';}
+	if(!$exit_flag and isset($_POST['orthodontic'])) {$exit_flag=check_yes_no($_POST['orthodontic']);} else {$_POST['orthodontic']='';}
+	if(!$exit_flag and isset($_POST['sensitive'])) {$exit_flag=check_yes_no($_POST['sensitive']);} else {$_POST['sensitive']='';}
+	if(!$exit_flag and isset($_POST['headaches'])) {$exit_flag=check_yes_no($_POST['headaches']);} else {$_POST['headaches']='';}
+	if(!$exit_flag and isset($_POST['periodontal'])) {$exit_flag=check_yes_no($_POST['periodontal']);} else {$_POST['periodontal']='';}
+	if(!$exit_flag and isset($_POST['appliances'])) {$exit_flag=check_yes_no($_POST['appliances']);} else {$_POST['appliances']='';}
+	if(!$exit_flag and isset($_POST['difficulty'])) {$exit_flag=check_yes_no($_POST['difficulty']);} else {$_POST['difficulty']='';}
+	
+	
+	
+	//empty the unset ones
+	if(!isset($_POST['gums']))  {$_POST['gums']='';}
+	if(!isset($_POST['orthodontic'])) {$_POST['orthodontic']='';}
+	if(!isset($_POST['sensitive']))  {$_POST['sensitive']='';}
+	if(!isset($_POST['headaches']))  {$_POST['headaches']='';}
+	if(!isset($_POST['periodontal']))  {$_POST['periodontal']='';}
+	if(!isset($_POST['appliances']))  {$_POST['appliances']='';}
+	if(!isset($_POST['difficulty']))  {$_POST['difficulty']='';}
+	
+	//chreck date of last exam
+	if(!$exit_flag and isset($_POST['date_last_exam']) and $_POST['date_last_exam']!='')	{
+		$date='';
+		$date=explode('-',$_POST['date_last_exam']);
+		if(!checkdate( $date[1],$date[2],$date[0] )){
+		$date_last_exam=html($_POST['date_last_exam']);
+		$message="bad#Unable to save details as date of last examination $date_last_exam is not in the correct format";
+		$exit_flag=true;
+		$security_log="somebody tried to input $date_last_exam as date of last examintaion for patient_dental";
+		log_security($pdo,$security_log);		
+		}
+	}	
+	
+	//chreck date of last xray
+	if(!$exit_flag and isset($_POST['date_of_last_xray']) and $_POST['date_of_last_xray']!='')	{
+		$date='';
+		$date=explode('-',$_POST['date_of_last_xray']);
+		if(!checkdate( $date[1],$date[2],$date[0] )){
+		$date_of_last_xray=html($_POST['date_of_last_xray']);
+		$message="bad#Unable to save details as date of last examination $date_of_last_xray is not in the correct format";
+		$exit_flag=true;
+		$security_log="somebody tried to input $date_of_last_xray as date of last examintaion for patient_dental";
+		log_security($pdo,$security_log);		
+		}
+	}	
+	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_dental where pid=:pid";
+			$error="Unable to update patient dental form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into patient_dental set
+					gums_bleed=:gums_bleed,
+					sensitive_teeth=:sensitive_teeth,
+					periodontal=:periodontal,
+					when_added=now(),
+					braces=:braces,
+					aches=:aches,
+					removeable=:removeable,
+					prev_ye_no=:prev_ye_no,
+					prev=:prev,
+					curr=:curr,
+					last_dental=:last_dental,
+					last_xray=:last_xray,
+					done1=:done1,
+					appearance=:appearance,
+					pid=:pid
+					";
+			$error="Unable to update medical patient form";
+			$placeholders[':gums_bleed']=$_POST['gums'];
+			$placeholders[':sensitive_teeth']=$_POST['sensitive'];
+			$placeholders[':periodontal']=$_POST['periodontal'];
+			$placeholders[':braces']=$_POST['orthodontic'];
+			$placeholders[':aches']=$_POST['headaches'];
+			$placeholders[':removeable']=$_POST['appliances'];
+			$placeholders[':prev_ye_no']=$_POST['difficulty'];
+			$placeholders[':prev']=$_POST['serious_difficulty'];
+			$placeholders[':curr']=$_POST['dental_problem'];
+			$placeholders[':last_dental']=$_POST['date_last_exam'];
+			$placeholders[':last_xray']=$_POST['date_of_last_xray'];
+			$placeholders[':done1']=$_POST['what_was_done'];
+			$placeholders[':appearance']=$_POST['feel'];
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#Patient details saved. ";}
+			elseif(!$s){$message="bad#Unable to save patient details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient details  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+
+//this is for submitting treatment plans
+if(isset($_SESSION['token_h_patient']) and 	isset($_POST['token_h_patient']) and $_POST['token_h_patient']==$_SESSION['token_h_patient']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	$procedure_name_array=$procedure_array=$all_teeth=array();
+//	global $exit_flag ,$procedure_array ,$all_teeth ;
+
+	//get current procedures
+	$sql=$error1=$s='';$placeholders=array();
+	$sql="select id,name,all_teeth from procedures";
+	$error="Unable to get procedures";
+	$s = select_sql($sql, $placeholders, $error, $pdo);	
+	foreach($s as $row){
+		$procedure_array[]=$row['id'];
+		$all_teeth[]=$row['all_teeth'];
+		$procedure_name_array[]=html($row['name']);
+	}
+
+	function check_procedure($procedure, $teeth_specified){
+		global $pdo, $message,$procedure_array ,$all_teeth, $procedure_name_array, $exit_flag;
+		
+		$n2=count($procedure_array);
+		$i2=0;
+		if($teeth_specified==''){$teeth_count=0;}
+		elseif($teeth_specified!=''){$teeth_count=count($teeth_specified);}
+		while($i2 < $n2){
+			if($procedure == $procedure_array[$i2]){ //check if procedure is in array
+				//now check if teeth are properly specified
+				if($all_teeth[$i2]=='yes' and $teeth_count > 0){return true;}
+				elseif($all_teeth[$i2]=='yes' and $teeth_count == 0){
+					$message="bad#Unable to save treatment plan, it appears that teeth have not been specified for
+					$procedure_name_array[$i2]. Please specify the teeth that the procedure will be performed on.";
+					$exit_flag=true;
+					return false;
+				}				
+				elseif($all_teeth[$i2]=='no' and $teeth_count > 0){
+					$message="bad#Unable to save treatment plan, it appears that teeth have been incorrectly specified for
+					$procedure_name_array[$i2].";
+					$exit_flag=true;
+					return false;
+				}
+				elseif($all_teeth[$i2]=='no' and $teeth_count == 0){return true;}				
+			}
+			$i2++;
+		}
+	}
+	
+	function check_payment_method($parameter){
+		global $pdo, $message;
+		if("$parameter" !='1' and "$parameter" !='2' and "$parameter" !='3' ){	
+			$message="bad#Unable to save treatment plan as payment option is not correctly set";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into payment option for treatment procedure";
+			log_security($pdo,$security_log);
+			$exit_flag=true;
+			return false;
+		}
+		else{return true;}
+	}
+
+	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//insert into  tplan_id_generator
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into tplan_id_generator set when_added=now(), pid=:pid, created_by=:user_id";
+			$error="Unable to create treatment plan";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$placeholders[':user_id']=$_SESSION['id'];
+			//$placeholders[':pid']=$_SESSION['pid'];
+			$tplan_id = get_insert_id($sql, $placeholders, $error, $pdo);	
+			
+			//insert diagnosis
+			$n=count($_POST['diagnosis']);
+			$diagnosis=$_POST['diagnosis'];
+			$i=0;
+			while($i < $n){
+				if($diagnosis[$i]==''){$i++;continue;}
+				$sql=$error=$s='';$placeholders=array();
+				$sql="insert tplan_diagnosis set
+					tplan_id=:tplan_id,
+					diagnosis=:diagnosis
+					";
+				$error="Unable to save treatment plan";
+				$placeholders[':tplan_id']=$tplan_id;
+				$placeholders[':diagnosis']=$diagnosis[$i];			
+				$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+				$i++;
+			}			
+			//now loop and insert treatment procedures
+			$n=count($_POST['nisiana']);
+			$i=1;
+			$n22=0;
+			while($i <= $n){
+				if($exit_flag){ break;}
+				//check selected procedure is valid
+				$procedure="procedure$i";
+				$teeth_specified="teeth_specified$i";
+				$pay_method="pay_method$i";
+				$cost="cost$i";
+				$details="details$i";
+				$discount="discount$i";
+				if($_POST["$procedure"]==''){
+					$n22++;
+					$i++;
+					//echo "n is $n and n22 is $n22";
+					if($n22 == $n){$exit_flag=true;$message="bad#Please specify the procedure to be done";}
+					continue;
+				}
+				else{
+					//echo "procedure is ".$_POST["$procedure"];
+				//	echo "i is $i";
+					$meno=$amount=$discount_amout='';
+					$procedure_id=$encrypt->decrypt($_POST["$procedure"]);
+					//echo "xxxxx";
+					if(!isset($_POST["$teeth_specified"])){$_POST["$teeth_specified"]='';}
+					$result=check_procedure($procedure_id,$_POST["$teeth_specified"]);
+					//echo "result is $result";
+					if(!$result){ break;}
+					else{
+						if($_POST["$teeth_specified"]!=''){
+							$meno='';
+							$teeth=$_POST["$teeth_specified"];
+							$n2=count($teeth);
+							
+							$i2=0;
+							
+							while($i2 < $n2){
+						//	echo "xxx$i2 xxx$teeth[$i2]xxx".$encrypt->decrypt($teeth[$i2])."xxxxx";
+								//check that meno is a valid teeth number
+							
+								if($i2==0){$meno=$encrypt->decrypt($teeth[$i2]);}
+								else{$meno="$meno,".$encrypt->decrypt($teeth[$i2]);}
+								if (!in_array($encrypt->decrypt($teeth[$i2]), $_SESSION['meno_yote'])) {
+									$message="bad#Unable to save treatment plan as some teeth values are not correctly set";
+									$var=html($encrypt->decrypt($teeth[$i2]));
+									$security_log="sombody tried to input $var into treatment procedure as a tooth value";
+									log_security($pdo,$security_log);
+									$exit_flag=true;
+									break;
+								}	
+								$i2++;
+							}
+							
+						}
+					}
+				//	echo"tttttttttttt";
+					//check payment method is valid
+					if(!$exit_flag){
+				//	echo "pay $i is ".$_POST["$pay_method"];
+					//	echo "ccccccc ".$_POST["$pay_method"]."".$encrypt->decrypt($_POST["$pay_method"])."xxxxxi2";
+						if($_POST["$pay_method"]==''){
+							$message="bad#Unable to save treatment plan as payment option is not correctly set";
+							$exit_flag=true;
+							break;
+						}
+					//	echo "ccccccc ".$_POST["$pay_method"]."".$encrypt->decrypt($_POST["$pay_method"])."xxxxxi2";
+						$pay_method_id=$encrypt->decrypt($_POST["$pay_method"]);
+						$result=check_payment_method($pay_method_id);
+						if(!$result){ break;}
+
+					}
+					
+					//check cost is a valid number
+					if(!$exit_flag){
+						if($_POST["$cost"]==''){
+							$message="bad#Unable to save treatment plan as cost is not specified";
+							$exit_flag=true;
+							break;
+							}
+						//remove commas
+						$amount=str_replace(",", "", $_POST["$cost"]);
+							//check if amount is integer
+						if(!ctype_digit($amount)){//echo "ooooo $unit_price[$i] ";
+							//check if it has only 2 decimal places
+							$data=explode('.',$amount);
+							$invalid_amount=html("$amount");
+							if ( count($data) != 2 ){
+							
+							$message="bad#Unable to save treatment plan as cost $invalid_amount is not a 
+							valid number. ";
+							$exit_flag=true;
+							break;}
+							elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+							$message="bad#Unable to save treatment plan as cost $invalid_amount is not a 
+							valid number. ";
+							$exit_flag=true;
+							break;}
+						}
+					}
+					
+					//set authorised cost for cash and point
+					//set authorised cost to empty if insured else make it equal to unauthorised
+							if($pay_method_id==1){}
+							else{$authorised_cost=$amount;}
+											
+					
+					//check cost is a valid number
+					if(!$exit_flag and $_POST["$discount"]!=''){
+						//remove commas
+						$discount_amout=str_replace(",", "", $_POST["$discount"]);
+							//check if amount is integer
+						if(!ctype_digit($discount_amout)){//echo "ooooo $unit_price[$i] ";
+							//check if it has only 2 decimal places
+							$data=explode('.',$discount_amout);
+							$invalid_amount=html("$discount_amout");
+							if ( count($data) != 2 ){
+							
+							$message="bad#Unable to save treatment plan as discount $invalid_amount is not a 
+							valid number. ";
+							$exit_flag=true;
+							break;}
+							elseif ( !ctype_digit($data[0]) or !ctype_digit($data[1]) ){
+							$message="bad#Unable to save treatment plan as dicount $invalid_amount is not a 
+							valid number. ";
+							$exit_flag=true;
+							break;}
+						}
+					}					
+					//insert
+					if(!$exit_flag and $pay_method_id!=1){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="insert tplan_procedure set
+							tplan_id=:tplan_id,
+							procedure_id=:procedure_id,
+						  teeth=:meno,
+						  details=:details,
+						  unauthorised_cost=:unathorised_cost,
+						  pay_type=:pay_type,
+						  authorised_cost=:authorised_cost,
+						  discount=:discount
+							";
+						$error="Unable to save treatment plan";
+						$placeholders[':tplan_id']=$tplan_id;
+						$placeholders[':procedure_id']=$procedure_id;
+						$placeholders[':meno']="$meno";
+						$placeholders[':details']=$_POST["$details"];
+						$placeholders[':unathorised_cost']=$amount;
+						$placeholders[':pay_type']=$pay_method_id;
+						$placeholders[':authorised_cost']=$authorised_cost;
+						$placeholders[':discount']=$discount_amout;
+						$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+					}
+					elseif(!$exit_flag and $pay_method_id==1){
+						$sql=$error=$s='';$placeholders=array();
+						$sql="insert tplan_procedure set
+							tplan_id=:tplan_id,
+							procedure_id=:procedure_id,
+						  teeth=:meno,
+						  details=:details,
+						  unauthorised_cost=:unathorised_cost,
+						  pay_type=:pay_type,
+						  
+						  discount=:discount
+							";
+						$error="Unable to save treatment plan";
+						$placeholders[':tplan_id']=$tplan_id;
+						$placeholders[':procedure_id']=$procedure_id;
+						$placeholders[':meno']="$meno";
+						$placeholders[':details']=$_POST["$details"];
+						$placeholders[':unathorised_cost']=$amount;
+						$placeholders[':pay_type']=$pay_method_id;
+						//$placeholders[':authorised_cost']=$authorised_cost;
+						$placeholders[':discount']=$discount_amout;
+						$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+					}
+
+				}
+				$i++;
+			}
+		
+			if(!$exit_flag){$tx_result = $pdo->commit();$message="good#Treatment plan saved. ";}
+			elseif($exit_flag){$pdo->rollBack();}			
+			
+			//$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save treatment plan  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+
+//this is for submitting female patient details
+if(isset($_SESSION['token_1d_patinet']) and 	isset($_POST['token_1d_patinet']) and $_POST['token_1d_patinet']==$_SESSION['token_1d_patinet']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$exit_flag=false;
+	global $exit_flag;
+
+//sleep(5);
+	function check_yes_no($parameter){
+		//check bleeding
+		global $pdo, $message;
+		if("$parameter" !='yes' and "$parameter" !='no'  ){	
+			$message="bad#Unable to save details as some parameters may not be properly set. Please recheck the Yes/No values";
+			$var=html("$parameter");
+			$security_log="sombody tried to input $var into patient_women for a yes no value";
+			log_security($pdo,$security_log);
+			return true;
+		}
+		else{return false;}
+	}
+
+	if(!$exit_flag and isset($_POST['pregnant'])) {$exit_flag=check_yes_no($_POST['pregnant']);} else {$_POST['pregnant']='';}
+	if(!$exit_flag and isset($_POST['nursing'])) {$exit_flag=check_yes_no($_POST['nursing']);} else {$_POST['nursing']='';}
+	if(!$exit_flag and isset($_POST['control'])) {$exit_flag=check_yes_no($_POST['control']);} else {$_POST['control']='';}
+	if(!$exit_flag and isset($_POST['orthopedic'])) {$exit_flag=check_yes_no($_POST['orthopedic']);} else {$_POST['orthopedic']='';}
+	if(!$exit_flag and isset($_POST['complications'])) {$exit_flag=check_yes_no($_POST['complications']);} else {$_POST['complications']='';}
+	if(!$exit_flag and isset($_POST['recommended'])) {$exit_flag=check_yes_no($_POST['recommended']);} else {$_POST['recommended']='';}
+	
+	//empty the unset ones
+	if(!isset($_POST['pregnant']))  {$_POST['pregnant']='';}
+	if(!isset($_POST['nursing'])) {$_POST['nursing']='';}
+	if(!isset($_POST['control'])) {$_POST['control']='';}
+	if(!isset($_POST['orthopedic']))  {$_POST['orthopedic']='';}
+	if(!isset($_POST['complications'])) {$_POST['complications']='';}
+	if(!isset($_POST['recommended'])) {$_POST['recommended']='';}
+	
+	//chreck opeartion date isa  date
+	if(!$exit_flag and isset($_POST['done']) and $_POST['done']!='')	{
+		$date='';
+		$date=explode('-',$_POST['done']);
+		if(!checkdate( $date[1],$date[2],$date[0] )){
+		$done=html($_POST['done']);
+		$message="bad#Unable to save details as date of orthopedic operation $done is not in the correct format";
+		$exit_flag=true;
+		$security_log="somebody tried to input $done as date of orthopedic operation for patient_women";
+		log_security($pdo,$security_log);		
+		}
+	}	
+	
+	if(!$exit_flag){
+		try{
+			$pdo->beginTransaction();
+
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_women where pid=:pid";
+			$error="Unable to update female patient form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			//print_r($_POST);
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into patient_women set
+				pid=:pid,
+			  when_added=now(),
+			  pregnant=:pregnant,
+			  nursing=:nursing,
+			  control=:control,
+			  pjoint=:pjoint,
+			  pwhen=:pwhen,
+			  complication=:complication,
+			  antibiotics=:antibiotics,
+			  dose=:dose,
+			  pname=:pname,
+			  pphone=:pphone";
+			$error="Unable to update female patient form";
+			$placeholders[':pregnant']=$_POST['pregnant'];
+			$placeholders[':nursing']=$_POST['nursing'];
+			$placeholders[':control']=$_POST['control'];
+			$placeholders[':pjoint']=$_POST['orthopedic'];
+			$placeholders[':pwhen']=$_POST['done'];
+			$placeholders[':complication']=$_POST['complications'];
+			$placeholders[':antibiotics']=$_POST['recommended'];
+			$placeholders[':dose']=$_POST['antibiotic'];
+			$placeholders[':pname']=$_POST['Name'];
+			$placeholders[':pphone']=$_POST['Phone'];
+			$placeholders[':pid']=$_SESSION['pid'];
+			//$placeholders[':when_added']=now();
+			//print_r($placeholders);
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#Patient details saved. ";}
+			elseif(!$s){$message="bad#Unable to save patient details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient details  ";
+		}
+	}	
+		echo "$message";
+		
+}
+
+//this is for selecting a treatment plan
+if(isset($_SESSION['token_g_patient']) and 	isset($_POST['token_g_patient']) and $_POST['token_g_patient']==$_SESSION['token_g_patient']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	$_SESSION['tplan_id']=$encrypt->decrypt($_POST['ninye']);
+	echo "good#treatment-done";
+}
+
+//this is for submitting patient completion
+if(isset($_SESSION['token_f_patient']) and 	isset($_POST['token_f_patient']) and $_POST['token_f_patient']==$_SESSION['token_f_patient']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	
+		try{
+			$pdo->beginTransaction();
+
+			
+			
+			//now delete old record
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from patient_completion where pid=:pid";
+			$error="Unable to update patient completion form";
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = insert_sql($sql, $placeholders, $error, $pdo);	
+			
+			//now update with new details
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into patient_completion set pid=:pid, when_added=now(), comments=:comments, significant=:significant,
+					management=:management";
+			$error="Unable to update patient completion form";
+			$placeholders[':comments']=$_POST['commebts'];
+			$placeholders[':significant']=$_POST['Significant'];
+			$placeholders[':management']=$_POST['dental'];
+			$placeholders[':pid']=$_SESSION['pid'];
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);			
+			if($s){$message="good#Patient details saved. ";}
+			elseif(!$s){$message="bad#Unable to save Patient details ";}			
+			
+			$tx_result = $pdo->commit();
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save patient details  ";
+		}
+		echo "$message";
+		
+}	
+
+
+//this is for submitting treatment done
+if(isset($_SESSION['token_g2_patient']) and 	isset($_POST['token_g2_patient']) and $_POST['token_g2_patient']==$_SESSION['token_g2_patient']
+	and isset($_SESSION['pid']) and $_SESSION['pid']!=''){
+	//$_SESSION['token_f_patient']='';
+	$count=$encrypt->decrypt($_POST['nisiana']);
+	$exit_flag=false;
+		try{
+			$pdo->beginTransaction();
+			$i=1;
+			$existing_new='';
+			while($i <= $count){
+				$note="note$i";
+				$status="status$i";
+				$raise_quotation="raise_quotation$i";
+				$raise_invoice="raise_invoice$i";
+				//$append_invoice="append_invoice$i";
+				$procedure_number="procedure$i";
+							
+				//insert comment if any
+				//echo "note is $_POST[$note] ";
+				if(isset($_POST["$note"]) and $_POST["$note"]!=''){
+					$treatment_procedure_id=$encrypt->decrypt($_POST["$procedure_number"]);	
+					$sql=$error=$s='';$placeholders=array();
+					$sql="insert into treatment_procedure_notes set treatment_procedure_id=:treatment_procedure_id,
+						when_added=now(), doc_id=:doc_id, notes=:notes";
+					$error="Unable to update treatment procedure notes";
+					$placeholders[':treatment_procedure_id']=$treatment_procedure_id;
+					$placeholders[':doc_id']=$_SESSION['id'];
+					$placeholders[':notes']=$_POST["$note"];
+					$s = insert_sql($sql, $placeholders, $error, $pdo);	
+				}
+				
+				//insert status if any
+				if(isset($_POST["$status"]) and $_POST["$status"]!=''){
+				//echo "status is $_POST[$status] ";
+					$treatment_procedure_id=$encrypt->decrypt($_POST["$procedure_number"]);	
+					$procedure_status=$encrypt->decrypt($_POST["$status"]);			
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update tplan_procedure set status=:status where treatment_procedure_id=:treatment_procedure_id";
+					$error="Unable to update treatment procedure status";
+					$placeholders[':treatment_procedure_id']=$treatment_procedure_id;
+					$placeholders[':status']=$procedure_status;
+					if($procedure_status!=0 and $procedure_status!=1 and $procedure_status!=2){
+								$var=html("$procedure_status");
+								$security_log="sombody tried to input $var into tplan procedure as a procedure  status";
+								log_security($pdo,$security_log);
+								$message="bad#Unable to update procedure due to unverified procedure status.";					
+								$exit_flag=true;
+								break;
+					}
+					$s = insert_sql($sql, $placeholders, $error, $pdo);	
+				}
+
+				//insert invocie number  if any
+				if(isset($_POST["$raise_invoice"]) and $_POST["$raise_invoice"]!=''){
+				//	echo "invoice is $_POST[$raise_invoice] ";
+					$treatment_procedure_id=$encrypt->decrypt($_POST["$procedure_number"]);	
+					$invoice_type=$encrypt->decrypt($_POST["$raise_invoice"]);
+					if($invoice_type=="new" and $existing_new==''){//raise new invoice number
+						$sql=$error=$s='';$placeholders=array();
+						$sql="SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dental_new' AND 
+							TABLE_NAME = 'invoice_number_generator'";
+						$error="Unable to generate new invoice number";
+						$s = select_sql($sql, $placeholders, $error, $pdo);	
+						foreach($s as $row){
+							$invoice_num="I$row[0]-".date("m/y");
+							$existing_new="$invoice_num";
+						}
+						
+						//insert into invoice_generator_table
+						$sql2=$error2=$s2='';$placeholders2=array(); 
+						$sql2="insert into invoice_number_generator set pid=:pid";
+						$error2="Unable to update invoice number generator";
+						$placeholders2[':pid']=$_SESSION['pid'];
+						$s2 = insert_sql($sql2, $placeholders2, $error2, $pdo);							
+					}
+					elseif($invoice_type=="new" and $existing_new!=''){//use newly created invoice number
+						$invoice_num="$existing_new";
+					}
+					else{//cehck if old invoice exists
+						$sql=$error=$s='';$placeholders=array();
+						$sql="SELECT invoice_number from tplan_procedure where invoice_number=:invoice_number";
+						$error="Unable to verify old invoice number for insertion into tplan_procedure";
+						$placeholders[':invoice_number']="$invoice_type";
+						$s = select_sql($sql, $placeholders, $error, $pdo);	
+						if($s->rowCount()>0){$invoice_num="$invoice_type";}
+						else{
+								$var=html("$invoice_type");
+								$security_log="sombody tried to input $var into tplan procedure as an invocie number";
+								log_security($pdo,$security_log);
+								$message="bad#Unable to update procedure due to unverified invoice number.";
+								$exit_flag=true;
+								break;
+						}
+					}
+					//insert invoice number
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update tplan_procedure set invoice_number=:invoice_number, date_invoiced=now() where treatment_procedure_id=:treatment_procedure_id";
+					$error="Unable to update treatment procedure invoice number";
+					$placeholders[':invoice_number']="$invoice_num";
+					$placeholders[':treatment_procedure_id']="$treatment_procedure_id";
+					$s = insert_sql($sql, $placeholders, $error, $pdo);	
+					
+					//now raise co-payment
+					$sql=$error=$s='';$placeholders=array(); 
+					$sql="select co_pay_type,value from covered_company  where id=:covered_company and insurer_id=:insurer_id";
+					$error="Unable to get co-payments for invoice";
+					$placeholders[':covered_company']=$_SESSION['company_covered'];
+					$placeholders[':insurer_id']=$_SESSION['type'];
+					$s = select_sql($sql, $placeholders, $error, $pdo);	
+					$deduction='';
+					foreach($s as $row){
+						if($row['co_pay_type']=="CASH") {$deduction=$row['value'];}
+						elseif($row['co_pay_type']=="PERCENTAGE") {
+							//get sum for the invoice
+							$sql2=$error2=$s2='';$placeholders2=array(); 
+							$sql2="select sum(unauthorised_cost) from tplan_procedure where invoice_num=:invoice_number";
+							$error2="Unable to get invoice total for co-payments";
+							$placeholders2[':invoice_number']="$invoice_num";
+							$s2 = select_sql($sql2, $placeholders2, $error2, $pdo);	
+							foreach($s2 as $row2){ $invoice_cost=$row2[0];}
+							$deduction=ceil(($row['value'] * $invoice_cost)/100)*100;
+						}
+						if($deduction!=''){
+							//check inf the co-payment for this invoice already exists
+							$sql2=$error2=$s2='';$placeholders2=array(); 
+							$sql2="delete from co_payment where invoice_number=:invoice_number";
+							$error2="Unable to delete invoice  co-payments";
+							$placeholders2[':invoice_number']="$invoice_num";
+							$s2 = insert_sql($sql2, $placeholders2, $error2, $pdo);	
+							
+							//now insert new co-payment value	
+							$sql2=$error2=$s2='';$placeholders2=array(); 
+							$sql2="insert into co_payment set invoice_number=:invoice_number, amount=:amount";
+							$error2="Unable to add invoice  co-payments";
+							$placeholders2[':invoice_number']="$invoice_num";
+							$placeholders2[':amount']="$deduction";
+							$s2 = insert_sql($sql2, $placeholders2, $error2, $pdo);	
+						}
+					}					
+				}	
+
+				//insert quotation number  if any
+				if(isset($_POST["$raise_quotation"]) and $_POST["$raise_quotation"]!=''){
+					$treatment_procedure_id=$encrypt->decrypt($_POST["$procedure_number"]);	
+					$quotation_type=$encrypt->decrypt($_POST["$raise_quotation"]);
+					if($quotation_type!="new"){//cechk if quotation number is valid
+								$var=html("$quotation_type");
+								$security_log="sombody tried to input $var into tplan procedure as an quotation type";
+								log_security($pdo,$security_log);
+								$message="bad#Unable to update quoation due to unverified quotation number.";
+								$exit_flag=true;
+								break;
+					}
+					if($quotation_type=="new" and $existing_quote_new==''){//raise new quotation number
+						$sql=$error=$s='';$placeholders=array();
+						$sql="SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'dental_new' AND 
+							TABLE_NAME = 'quotation_number_generator'";
+						$error="Unable to generate new quotation number";
+						$s = select_sql($sql, $placeholders, $error, $pdo);	
+						foreach($s as $row){
+							$quotation_num="Q$row[auto_increment]-".date("m/y");
+							$existing_quote_new="$quotation_num";
+						}
+						
+						//insert into quotation_number_generator_table
+						$sql2=$error2=$s2='';$placeholders2=array(); 
+						$sql2="insert into quotation_number_generator set pid=:pid";
+						$error2="Unable to update quotation number generator";
+						$placeholders2[':pid']=$_SESSION['pid'];
+						$s2 = insert_sql($sql2, $placeholders2, $error2, $pdo);							
+					}
+					elseif($quotation_type=="new" and $existing_quote_new!=''){//use newly created quotation number
+						$quotation_num="$existing_new";
+					}
+
+					//insert quotaion number
+					$sql=$error=$s='';$placeholders=array();
+					$sql="update tplan_procedure set quotation_number=:quotation_number where treatment_procedure_id=:treatment_procedure_id";
+					$error="Unable to update treatment procedure quotation number";
+					$placeholders[':quotation_number']="$quotation_num";
+					$placeholders[':treatment_procedure_id']="$treatment_procedure_id";
+					$s = insert_sql($sql, $placeholders, $error, $pdo);	
+					
+				}				
+				$i++;
+			}
+			if(!$exit_flag){$tx_result = $pdo->commit();$message="good#treatment-done#Treatment procedures have been updated. ";}
+			elseif($exit_flag){$pdo->rollBack();}	
+		
+			
+		
+
+		}
+		catch (PDOException $e)
+		{
+		$pdo->rollBack();
+		$message="bad#Unable to save treatment procedure changes  ";
+		}
+		echo "$message";
+		
+}	
+
+//this is for doing a patient search
+if(isset($_POST['search_by']) and $_POST['search_by']!='' and isset($_POST['token_search_patient']) and 
+	isset($_SESSION['token_search_patient']) and $_POST['token_search_patient']==$_SESSION['token_search_patient']){
+	//$_SESSION['token_search_patient']='';
+	$_SESSION['tplan_id']='';
+		//call search function
+		$result=get_patient($pdo,$_POST['search_by'],$_POST['search_ciretia']);
+		//$data=explode("#","$result");
+		//if($data[0]=="error"){$error_message=" $data[1] ";}
+		echo "$result";
+}
+
+//this will clear a form
+//this is for doing a patient search
+if(isset($_POST['clear_form']) and $_POST['clear_form']!='' ){
+	//echo "clearing session id is ".$_SESSION['pid'];
+	$_SESSION['pid']='';
+//	if($_POST['action']){}
+	//echo "action is $_POST[action]";clear_patient_disease
+	//echo " nnn and now is it is ".$_SESSION['pid'];
+}
+
+
+
+
+//this is for removing a procedure from cover
+//this is for doing a patient search
+if( isset($_POST['remove_procedure_cover_token']) and 	isset($_SESSION['remove_procedure_cover_token']) and 
+	$_POST['remove_procedure_cover_token']==$_SESSION['remove_procedure_cover_token']){
+	$exit_flag=false;
+	//verify that the values given do exist
+	$company_id=$encrypt->decrypt($_POST['ninye']);
+	$insurer_id=$encrypt->decrypt($_POST['ninye_ins']);
+	$procedure_id=$encrypt->decrypt($_POST['procedure_removed']);
+	//verify company
+	if (!in_array($company_id, $_SESSION['covered_company_array'])){
+			$message="bad#Unable to save details as corptate details are not correct. Please contact support.";
+			$var=html("$company_id");
+			$security_log="sombody tried to input $var into procedures_not_covered as company id";
+			log_security($pdo,$security_log);
+			$exit_flag=true;
+	}
+	//verify insurer is
+	if (!in_array($insurer_id, $_SESSION['patient_type_array'])){
+			$message="bad#Unable  to save details as insurer details are not correct. Please contact support.";
+			$var=html("$insurer_id");
+			$security_log="sombody tried to input $var into procedures_not_covered as insurer id";
+			log_security($pdo,$security_log);
+			$exit_flag=true;			
+	}
+	//verify procedure
+	if (!in_array($procedure_id, $_SESSION['procedures_array'])){
+			$message="bad#Unable to save details as procedure details are not correct. Please contact support.";
+			$var=html("$procedure_id");
+			$security_log="sombody tried to input $var into procedures_not_covered as procedure not covered id";
+			log_security($pdo,$security_log);
+			$exit_flag=true;
+	}	
+	if(!$exit_flag){
+		//insert into procedures not covered
+		$sql=$error=$s='';$placeholders=array();
+		$sql="insert into procedures_not_covered set company_id=:company_id, insurer_id=:insurer_id, procedure_not_covered=:procedure_not_covered";
+		$placeholders[':company_id']=$company_id;
+		$placeholders[':insurer_id']=$insurer_id;
+		$placeholders[':procedure_not_covered']=$procedure_id;
+		$error="Unable to remove procedure from cover";
+		$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+		if($s){$message="good#Procedure removed from insurance cover.#$_POST[ninye]";}
+		elseif(!$s){$message="bad#Unable to remove procedure from insurance cover.";}
+	}
+	echo "$message";
+	//$data=explode('#',
+}
+
+//this is for return a procedure to cover
+if( isset($_POST['return_procedure_cover_token']) and 	isset($_SESSION['return_procedure_cover_token']) and 
+	$_POST['return_procedure_cover_token']==$_SESSION['return_procedure_cover_token']){
+	$exit_flag=false;
+	if(!$exit_flag){
+		$i=0;
+		$id_1=$_POST['return_procedure'];
+		$n=count($id_1);
+		while($i<$n){
+			//insert into procedures not covered
+			$id=$encrypt->decrypt("$id_1[$i]");
+			//get company id
+			$sql=$error=$s='';$placeholders=array();
+			$sql="select company_id from procedures_not_covered where id=:id";
+			$placeholders[':id']=$id;
+			$error="Unable to get company id";
+			$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+			foreach($s as $row){$company_id=html($row['company_id']);
+				//echo "company id is $row[company_id] <br>";
+			}
+			//echo " id is $id <br>";
+			//now delere it
+			$sql=$error=$s='';$placeholders=array();
+			$sql="delete from procedures_not_covered where id=:id";
+			$placeholders[':id']=$id;;
+			$error="Unable to return procedure to cover";
+			$s = 	insert_sql($sql, $placeholders, $error, $pdo);	
+			$i++;
+		}
+		$id=$encrypt->encrypt($company_id);
+		if($s){$message="good#Procedure returned to insurance cover.#$id";}
+		elseif(!$s){$message="bad#Unable to return procedure to insurance cover.";}
+	}
+	echo "$message";
+	//$data=explode('#',
+}
+
+//this is for booking an appointment
+if(isset($_POST['appointment_date']) and $_POST['appointment_date']!='' ){
+	$_SESSION['appointment_date']=$appointment_date=html($_POST['appointment_date']);
+	$appointments=array();
+	
+	//get appointments on that day first for registerd folks
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select a.last_name,a.middle_name, a.first_name,b.first_name,b.middle_name,b.last_name,c.treatment,c.shour,c.smin,c.rank,c.surgical_unit,c.am_pm
+	from patient_details_a a, users b, registered_patient_appointments c where c.pid=a.pid and c.doc_id=b.id and c.appointment_date=:appointment_date";
+	$placeholders[':appointment_date']=$appointment_date;
+	$error="Unable to get registerd appointments";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	foreach($s as $row){
+		$patient_name=html("$row[2] $row[1] $row[0]");
+		$doctor_name=html("$row[3] $row[4] $row[5]");
+		$treatment=html("$row[treatment]");
+		$hour=html("$row[shour]");
+		$min=html("$row[smin]");
+		$rank=html("$row[rank]");
+		$surgery=html("$row[surgical_unit]");
+		$appointments[]=array('registered'=>'yes','patient_name'=>"$patient_name", 'doctor_name'=>"$doctor_name",'hour'=>"$hour",'min'=>"$min",'rank'=>"$rank",'surgery'=>"$surgery");
+	}
+	
+	//get appointments on that day first for unregisterd folks
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select a.names,b.first_name,b.middle_name,b.last_name,c.treatment,c.shour,c.smin,c.rank,c.surgical_unit,c.am_pm
+	from unregistered_patients a, users b, unregistered_patient_appointments c where c.pid=a.id and c.doc_id=b.id and c.appointment_date=:appointment_date";
+	$placeholders[':appointment_date']=$appointment_date;
+	$error="Unable to get un-registerd appointments";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	foreach($s as $row){
+		$patient_name=html("$row[0]");
+		$doctor_name=html("$row[1] $row[2] $row[3]");
+		$treatment=html("$row[treatment]");
+		$hour=html("$row[shour]");
+		$min=html("$row[smin]");
+		$rank=html("$row[rank]");
+		$surgery=html("$row[surgical_unit]");
+		$appointments[]=array('registered'=>'no','patient_name'=>"$patient_name", 'doctor_name'=>"$doctor_name",'hour'=>"$hour",'min'=>"$min",'rank'=>"$rank",'surgery'=>"$surgery");
+	}
+	
+	//now show appointment table forthe day
+	echo "<div class='grid-100 caption'>Appointments for $_SESSION[appointment_date] </div>";
+	echo "<div class='appointment_table_div'>";
+
+	//echo "<table class='fixed_column'><caption>Appointments for $_SESSION[appointment_date]</caption><thead><tr><th class='headcol appoint_time'>Time</th>";
+	echo "<table class='fixed_column replace_header'><thead><tr>";
+	
+	//start by getting surgery names
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select surgery_id, surgery_name from surgery_names order by surgery_name";
+	$error="Unable to get surgery names";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	foreach($s as $row){
+		$surgery_id_array[]=html("$row[surgery_id]");
+		$surgery_name_array[]=html("$row[surgery_name]");
+		$surgery_name=html("$row[surgery_name]");
+		echo "<th class=appoint_surgery>$surgery_name</th>";
+	}
+	echo "</tr></thead><tbody>";
+	
+	//now get minute intervals
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select minute_interval from appointment_minutes_interval";
+	$error="Unable to get appointment interval";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	$minutes_interval_array='';
+	foreach($s as $row){
+		$minute_interval=html($row['minute_interval']);
+		$intervals = 60 / $minute_interval;
+	}
+	
+	//now get working hours
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select shour,rank from appointment_hours order by rank";
+	$error="Unable to get appointment hours";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	$rank_array=array();
+	$am_pm='';
+	foreach($s as $row){
+		$rank=html($row['rank']);
+		$hour=html($row['shour']);
+		if($rank < 12){$am_pm="AM";}
+		else{$am_pm="PM";}
+		$i=1;
+		while($i <= $intervals){
+			if($i==1){$minute="00";$minute_compare=0;}
+		//	echo "<tr><td class='headcol'>$hour:$minute $am_pm</td>";
+			echo "<tr>";
+			//now loop through the surgeries
+			$n2=count($surgery_id_array);
+			$i2=0;
+			while($i2 < $n2){
+				$appointment_exists =false;
+				$td_class='';
+				//check if appointment is in this surgery ,hour(rank) and minute
+				foreach($appointments as $current_appointment){
+					if($surgery_id_array[$i2] == $current_appointment['surgery'] and $current_appointment['rank'] == $rank and 
+						$current_appointment['min'] == $minute_compare){
+						$appointment_exists =true;
+						if($current_appointment['registered'] == 'no'){$td_class='unregistered_appointment_highlight';}
+						
+						echo "<td class=$td_class>$current_appointment[patient_name] $hour:$minute $am_pm</td>";
+						}
+				}
+				if(!$appointment_exists){
+					$val2=$encrypt->encrypt("$rank#$minute#$surgery_id_array[$i2]");
+					echo "<td><input type=hidden value='$val2' /><input type=button value='$hour:$minute $am_pm $surgery_name_array[$i2]' class='create_appointment button_style' /></td>";}
+				$i2++;
+			}
+			echo "</tr>";
+			$minute=$minute + $minute_interval ;
+			$minute_compare = $minute;
+			if ($minute < 10){$minute="0$minute";}
+			$i++;
+		}
+	}
+	echo "</tbody></table>";
+echo "</div>";	
+
+			
+}
+
+//this will show patient serach form for booking appointments depeedning on the type of patien type
+if(isset($_POST['appointment_patient_type']) and $_POST['appointment_patient_type']!=''  ){
+	if($_POST['appointment_patient_type'] == 'registered'){ ?>
+		<form class='' action='' method="POST"  name="" id="">	
+			<?php $token = form_token(); $_SESSION['token_search_patient_appoint1'] = "$token";  ?>
+			<input type="hidden" name="token_search_patient_appoint1"  value="<?php echo $_SESSION['token_search_patient_appoint1']; ?>" />	
+			<div class='grid-15'>
+				<label for="" class="label">Search Patient by</label>
+			</div>
+			<div class='grid-15'>
+				<select name=search_by><option></option>
+					<option value=patient_number>Patient Number</option>
+					<option value=first_name>First Name</option>
+					<option value=middle_name>Middle Name</option>
+					<option value=lsat_name>Last Name</option>
+				</select>
+			</div>
+			<div class='grid-25'><input type=text name=search_ciretia  /></div>
+			<div class='grid-35 show_spin'><input type=submit value="Find"  /></div>
+		</form>
+		
+		
+	<?php }
+	elseif($_POST['appointment_patient_type'] == 'unregistered'){?>
+		<form class='' action='' method="POST"  name="" id="">	
+			<?php $token = form_token(); $_SESSION['token_search_patient_appoint4'] = "$token";  ?>
+			<input type="hidden" name="token_search_patient_appoint4"  value="<?php echo $_SESSION['token_search_patient_appoint4']; ?>" />	
+			<?php
+		echo "<div class='grid-15 '><label for='' class='label'>Enter Patient Names</label></div>";
+		echo "<div class='grid-20 '><input  type=text name=patient_name  /></div>";
+		
+		echo "<div class='grid-15 '><label for='' class='label'>Telephone Number</label></div>";
+		echo "<div class='grid-20 '><input  type=text name=phone  /></div>";
+		echo "<div class='grid-15 '><input type=submit value='Book Appointment'  /></div></form>";
+		echo "<div class=clear></div></br>";
+	}
+}
+
+//this will insert new appointment
+if(isset($_POST['token_search_patient_appoint3']) and isset($_SESSION['token_search_patient_appoint3']) and
+$_POST['token_search_patient_appoint3']==$_SESSION['token_search_patient_appoint3']){
+	//echo "bad#dddd";
+	$exit_flag=false;
+	//check if doctor is set
+	if(!isset($_POST['doctor']) or $_POST['doctor']==''){
+		$exit_flag=true;
+		$message="bad#Please specify the doctor for the appointment";
+	}
+
+	/*//check if treatment is set
+	if(!isset($_POST['procedure']) or $_POST['procedure']==''){
+		$exit_flag=true;
+		$message="bad#Please specify the treatment that will be done";
+	}*/
+	if(!$exit_flag and !isset($_POST['procedure'])){$_POST['procedure']='';}
+	else{$_POST['procedure']=$encrypt->decrypt($_POST['procedure']);}
+	
+	//check if date is set
+	if(!$exit_flag and !isset($_SESSION['appointment_date']) or $_SESSION['appointment_date']==''){
+		$exit_flag=true;
+		$message="bad#Please specify the appointment date";
+	}
+
+	//check if doctor is set
+	$rank=$min=$surgical_unit='';
+	$data=explode('#',$_SESSION['create_appointment']);
+	$rank=$data[0];
+	$min=$data[1];
+	$surgical_unit=$data[2];
+	if(!$exit_flag and $rank=='' or $min=='' or $surgical_unit==''){
+		$exit_flag=true;
+		$message="bad#Unable to save appointments, missing some entries, please try again.";
+	}
+
+	//insert regiesterd patient appointment
+	if(!$exit_flag ){
+		if(!isset($_SESSION['unregistered_patient_name']) or $_SESSION['unregistered_patient_name']==''){
+			$sql=$error=$s='';$placeholders=array();
+			$sql="insert into registered_patient_appointments set when_added=now(), 
+					doc_id=:doc_id,
+					pid=:pid,
+					treatment=:treatment,
+					appointment_date=:appointment_date,
+					shour=:shour,
+					smin=:smin,
+					rank=:rank,
+					am_pm=:am_pm,
+					surgical_unit=:surgical_unit";
+			$error="Unable to get add appointment";
+			$placeholders[':doc_id']=$encrypt->decrypt($_POST['doctor']);
+			$placeholders[':pid']=$_SESSION['pid'];
+			$placeholders[':treatment']=$_POST['procedure'];
+			$placeholders[':appointment_date']=$_SESSION['appointment_date'];
+			if($rank > 12){
+					$hour=$rank - 12;
+					$am_pm="PM";
+			}
+			else{
+				$hour = $rank;
+				$am_pm="AM";
+			}
+			$placeholders[':shour']=$hour;
+			$placeholders[':smin']=$min;
+			$placeholders[':rank']=$rank;
+			$placeholders[':am_pm']=$am_pm;
+			$placeholders[':surgical_unit']=$surgical_unit;
+			$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+			if($s){$message = "good#book_appointment#Appointment saved";}
+			else{$message = "bad#Unable to save appointment";}
+		}
+		elseif(isset($_SESSION['unregistered_patient_name']) and $_SESSION['unregistered_patient_name']!=''){
+			try{
+				$pdo->beginTransaction();	
+				if(!isset($_POST['phone'])){$_POST['phone']='';}
+				
+				//firts insert unregsiterd patient details
+				$sql=$error=$s='';$placeholders=array();
+				$sql="insert into unregistered_patients set names=:names,when_added=now(),phone=:phone";
+				$error="Unable to add unregisterde patient";
+				$placeholders[':names']=$_SESSION['unregistered_patient_name'];
+				$placeholders[':phone']=$_SESSION['unregistered_patient_phone'];	
+				$unregistered_id = 	get_insert_id($sql, $placeholders, $error, $pdo);	
+				$_SESSION['unregistered_patient_name']=$_SESSION['unregistered_patient_phone']='';
+				//now insert into unregisterd appointments
+				$sql=$error=$s='';$placeholders=array();
+				$sql="insert into unregistered_patient_appointments set when_added=now(), 
+						doc_id=:doc_id,
+						pid=:pid,
+						treatment=:treatment,
+						appointment_date=:appointment_date,
+						shour=:shour,
+						smin=:smin,
+						rank=:rank,
+						am_pm=:am_pm,
+						surgical_unit=:surgical_unit";
+				$error="Unable to get add unregisteerd patienbt appointment";
+				$placeholders[':doc_id']=$encrypt->decrypt($_POST['doctor']);
+				$placeholders[':pid']=$unregistered_id;
+				$placeholders[':treatment']=$_POST['procedure'];
+				$placeholders[':appointment_date']=$_SESSION['appointment_date'];
+				if($rank > 12){
+						$hour=$rank - 12;
+						$am_pm="PM";
+				}
+				else{
+					$hour = $rank;
+					$am_pm="AM";
+				}
+				$placeholders[':shour']=$hour;
+				$placeholders[':smin']=$min;
+				$placeholders[':rank']=$rank;
+				$placeholders[':am_pm']=$am_pm;
+				$placeholders[':surgical_unit']=$surgical_unit;
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);	
+				$tx_result = $pdo->commit();
+				if($tx_result){$message = "good#book_appointment#Appointment saved";}
+				else{$message = "bad#Unable to save appointment";}
+			}
+			catch (PDOException $e)
+			{
+			$pdo->rollBack();
+			$message="bad#Unable to save appointment ";
+			}
+			}		
+	}
+		$data=explode('#',"$message");
+		if($data[0]=='bad'){$_SESSION['result_class']='bad';
+							$_SESSION['result_message']="$data[1]";
+		}
+		if($data[0]=='good'){$_SESSION['result_class']='success_response';
+							$_SESSION['result_message']="$data[2]";
+		}
+	echo "$message";
+}
+
+//this will show the form pop up for creating a new appointment
+if(isset($_POST['create_appointment']) and $_POST['create_appointment']!=''  ){
+	$_SESSION['create_appointment']=$encrypt->decrypt($_POST['create_appointment']);
+	?>
+
+	<div id=registered_appointment>
+			<div class='feedback hide_element'></div>
+			<form class='patient_form' action="" method="post" name="" id="">
+				<?php $token = form_token(); $_SESSION['token_search_patient_appoint3'] = "$token";  ?>
+				<input type="hidden" name="token_search_patient_appoint3"  value="<?php echo $_SESSION['token_search_patient_appoint3']; ?>" />	
+				
+				<?php 
+				//select doctor
+				$sql=$error=$s='';$placeholders=array();
+				$sql="select id,first_name, middle_name,last_name from users where user_type=1 and status='active'";
+				$error="Unable to get list of doctors";
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);
+				echo "<div class='grid-15'><label for='' class='label'>Select Doctor</label></div>";
+				echo "<div class='grid-25'><select name=doctor><option></option>";
+					foreach($s as $row){
+						$doctor_name=html("$row[first_name] $row[middle_name] $row[last_name]");
+						$doc_id=$encrypt->encrypt("$row[id]");
+						echo "<option value='$doc_id'>$doctor_name</option>";
+					}
+				echo "</select></div>";
+				
+				//show pending treatments
+				$sql=$error=$s='';$placeholders=array();
+				$sql="select a.procedure_id,b.name from procedures b, tplan_procedure a, tplan_id_generator c where a.procedure_id=b.id and 
+						a.tplan_id=c.tplan_id and c.pid=:pid and a.status!=2";
+				$error="Unable to get list of pending treatments for registerd patient appointment";
+				$placeholders[':pid']=$_SESSION['pid'];
+				$s = 	select_sql($sql, $placeholders, $error, $pdo);
+				echo "<div class='grid-15'><label for='' class='label'>Select Procedure</label></div>";
+				echo "<div class='grid-35'><select name=procedure><option></option>";
+					if($s->rowCount() > 0){
+						foreach($s as $row){
+							$procedure_name=html("$row[name]");
+							$procedure_id=$encrypt->encrypt("$row[name]");
+							echo "<option value='$procedure_id'>$procedure_name</option>";
+						}
+					}
+					else{
+						$consultation=$encrypt->encrypt("Consultation");
+						echo "<option value='$consultation'>Consultation</option>";
+					}
+				echo "</select></div>";
+				
+				echo "<div class=clear></div><br><div class=grid-15><input class=put_right type=submit value='Book Appointment' /></div></form>";
+	echo "</div>";//this is for registered_appointment div
+	echo "<div id=unregistered_appointment></div>";
+
+}
+
+//this is for editiong a corprate cover details
+if(isset($_POST['edit_corporate']) and $_POST['edit_corporate']!='' ){
+	$company_id=$encrypt->decrypt($_POST['edit_corporate']);
+	$company_name=$insurer_name=$insurer_id='';
+	//get company name and insurer
+	$sql=$error=$s='';$placeholders=array();
+	$sql="select a.name,b.name,a.insurer_id from covered_company a, insurance_company b where a.id=:company_id and b.id=a.insurer_id";
+	$placeholders[':company_id']=$company_id;
+	$error="Unable to select covered company details";
+	$s = 	select_sql($sql, $placeholders, $error, $pdo);
+	foreach($s as $row){
+		$company_name=html($row[0]);
+		$insurer_name=html($row[1]);
+		$insurer_id=html($row[2]);
+	}
+	
+	?>
+	<div  id=edit_covered_procedure >
+		
+		<form action="" method="post" name="" class='dialog_form' id="">
+			<div class='grid-30'><label for="" class="label"> Select Procedure to remove from cover</label></div>
+			<div class='grid-50'>
+				<?php
+					$ninye=$encrypt->encrypt($company_id);
+					$ninye_ins=$encrypt->encrypt($insurer_id);
+					 $token = form_token(); $_SESSION['remove_procedure_cover_token'] = "$token";  ?>
+					<input type="hidden" name="remove_procedure_cover_token"  value="<?php echo $_SESSION['remove_procedure_cover_token']; ?>" />
+					<input type="hidden" name="ninye"  value="<?php echo $ninye; ?>" />
+					<input type="hidden" name="ninye_ins"  value="<?php echo $ninye_ins; ?>" />
+					<?php
+					//get procedures that have not yet been removed from cover
+					$sql=$error=$s='';$placeholders=array();
+					$sql="select name,id from procedures a  where a.id not in (select procedure_not_covered from procedures_not_covered where
+						company_id=:company_id and insurer_id=:insurer_id) order by name";
+					$placeholders[':company_id']=$company_id;
+					$placeholders[':insurer_id']=$insurer_id;
+					$error="Unable to select uncovered company procedures";
+					$s = 	select_sql($sql, $placeholders, $error, $pdo);
+					echo "<select class=input_in_table_cell name=procedure_removed ><option></option>";
+					foreach($s as $row){
+						$procedure_name=html($row['name']);
+						$procedure_id=$encrypt->encrypt(html($row['id']));
+						echo "<option value='$procedure_id'>$procedure_name</option>";
+					}			
+					echo "</select>";
+				?>
+			</div>
+			<div class='grid-20'><input type=submit  value='Remove From Cover' /></form></div>
+			<div class=clear></div>
+			<br><br>
+			<!--now show procedures already removed from cover-->
+			<?php 
+				$sql2=$error2=$s2='';$placeholders2=array();
+				$sql2="select a.name,b.id from procedures a, procedures_not_covered b where b.company_id=:company_id and b.insurer_id=:insurer_id
+					and a.id=b.procedure_not_covered order by name";
+				$placeholders2[':insurer_id']=$insurer_id;
+				$placeholders2[':company_id']=$company_id;
+				$error2="Unable to get uncovered company procedures";
+				$s2 = 	select_sql($sql2, $placeholders2, $error2, $pdo);	
+					if($s2->rowCount()>0){
+						$token = form_token(); $_SESSION['return_procedure_cover_token'] = "$token";  ?>
+						<form action="" class='dialog_form' method="post" name="" id="">
+						<input type="hidden" name="return_procedure_cover_token"  value="<?php echo $_SESSION['return_procedure_cover_token']; ?>" />
+						<?php
+						echo "<table class='normal_table'><caption>Procedures not covered for this corprate</caption><thead>
+						<th class='uncovered_procedure_name'>PROCEDURE NAME</th>
+						<th class='uncovered_procedure_select'>RETURN TO COVER</th>
+						</thead><tbody>";
+						foreach($s2 as $row2){
+							$procedure_name=html($row2['name']);
+							$val=$encrypt->encrypt(html($row2['id']));
+							echo "<tr><td>$procedure_name</td><td><input type=checkbox name='return_procedure[]' value=$val /></td></tr>"; 
+						}
+						echo "<tr><td></td><td><input type=submit  value='Return Procedure To Insurance Cover' /></td></tr></table></form>";			
+					}
+		echo "</div>";
+			
+}

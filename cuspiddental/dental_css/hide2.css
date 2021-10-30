@@ -1,0 +1,112 @@
+.hidden
+{
+	position: absolute;
+	left: -1500em;
+}
+#nav1 li {
+ border-left: 1px solid white;/*white;*/
+ }
+ #nav1 li:last-child{
+ border-right: 1px solid white;
+ }
+ /*#nav1, #nav1 ul, #nav1 ul ul,#nav1 li{*/
+#nav1, #nav1 ul, #nav1 ul ul,#nav1 li{
+     margin:0;
+     padding:0;
+     list-style-type:none;
+     list-style-position:outside;
+     float:left; 
+     line-height:1.5em;
+	 text-align:left;
+	 Z-INDEX: 1;
+	font-size: 15px;/*14px*/
+	
+	 
+	
+ }
+ 
+ #nav1 ul   {
+ margin:1.12em 0;
+ /*line-height: 2.06em;*/
+ }
+#nav1 a:link, #nav1 a:active, #nav1 a:visited{
+    display:block;
+    padding:0.56em 2em;
+    color:#fff;
+    text-decoration:none;
+   background-color: #C00001;/*#2c5076;*/
+ }
+ #nav2 a:link, #nav2 a:active, #nav2 a:visited{
+    display:block;
+     padding:0.1em 2em;/*padding:0.56em 2em; cccc*/
+    color:#fff;
+    text-decoration:none;
+   background-color: #121923;/*#2c5076;*/
+ }
+.menu_clicked{
+background-color: white;
+}
+#nav1 a:hover{
+    background-color: #15212F;/*#AFED40;*/
+    color: white;/*#333;*/
+}
+#nav2 a:hover{
+    background-color: #D9D9D9;/*#AFED40;*/
+    color: #0C121B;/*#333;*/
+}
+#nav1 li{
+    float:left;
+   position:relative;
+
+}
+
+/*#nav1 ul, #nav1 ul ul, .nav_tabs ul{*/
+#nav1 ul,  .nav_tabs ul{
+    position:absolute;
+    width:12em;
+    top:1.5em;
+    display:none;
+}
+
+#nav1 li ul a, #nav1 li ul li ul a{
+   width:12em;
+    float:left;
+}
+
+#nav1 ul ul{
+	top:100%;
+	}
+
+#nav1 li ul li ul {
+    left:16em;
+	margin: 0;
+   /* margin:0px 0 0 10px;*/
+
+    }
+
+#nav1 li:hover ul ul, #nav1 li:hover ul ul ul, #nav1 li:hover ul ul ul ul{
+    display:none;
+    }
+#nav1 li:hover ul, #nav1 li li:hover ul, #nav1 li li li:hover ul, #nav1 li li li li:hover ul{
+    display:block;
+    }
+	
+#nav1 ul li, #nav1 ul ul li{
+  /*  border-bottom: 1px solid #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	border-right: 1px solid #FFFFFF;*/
+	border-left: none;
+	border-right: none;
+	text-transform: lowercase;
+	text-transform: capitalize;
+	line-height:1.3em;
+	border-top: 1px solid #FFFFFF;
+}
+ #nav1 ul li:last-child{
+ border-right: none;
+border-bottom: 1px solid white;
+ }
+#nav1 li ul li ul{
+	top: 0%;
+	
+}

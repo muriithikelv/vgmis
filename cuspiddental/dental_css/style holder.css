@@ -1,0 +1,445 @@
+
+.menu_table{
+float: left;
+margin-right:5px;
+border: 2px solid #98A0B5; 
+
+}
+.menu_table_td{
+padding: 0px 5px ;
+
+}
+.menu_table th{
+background-color: #98A0B5;
+}
+.menu_table tr:hover{
+background-color:#31426d;
+color: white;
+}
+.remove_left_margin{
+margin-left: 0px;
+margin-right: 0px;
+padding-right: 0px;
+}
+
+form div{
+padding-bottom: 0.75em;
+}
+
+
+.float_right{
+float: right;
+border:2px solid grey;
+}
+.search_div{
+/*#A5A3A4;*/
+/*padding:10px 5px 10px 5px;*/
+
+margin-left: 0px;
+	-webkit-border-radius: 5px;
+-moz-border-radius: 5px;
+border-radius: 5px;
+}
+fieldset{
+	border: 2px solid navy;/*041d4a;*/
+	-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+
+padding: 10px;
+}
+fieldset:hover{
+  background-color: rgba(126,208,214,0.5);
+}
+fieldset.category_filedset{
+border: 0;
+}
+fieldset.category_filedset:hover{
+border: 2px solid navy;
+}
+
+/* this will remove tab panel border nad background color*/
+.ui-widget-content {
+    border: none;/*1px solid rgb(166, 201, 226);*/
+    background: none;/*url("images/ui-bg_inset-hard_100_fcfdfd_1x100.png") repeat-x scroll 50% bottom rgb(252, 253, 253);*
+    color: rgb(34, 34, 34);*/
+}
+/*this will remove tabs background color */
+.ui-widget-header {
+    border: none;/*1px solid rgb(66, 151, 215);*/
+    background: white;/*none;/*url("images/ui-bg_gloss-wave_75_98a0b5_500x100.png") repeat-x scroll 50% 50% rgb(152, 160, 181);*/
+    color: rgb(234, 245, 247);
+    font-weight: bold;
+}
+#search_submit{
+width: auto;
+  padding:1px;
+  background-color: #336699;
+  border:2px solid grey;
+  border-left:none;
+  color:#fff;
+  text-decoration:none;
+  font-size: small;
+font-weight: bold;
+}
+.remove_right_margin{
+margin-right: -10px;
+}
+
+table.full_width{
+width: 100%;
+table-layout:fixed;
+border-collapse:collapse;
+}/*
+input.size_10{width: 100px;}
+input.size_4{width: 40px;} */
+.quantity_units{
+overflow:hidden;
+border-left: 1px solid black;
+}
+.quantity_number, .amount_column_po, .unit_column_po, .amount_column_dnot, .unit_column_dnot, .amount_column_qo, .unit_column_qo, .customer_pay_amount{
+overflow:hidden;
+}
+table.full_width td { 
+border:1px solid black; 
+width: 100%; 
+padding:0;
+margin: 0;
+ }
+ 
+textarea{padding-bottom: 0;margin-bottom: 0;} 
+ /*this is for purchase order */
+th.pid_column_po{width: 15%;}
+th.desc_column_po{width: 50%;}
+th.quantity_column_po{width: 15%;} 
+th.amount_column_po{width: 10%;}
+th.unit_column_po{width: 10%;} 
+
+ /*this is for customer invocies */
+th.count{width: 10%;}
+th.invoice_number{width: 30%;}
+th.raised_by{width: 30%;} 
+th.date_raised{width: 30%;}
+ 
+ /*this is for showinf price of prevoue sale for a product */
+th.date_sold{width: 20%;}
+th.sold_by{width: 20%;}
+th.quantity_sold{width: 20%;}
+th.selling_price{width: 20%;}
+th.total_price{width: 20%;}
+ 
+ /*this is for quotation */
+th.pid_column_qo{width: 15%;}
+th.desc_column_qo{width: 40%;}
+th.quantity_column_qo{width: 15%;} 
+th.amount_column_qo{width: 10%;}
+th.unit_column_qo{width: 10%;} 
+ th.profit_column_qo{width: 10%;}
+ 
+  /*this is for customer sales */
+th.pid_column_sell{width: 15%;}
+th.desc_column_sell{width: 30%;}
+th.quantity_column_sell{width: 15%;} 
+th.amount_column_sell{width: 10%;}
+th.unit_column_sell{width: 10%;} 
+th.profit_column_sell{width: 10%;}
+th.previous_sales{width: 10%;}
+ 
+ /*this is for delivery note */
+th.pid_column_dnot{width: 15%;}
+th.desc_column_dnot {width: 50%;}
+th.quantity_dnot{width: 15%;}
+th.amount_column_dnot, td.amount_column_dnot{width: 10%;}
+th.unit_column_dnot, td.unit_column_dnot{width: 10%;} 
+
+/* this is for printing invoicr payment receipts for customers*/
+td.customer_invoice_pay_inv_no{width: 70%;}
+td.customer_invoice_pay_amount{width: 30%;}
+
+ table.full_width td.quantity_units{
+border: 0px;
+border-bottom: 1px solid black;
+border-right: 1px solid black;
+}
+table.full_width td.quantity_number{/*
+border: 0px;
+border-bottom: 1px solid black;*/
+}
+ table.full_width td select{ 
+height: 100%;
+width: 100%;
+ }
+  table.full_width td textarea{ 
+height: 100%;
+width: 100%;
+     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+     box-sizing: border-box;         /* Opera/IE 8+ */
+ }
+table.full_width th { 
+border:1px solid black;
+padding:5px;
+ }
+table.full_width tr.last_row td{
+ border: 0px;
+ }
+#po_div, #dn_div, #quote_div, #inv_div, #customer_po_div, #sell_div, #previous_selling_price, #previous_buying_price, #print_customer_receipt{
+background-color:white;
+border: 2px solid grey;
+}
+
+ .ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+background-color: white;
+}
+.current_supplier
+{
+width: auto;
+  padding:1px;
+ /* background-color: white;
+  border:2px solid grey;*/
+  border-left:none;
+  color:#000;
+  text-decoration:none;
+  font-size: small;
+font-weight: bold;
+}
+.shift_left{
+float: left;
+font-size: small;
+}
+.shift_right{
+float: right;
+font-size: small;
+}
+.bgcolor{
+background-color: #9DA3B2;
+}
+.make_bold{
+font-weight: bold;
+}
+.ui-dialog-titlebar{/*this is the backgorund color of the dialog windows*/
+background-color:#2c5076;
+font-weight:bold;
+}
+.some_padding{
+padding-left: 3px;
+padding-right; 3px;
+
+}
+.address_table th {
+background-color:#9DA3B2;
+padding: 2px;
+}
+.full_width th {
+font-weight: bold;
+}
+.table_row in:hover {
+border:1px solid  black;
+}
+.normal_width{
+/*width: 100%;*/
+}
+.normal_width td{
+border:1px solid black;
+padding:0px;
+
+}
+.normal_width th{
+border:1px solid black;
+background-color: #cccccc;
+font-weight: small;
+text-align: left;
+font-weight: bold;
+}
+table.normal_width tr.last_row td{
+ border: 0px;
+ }
+
+.normal_table td{
+border:1px solid black;
+padding:2px;
+}
+.normal_table th{
+border:1px solid black;
+background-color: #cccccc;
+font-weight: small;
+text-align: left;
+font-weight: bold;
+}
+
+
+/*set up column widths for current stock report*/
+	/*this is for all products */
+	.all_products th.product_id { width: 20%}		
+	.all_products th.product_name { width: 40%}		
+	.all_products th.selling_price { width: 10%}		
+	.all_products th.reorder_level { width: 10%}		
+	.all_products th.in_stock { width: 20%}	
+	
+/*set up column widths for stock in report*/
+	/*this is for all products */
+	.stock_in th.product_id{width: 10%}
+	.stock_in th.product_name{width: 18%}
+	.stock_in th.supplier{width: 15%}
+	.stock_in th.dnote_num{width: 10%}
+	.stock_in th.delivery_date{width: 10%}
+	.stock_in th.selling_price{width: 7%}
+	.stock_in th.in_stock{width: 10%}
+	.stock_in th.total{width: 10%}
+	.stock_in th.buying_price{width: 10%}
+	
+
+	/*this is for income report */
+th.a_income_count{width: 3%}
+th.a_income_date_raise{width: 10%}
+th.a_income_sale_tx{width: 10%}
+th.a_income_invoice{width: 10%}
+th.a_income_name{width: 8%}
+th.a_income_cost{width: 10%}
+th.a_income_type{width: 10%}
+th.a_income_tx{width: 10%}
+th.a_income_date_pay{width: 10%}
+th.a_income_receipt{width: 9%}
+th.a_income_amount{width: 10%}	
+	
+/*this is for viewing customer delivery notes */
+ th.dnote_view_product_id { width: 20%}	
+ th.dnote_view_product_description { width: 60%}		
+ th.dnote_view_quantity { width: 20%}	
+
+/*this is for viewing supplier purchase orders */
+ th.supplier_po_count { width: 5%}	
+ th.supplier_po_number { width: 35%}	
+  th.supplier_po_raised_by { width: 30%}	
+   th.supplier_po_date { width: 30%}	
+	 
+/*this is for showing customer purchase orders */
+ th.customer_po_count { width: 5%}	
+ th.customer_po_number { width: 35%}		
+ th.customer_po_date_received { width: 20%}	
+ th.customer_po_received_by { width: 40%}	 
+	
+/*this is for viewing customer invocie */
+ th.inv_view_product_id { width: 20%}		
+th.inv_view_product_description { width: 40%}	
+th.inv_view_quantity { width: 10%}	
+th.inv_view_unit_price { width: 15%}	
+th.inv_view_amount { width: 15%}		
+
+/*this is for customer statement */
+th.customer_statement_count { width: 5%}	
+th.customer_statement_date { width: 10%}	
+th.customer_statement_tx_num { width: 15%}	
+th.customer_statement_tx_type { width: 15%}	
+th.customer_statement_amount { width: 10%}		
+th.customer_statement_date_paid { width: 10%}	
+th.customer_statement_receipt_num { width: 15%}	
+th.customer_statement_amount { width: 10%}	
+
+/*this is for making customer payments */
+ th.customer_pay_count { width: 10%}		
+th.customer_pay_invoice_number { width: 40%}	
+th.customer_pay_balance { width: 25%}	
+th.customer_pay_amount { width: 25%}	
+
+/*this is for making supplier payments */
+ th.supplier_pay_count { width: 5%}		
+th.supplier_pay_delivery_note_number { width: 30%}	
+th.supplier_pay_invoice_number { width: 25%}	
+th.supplier_pay_balance { width: 20%}
+th.supplier_pay_amount { width: 20%}		
+
+/*this is for showing supplier balances */
+ th.all_suppliers_statement_count { width: 3%}		
+th.all_suppliers_statement_name { width: 27%}	
+th.all_suppliers_statement_contact { width: 20%}	
+th.all_suppliers_statement_telephone { width: 20%}
+th.all_suppliers_statement_email { width: 20%}	
+th.all_suppliers_statement_balance { width: 10%}	
+
+/*this is for showing customer list */
+ th.customer_count { width: 3%}		
+th.customer_name { width: 17%}	
+th.customer_physical_address { width: 15%}	
+th.customer_pobox { width: 15%}
+th.customer_telephone { width: 10%}	
+th.customer_fax { width: 10%}	
+th.customer_email { width: 10%}	
+th.customer_contact { width: 10%}	
+th.customer_title { width: 10%}	
+
+#show_all_dialogs{
+background-color:white;
+border: 2px solid grey;
+}
+.inner_div{
+width: 100%;
+margin: 0;
+padding: 0;
+display: table-cell;
+}
+.put_submit_right{
+float: right;
+}
+.put_add_left{
+float: left;
+}
+.text_right{
+text-align: right;
+}
+#printerDiv, #printer_invoice_div, #print_customer_receipt{
+display:none;
+}	
+tr.tr_border td{
+	border-top: 1px dashed black;
+	border-bottom: 1px dashed black;
+}
+.push_right{
+text-align: right;
+
+}
+.push_left{
+text-align: left;
+}
+.push_centre{
+text-align: center;
+}
+.total_font, .sub_total_font{
+font-weight: bold;
+}
+tr.sub_total_font td{
+	border-bottom: 1px dashed black;
+}
+
+tr.total_font td{
+	border-top: 1px dashed black;
+	border-bottom: 1px dashed black;
+	/*font-size: large;*/
+}
+.ui-datepicker-header{
+background-color: #31426D;
+color: white;
+}
+.ui-datepicker-calendar{
+background-color: #98A0B5;
+}
+.current_menu{
+background-color: red;
+}
+/*this is for higlighting selected top menu*/
+.higlight_menu{
+    background-color:#AFED40;
+    color:#333;
+}
+
+td{
+	word-wrap: break-word;
+	padding: 2px;
+}
+th{
+	padding: 2px;
+}

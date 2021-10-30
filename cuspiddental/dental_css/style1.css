@@ -1,0 +1,2309 @@
+
+.no_js_text{
+text-align: center;
+display: block;
+padding:10px;
+background-color: #209a4a;
+margin-top: 25%;
+font-size: 16px;
+}
+#login{
+padding:15px 0px 15px 75px;
+
+border: 3px solid #209a4a;/*#98A0B5; */
+margin-top: 30px;
+
+
+background: #cecbcb;/*#31426d;*/
+}
+
+.reset_password_at_login{
+background: #cecbcb;
+}
+#login2{
+margin-top: 70px;
+
+}
+
+.login_label{
+font-weight: bold;
+font-size: big;
+/*font-family: monospace;*/
+color:#33a912;
+}
+.login_text{
+font-size: 25px;
+height: 32px;
+padding: 5px;
+}
+.password{
+margin-top:20px;
+}
+.button_style{
+width: auto;
+  padding:5px;
+  background-color: #336699;
+  border: 1px solid #fff;
+  color:#fff;
+  text-decoration:none;
+  font-size: small;
+font-weight: bold;
+}
+
+
+input[type="submit"]{
+width: auto;
+  padding:5px;
+  background-color: #336699;
+  border: 1px solid #fff;
+  color:#fff;
+  text-decoration:none;
+  font-size: small;
+font-weight: bold;
+}
+input[type="submit"]:hover, .button_style:hover{
+background-color: #C00001;
+}
+.submit{
+margin-top: 30px;
+}
+h1{
+background-color: grey;
+}
+
+.success_response{
+border: 1px solid #A2D246;
+background-color:#EBF8A4;
+color: black;
+	-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+margin: 0.5em;
+background-image: url("../images/s_success.png");
+background-repeat: no-repeat;
+background-position: 5px 50%;
+padding: 5px 0px 5px 30px;
+}
+.error_response{
+border: 1px solid #800000;
+background-color:#FFC0CB;
+color: black;
+	-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+margin: 0.5em;
+background-image: url("../images/s_error.png");
+background-repeat: no-repeat;
+background-position: 5px 50%;
+padding: 5px 0px 5px 30px;
+}
+.orange_background{
+border: 1px solid #F59F00;
+background-color: #FFBF47;
+color: #000000;
+	-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+margin: 0.5em;
+
+padding: 5px 0px 5px 30px;
+
+}
+#header_container{
+height: 71px;
+background-color:#e6eff7;/*#2e9fff;/*#3b5998;/*#00b2cc;/*#041d4a;*/
+	color: #FFFFFF;
+border-bottom: 1px solid #ffffff;
+}
+#wrapper	{
+}
+.mainsss{
+
+
+
+
+}
+.main_menu{
+position:relative;
+
+background-color: #79b599;/*#98A0B5;*/
+
+text-align: left;
+padding-left: 0;
+border-bottom: 5px solid #29292D;
+}
+.menus{
+background-color: #79b599;/*#31426d;*/
+Padding-left:0;
+padding-right:0;
+
+}
+.no_padding_right{padding-right:0;}
+.main_content{
+min-height: 600px;
+background-color: #79b599;/*#F9F6F1;*/
+padding-left:0;
+padding-right:0;
+}
+.commissioners_div{display:none;}
+/*this is for styling dialogs*/
+#employer_form_div,#patient_referrer_form_div,#patient_relationship_form_div, #new_procedure_form_div,.append_invoice , #append_invoice,#add_to_waiting_list,
+ #edit_waiting_list, #edit_ins_cover,#edit_xray_ref_inner, #lab_technician_form_div, #xray_refeffer_form_div, #view_lab,#appointment_div,#appointment_div2, 
+ #appointment_patient_search,#allocate_registered,#allocate_unregistered,#ins_price_ed,.div_shower, .procedure_container2, .cheque_number, .visa_number, .mpesa_number, .loyalty_div
+ ,.dialog_with_tab,.invoice_date,.insurer_payment_date,.summary_td_doc,.cash_pledge,.make_payment,.summary_td_procedure,.summary_td,.summarized_sel1,.detailed_td,.search_by_date,
+ .search_by_patient,.registration_div,.last_seen_div,.apr_date_range, .balance_input_range, .balance_input, .apr_individual,.unregistered_apr, .registered_apr, #cadcam_referrer_form_div,
+ .re_appoint_div,.single_date, .waiver_reason,.pay_type_criteria,.date_criteria,.sdispatched,.serach_by_ins2,.serach_by_individual1,.add_inv_to_disp,.serach_by_ins,.serach_by_individual,
+ .old_fam_grp,.new_fam_grp,.new_fam_grp,.multiple_invoice, .single_invoice,.eft_number,.new_prescribe,.div_shower44,.pt_contact_shower,.show_transfer_surgeries,.appointment_form,.holiday_class,.create_appointent_reminder,.view_appointment_reminder{
+	display:none;
+	background-color: #79b599;
+	}
+.dialog_bg{background-color: #79b599;}	
+
+	/*
+.show_multiple_patient_search_result{
+	display:none;
+	background-color: #15212F;
+	color: green;
+	font-size: 30;
+}	*/
+.remove_left_padding{padding-left:0;}	
+
+.link_color:link{
+color: #EDB90C;
+text-decoration: none;
+}
+
+a.link_color:link {color:#EDB90C;text-decoration: none;}    /* unvisited link */
+a.link_color:visited {color:#EDB90C;text-decoration: none;} /* visited link */
+a.link_color:hover {color:#E1182F;text-decoration: none;}   /* mouse over link */
+a.link_color:active {color:#EDB90C;text-decoration: none;}  /* selected link */
+
+a.link_color2:link {text-decoration: none;}    /* unvisited link */
+a.link_color2:visited {text-decoration: none;} /* visited link */
+a.link_color2:hover {color:#E1182F;text-decoration: none;}   /* mouse over link */
+a.link_color2:active {text-decoration: none;}  /* selected link */
+ 
+a.link_color3:link {color:#B0B3B6;text-decoration: none;}    /* unvisited link */
+a.link_color3:visited {color:#B0B3B6;text-decoration: none;} /* visited link */
+a.link_color3:hover {color:#E1182F;text-decoration: none;}   /* mouse over link */
+a.link_color3:active {color:#B0B3B6;text-decoration: none;}  /* selected link */
+
+.highlight_on_hover1:hover{
+	background-color: #4A4E59;
+	color: #FFFFFF;
+}
+
+.adult,.mixed, .pedo, .hide_first, .na,.admin_password_invoice_daily_limit{display:none;}	
+.red_border{
+		border: 1px solid red;
+		}
+		
+td.red_background{
+		background-color: #C00001;
+		
+}		
+
+/*this will style the tabs */
+.ui-tabs-panel_custom{
+	background-color:#15212F;
+	border:5px solid balck;
+	padding: 5px 0;
+}
+.ui-widget-content_custom{
+	border:none;
+	color: #ffffff;
+	background:none;
+}
+.ui-tabs_custom{
+	padding:0;
+}
+
+table.no_print{display: none;}
+.margin_top{
+margin-top: 10px;
+}
+
+input[type="text"],input[type="password"] {
+    border: 1px solid #BEBEBE;
+    box-shadow: 0 2px 10px -5px #000000 inset;
+    height: 30px;
+    padding: 0 2px;
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+}
+
+input[type="text"]:focus, select:focus, textarea:focus, input[type="password"]:focus{
+/*border: 2px solid grey;/*#3b5998;/*#00b2cc;/*#041d4a;*/
+/*background-color: #C2F177;/*#9DA3B2;*/
+border: 1px solid white;
+}
+
+
+input.input_in_table_cell {
+   /* border: 1px solid #BEBEBE;
+   /* box-shadow: 0 2px 10px -5px #000000 inset;*/
+   /* display: inline-block;*/
+    height: 30px;
+    padding: 0 2px;
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+}
+select{
+   /* border: 1px solid #BEBEBE;
+   /* box-shadow: 0 2px 10px -5px #000000 inset;*/
+   /* display: inline-block;*/
+    height: 30px;
+    padding: 0 2px;
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+}
+textarea{
+    
+  /*  padding: 0 2px;*/
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+	 }
+select.input_in_table_cell {
+    border: 1px solid #BEBEBE;
+    box-shadow: 0 2px 10px -5px #000000 inset;
+   /* display: inline-block;*/
+    height: 30px;
+    padding: 0 2px;
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+	 display:table-cell;
+vertical-align:middle;
+}
+.normal_table{
+width: 100%;
+table-layout: fixed;
+}
+.half_width{
+width: 50%;
+table-layout: fixed;
+}
+.summary_treatment_rate{
+width: 70%;
+table-layout: fixed;
+}
+#header-fixed {
+    position: fixed;
+    top: 0px; display:none;
+    background-color:white;
+}
+.button_in_table_cell {
+   /* border: 1px solid #BEBEBE;
+   /* box-shadow: 0 2px 10px -5px #000000 inset;
+   /* display: inline-block;*/
+    height: 30px;
+    padding: 0 0px;
+    width: 100%;
+	     box-sizing: border-box;
+     -webkit-box-sizing:border-box;
+     -moz-box-sizing: border-box;
+}
+input[type="text"]:focus, select:focus, textarea:focus, .text_field_highlight{
+/*border: 2px solid grey;/*#3b5998;/*#00b2cc;/*#041d4a;*/
+background-color: #C2F177;/*#9DA3B2;*/
+}
+
+.padd_left{padding-left: 15px;}
+
+/* this is for income summary table */
+td.ic_1{width: 80%; }
+td.ic_2{width: 20%; }
+
+/* this is for treatment completion rate summary table */
+td.tcrs_t1{width: 90%; }
+td.tcrs_t2{width: 10%; }
+
+/* this is for partiall payment table*/
+th.pp_date{width: 15%; }
+th.pp_amount{width: 15%; }
+th.pp_tx{width: 20%; }
+th.pp_receipt{width: 20%; }
+th.pp_user{width: 30%; }
+
+/* this is for reminders table*/
+th.rm_count{width: 3%; }
+th.rm_date{width: 7%; }
+th.rm_creater{width: 20%; }
+th.rm_details{width: 58%; }
+th.rm_clear{width: 5%; }
+
+/* this is for number of  patients seen in the surgery */
+th.ps_name{width: 60%; }
+th.ps_seen{width: 40%; }
+
+/* this is for dispatch invoice table */
+th.invoice_in_date2{width: 15%; }
+th.invoice_in_patient2{width: 30%; }
+th.invoice_in_company2{width: 10%; }
+th.invoice_in_id2{width: 15%; }
+th.invoice_in_cost2{width: 15%; }
+th.invoice_in_tray2{width: 15%; }
+
+/* this is for authorisation report table */
+th.ar_date,th.ar_pre_sent,th.ar_pre_received, th.ar_smart{width: 6%; }
+th.ar_insurer{width: 18%; }
+th.ar_pt{width: 10%; }
+th.ar_doc{width: 10%; }
+th.ar_inv{width: 10%; }
+th.ar_comment{width: 14%; }
+th.ar_billed_cost{width: 7%}
+th.ar_status {width: 7%; }
+
+/* this is for notifications table */
+th.ntf_count{width: 10%; }
+th.ntf_desc{width: 60%; }
+th.ntf_action{width: 30%; }
+
+/*pending invoice auth table */
+th.ntf_count2{width: 10%; }
+th.ntf_desc2{width: 50%; }
+th.ntf_action2{width: 20%; }
+th.ntf_cost2{width: 20%; }
+
+/* this is for patient search report table */
+th.ptc_count{width: 5%; }
+th.ptc_date{width: 15%; }
+th.ptc_name{width: 25%; } /* x2 */
+th.ptc_ptnum{width: 10%; }
+th.ptc_type{width: 20%; }
+
+.move_a_bit{
+	margin-left: 10px;
+	margin-top: 10px;
+}
+
+
+/* this is for undispatched invoices table */
+th.invoice_in_date3{width: 12%; }
+th.invoice_in_patient3{width: 23%; }
+th.invoice_in_company3{width: 10%; }
+th.invoice_in_id3{width: 15%; }
+th.invoice_in_insurer3{width: 25%; }
+th.invoice_in_cost3{width: 15%; }
+
+/* this is for procedure count summary by treatment */
+th.tpds_count{width: 5%; }
+th.tpds_pname{width: 50%; }
+th.tpds_planed{width: 15%; }/* x3 */
+
+/* this is for procedure count summary by doctor */
+th.tpds_count2{width: 3%; }
+th.tpds_pname2{width: 32%; }
+th.tpds_planed2{width: 15%; }/* x3 */
+th.tpds_doc_name2{width: 20%}
+
+/* this is for cash xray refersrals in xray refrered report */
+th.xrr_count{width: 5%; }
+th.xrr_date{width: 7%; }
+th.xrr_pname{width: 25%; }
+th.xrr_pno{width: 10%; }
+th.xrr_ref{width: 18%; }
+th.xrr_xray{width: 15%; }
+th.xrr_cost{width: 10%; }
+th.xrr_rec_num{width: 10%; }
+
+.tplan_table_rowc{display: table-cell;width: 100%;}
+.xrr_shade{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 75%;
+	border-bottom:none;
+	border-left: none;
+	padding:2px;
+	/*padding: 0.5em;*/
+}
+.xrr_quantity{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 25%;
+	border-bottom:none;
+	border-left: none;
+	border-right: none;
+	padding:2px;
+	/*padding: 0.5em;*/
+}
+.xrr_shade2{
+   border: 1px solid #15212F;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 2px;
+	border-top:none;
+	border-bottom: none;
+}	
+/*
+.xrr_pno,.xrr_cost{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+	padding: 0.5em;
+}
+
+.xrr_count{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 5%;
+	padding: 0.5em;
+}
+
+.xrr_date{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 8%;
+	padding: 0.5em;
+}
+
+.xrr_pname{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 24%;
+	padding: 0.5em;
+}
+
+.xrr_ref{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 23%;
+	padding: 0.5em;
+}
+/*
+.xrr_xray{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 25%;
+	/*padding: 0.5em;*
+}
+
+.xrr_shade{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 20%;
+	padding: 0.5em;
+	border-left: none;
+
+}
+
+.xrr_quantity{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 5%;
+	padding: 0.5em;
+
+}
+.xrr_quantity2{
+	border-right: none;
+border-bottom: none;
+}
+ .xrr_shade2{
+ border-right: none;
+border-bottom: none;}
+*/
+
+/* this is for insured xray refersrals in xray refrered report */
+th.xrr_count2{width: 4%; }
+th.xrr_date2{width: 7%; }
+th.xrr_pname2{width: 13%; }
+th.xrr_pno2{width: 10%; }
+th.xrr_ref2{width: 12%; }
+th.xrr_xray2{width: 15%; }
+th.xrr_cost2{width: 10%; }
+th.xrr_insurer2{width: 19%; }
+th.xrr_inv2{width: 10%; }
+
+/* this is for insured cadcam refersrals in cadcam refrered report */
+th.xrr_count22{width: 4%; }
+th.xrr_date22{width: 7%; }
+th.xrr_pname22{width: 13%; }
+th.xrr_pno22{width: 7%; }
+th.xrr_ref22{width: 10%; }
+th.xrr_xray22{width: 24%; }
+th.xrr_cost22{width: 10%; }
+th.xrr_insurer22{width: 17%; }
+th.xrr_inv22{width: 8%; }
+
+
+/* this is for income report pay type 1 */
+th.irp_count{width: 3%; }
+th.irp_date{width: 7%; }
+th.irp_pnum{width: 10%; }
+th.irp_pname{width: 20%; }
+th.irp_tx{width: 20%; }
+th.irp_amount{width: 10%; }
+th.irp_receiver{width: 20%; }
+th.irp_receipt{width: 10%; }
+
+/* this is for income report pay type cash and points */
+th.irp_count2{width: 3%; }
+th.irp_date2{width: 7%; }
+th.irp_pnum2{width: 10%; }
+th.irp_pname2{width: 30%; }
+th.irp_amount2{width: 10%; }
+th.irp_receiver2{width: 30%; }
+th.irp_receipt2{width: 10%; }
+
+/* this is for cash balance report to send emails */
+th.cbr_count{width: 3%; }
+th.cbr_pname{width: 16%; }
+th.cbr_pnum{width: 7%; }
+th.cbr_type{width: 11%; }
+th.cbr_mobile{width: 7%; }
+th.cbr_biz{width: 10%; }
+th.cbr_email1{width: 13%; }
+th.cbr_email2{width: 13%; }
+th.cbr_balance{width: 13%; }
+th.cbr_send_email{width: 7%; }
+
+/* this is for income report pay type CREDIT TRANSER */
+th.irp_count3{width: 3%; }
+th.irp_date3{width: 7%; }
+th.irp_pnum3{width: 7%; }
+th.irp_pname3,th.irp_db_name3,th.irp_receiver3{width: 16%; }
+th.irp_db_pnum3{width: 15%; }
+
+th.irp_amount3{width: 7%; }
+
+th.irp_receipt3{width: 13%; }
+
+/* this is for income report DATE RANGE */
+th.inv_ed_count{width: 5%; }
+th.inv_ed_date{width: 10; }
+th.inv_ed_user{width: 20%; }
+th.inv_ed_edit{width: 65%; }
+
+/* this is for income report DATE RANGE */
+th.irp_count4{width: 3%; }
+th.irp_date4{width: 7%; }
+th.irp_pnum4{width: 7%; }
+th.irp_pname4{width: 15%; }
+th.irp_pay_type4{width: 10%; }
+th.irp_tx4{width: 20%; }
+th.irp_amount4{width: 10%; }
+th.irp_receiver4{width: 15%; }
+th.irp_receipt4{width: 13%; }
+
+/* this is for dispatch print out */
+th.invoice_in_date2{width: 15%; }
+th.invoice_in_patient2{width: 40%; }
+th.invoice_in_company2{width: 10%; }
+th.invoice_in_id2{width: 20%; }
+th.invoice_in_cost2{width: 15%; }
+
+/* this is for role assignemmnt table */
+th.role_name{width: 30%; }
+th.role_desc{width: 65%; }
+th.role_grant{width: 5%; }
+
+/* doctor cash comiisnon  table */
+th.dc_count{width: 5%; }
+th.dc_date{width: 15%; }
+th.dc_pt{width: 20%; }
+th.dc_amount{width: 15%; }
+th.dc_receipt{width: 15%; }
+
+/* invoice summary in income report */
+th.inc_sum_count{width: 5%; }
+th.inc_sum_ins{width: 30%; }
+th.inc_sum_num{width: 15%; }
+th.inc_sum_bil{width: 25%; }
+th.inc_sum_auth{width: 25%; }
+
+
+/* doctor perce3ntage contribution  table */
+th.dcp_count{width: 5%; }
+th.dcp_name{width: 55%; }
+th.dcp_amount{width: 20%; }
+th.dcp_percent{width: 20%; }
+
+/* doctor invoice perce3ntage contribution  table */
+th.dcp_count2{width: 5%; }
+th.dcp_name2{width: 35%; }
+th.dcp_amount2{width: 15%; }
+th.dcp_percent2{width: 15%; }
+
+/* this table show results of a ptient search when more than 1 patient is found matching the search criteria */
+th.patient_result_first_name{width: 20%; }
+th.patient_result_middle_name{width: 20%; }
+th.patient_result_last_name{width: 20%; }
+th.patient_result_number{width: 10%; }
+th.patient_type{width: 20%; }
+th.patient_result_select{width: 10%; }
+
+/* this table show allocation status */
+th.allocate_status_count{width: 2%; }
+th.allocate_status_pid{width: 7%; }
+th.allocate_status_name{width: 10%; }
+th.allocate_status_balance{width: 7%; }
+th.allocate_status_type{width: 15%; }
+th.allocate_status_appoint{width: 10%; }
+th.allocate_status_allocated{width: 11%; }
+th.allocate_status_wait{width: 6%; }
+th.allocate_status_total_wait{width: 10%; }
+th.allocate_status_tstatus{width: 12%; }
+th.allocate_status_discharge{width: 9%; }
+th.allocate_status_card{width: 1%; }
+
+/* this is for insured companies table */
+th.count{width: 1%; }
+th.emp_name{width: 15%; }
+th.ins_name{width: 19%; }
+th.pre_auth{width: 5%; }
+th.smart_run{width: 5%; }
+th.co_pay{width: 10%; }
+th.daily_max_limit{width: 5%; }
+th.val{width: 5%; }
+th.start_date{width: 7%; }
+th.end_date{width: 7%; }
+th.cover_type{width: 8%; }
+th.cover_limit{width: 6.5%; }
+th.procedures{width: 6.5%; }
+th.insured{width: 5%; }
+
+/*this shows xrays doen in the past */
+th.xray_hist_count{width: 5%; }
+th.xray_hist_date{width: 10%; }
+th.xray_hist_xray_type{width: 35%; }
+th.xray_hist_comment{width: 50%; }
+
+/*this shows dispatch notes by insurer */
+th.ins_ed1_date{width: 15%; }
+th.ins_ed1_dispnum{width: 15%; }
+th.ins_ed1_title{width: 55%; }
+th.ins_ed1_creator{width: 15%; }
+
+/*this shows dispatch notes by patient */
+th.pt_ed1_inv{width: 13%; }
+th.pt_ed1_date{width: 13%; }
+th.pt_ed1_dispnum{width: 13%; }
+th.pt_ed1_title{width: 46%; }
+th.pt_ed1_dispatcher{width: 15%; }
+
+/*this shows family group in patient contacts */
+th.fm_pt_name{width: 54%; }
+th.fm_pt_rel{width: 20%; }
+th.fm_pt_file{width: 13%; }
+th.fm_pt_del{width: 13%; }
+
+/*this shows family group in credit transfer */
+th.fm_pt_name2{width: 49%; }
+th.fm_pt_rel2{width: 20%; }
+th.fm_pt_file2{width: 13%; }
+th.fm_pt_bal2{width: 18%; }
+th.fm_pt_del2{width: 13%; }
+
+/*this shows table for booking appointments */
+table.fixed_column{
+	table-layout: fixed;
+	width:100%;}
+th.appoint_time{width: 100px; }
+th.appoint_surgery{width: 300px; }
+table.cadcam_type_table{
+	table-layout: fixed;
+	width:70%;
+	
+}
+table.cadcam_type_table2{
+	table-layout: fixed;
+	width:100%;
+	
+}
+.headcol {
+            /*position:fixed;*/ 
+
+        }
+
+.appointment_table_div{
+	width:100%; 
+	height:400px;
+	overflow-x:scroll;  
+}
+
+/*this shows edit tplan with no invoice */
+th.etp_count{width: 3%; }
+th.etp_procedure{width: 35%; }
+th.etp_details{width: 20%; }
+th.etp_pay_type{width: 8%; }
+th.etp_cost{width: 8%; }
+th.etp_authorised_cost{width: 8%; }
+th.etp_delete{width: 8%; }
+
+
+/*this shows edit  no invoice */
+th.etp_count2{width: 1%; }
+th.etp_procedure2{width: 35%; }
+th.etp_details2{width: 20%; }
+th.etp_pay_type2{width: 9%; }
+th.etp_cost2{width: 8%; }
+th.etp_authorised_cost2{width: 8%; }
+th.etp_delete2{width: 9%; }
+th.etp_status2{width: 10%; }
+
+/*this shows unpaid invoices in insurance payments */
+th.invoice_in_count{width: 4%; }
+th.invoice_in_date{width: 6%; }/*1 */
+th.invoice_in_doctor{width: 12%; }
+th.invoice_in_patient{width: 14%; }
+th.invoice_in_company{width: 17%; } /*2 */
+th.invoice_in_id{width: 8%; }/*4 */
+th.invoice_in_cost{width: 10%; } /* x2 */
+th.invoice_in_tray{width: 10%; }
+th.invoice_in_finished{width: 9%; }/*3 */
+
+
+/*this shows INVOICE DOCTOR COMMISISONS table */
+th.dc_invoice_in_count{width: 3%; }
+th.dc_invoice_in_date{width: 7%; }
+th.dc_invoice_in_doctor{width: 17%; }
+th.dc_invoice_in_patient{width: 16%; }
+th.dc_invoice_in_company{width: 25%; }
+th.dc_invoice_in_id{width: 12%; }
+th.dc_invoice_in_cost{width: 10%; }
+th.dc_invoice_in_tray{width: 10%; }
+
+
+
+/*doctor schedule*/
+th.ds_count{width: 5%; }
+th.ds_pname{width: 30%; }
+th.ds_task{width: 55%; }
+th.ds_time{width: 10%; }
+
+/*this shows lab work due IN */
+th.lab_in_count{width: 3%; }
+th.lab_in_id{width: 5%; }
+th.lab_in_patient{width: 16%; }
+th.lab_in_doctor{width: 16%; }
+th.lab_in_date{width: 7%; }
+th.lab_in_technician{width: 14%; }
+th.lab_in_cost{width: 7%; }
+th.lab_in_dispatch{width: 7%; }
+th.lab_in_tray{width: 12%; }
+th.lab_in_finished{width: 6%; }
+
+th.lab_in_technician2{width: 17%; }
+th.lab_in_patient2{width: 18%; }
+th.lab_in_doctor2{width: 17%; }
+
+/*this is for the trays table in lab due in*/
+th.tray_no{width: 30%; }
+th.tray_date{width: 70%; }
+
+/*this is for the privileges table*/
+th.priv_grant{width: 30%; }
+th.priv_name{width: 70%; }
+
+/*this is for the admin invoice approval table  */
+th.iaa_invoice{width: 10%; }
+th.iaa_user{width: 15%; }
+th.iaa_date{width: 7%; }
+th.iaa_comment{width: 53%; }
+th.iaa_raiser{width: 15%; }
+
+/*this is for the extras table in privileges */
+th.priv_grant1{width: 10%; }
+th.priv_name1{width: 15%; }
+th.priv_desc1{width: 75%; }
+
+/*this shows lab work due out */
+th.lab_out_count{width: 3%; }
+th.lab_out_id{width: 7%; }
+th.lab_out_patient{width: 20%; }
+th.lab_out_doctor{width: 20%; }
+th.lab_out_date{width: 10%; }
+th.lab_out_technician{width: 16%; }
+th.lab_out_cost{width: 7%; }
+th.lab_out_dispatch{width: 7%; }
+
+/* this is for removing procedure from points scheme*/
+th.loyal_procedure{width: 50%; }
+th.loyal_points{width: 25%; }
+th.loyal_remove{width: 25%; }
+
+/* this is for patient refres*/
+th.ref_count{width: 3%; }
+th.ref_name{width: 30%; }
+th.ref_tel{width: 30%; }
+th.ref_email{width: 27%; }
+th.ref_del{width: 10%; }
+
+/* this is for unbilled xrays in treatment plan*/
+
+th.unbilled_date{width: 10%; }
+th.unbilled_procedure{width: 60%; }
+th.unbilled_pay_type{width: 10%; }
+th.unbilled_cost{width: 10%; }
+th.unbilled_select{width: 10%; }
+
+/* appointments table */
+th.apr_count{width: 2%; }
+th.apr_date{width: 7%; }
+th.apr_doc{width: 15%; }
+th.apr_surgery{width: 15%; }
+th.apr_pt{width: 19%; }
+th.apr_phone{width: 9%; }
+th.apr_treatment{width: 7%; }
+th.apr_time{width: 5%; }
+th.apr_status{width: 9%; }
+th.apr_added_by{width: 11%; }
+
+/* login time report */
+th.ltr_count{width: 5%; }
+th.ltr_name{width: 55%; }
+th.ltr_date{width: 15%; }
+th.ltr_duration{width: 10%; }
+
+/* expense report in income report*/
+th.irde_count{width: 5%; }
+th.irde_date{width: 10%; }
+th.irde__user{width: 25%; }
+th.irde_expense{width: 40%; }
+th.irde_amount{width: 20%; }
+
+/* delete receipts table*/
+th.dp_count{width: 5%; }
+th.dp_date{width: 10%; }
+th.dp_name{width: 20%; }
+th.dp_pnum{width: 10%; }
+th.dp_ptype{width: 20%; }
+th.dp_receipt{width: 15%; }
+th.dp_amount{width: 15%; }
+th.dp_del{width: 5%; }
+
+/* delete receipts table*/
+th.pl_count{width: 5%; }
+th.pl_name{width: 20%; }
+th.pl_pnum{width: 10%; }
+th.pl_sname{width: 15%; }
+th.pl_time{width: 15%; } /* x2 */
+th.pl_wtime{width: 10%; }
+th.pl_points{width: 10%; }
+
+/* patient waiting time report table*/
+th.pwt_count{width: 5%; }
+th.pwt_date{width: 15%; }
+th.pwt_name{width: 20%; }
+th.pwt_pnum{width: 10%; }
+th.pwt_sname{width: 20%; }
+th.pwt_time{width: 15%; }
+th.pwt_points{width: 15%; }
+
+/* deleted payments report table*/
+th.dpr_count{width: 5%; }
+th.dpr_date{width: 10%; }/* x2 */
+th.dpr_name{width: 15%; }
+th.dpr_pnum{width: 10%; }
+th.dpr_ptype{width: 15%; }
+th.dpr_receipt{width: 13%; }
+th.dpr_amount{width: 10%; }
+th.dpr_deleter{width: 12%; }
+
+
+/* delete invoices table*/
+th.di_count{width: 5%; }
+th.di_date{width: 10%; }
+th.di_doc{width: 15%; }
+th.di_pname{width: 15%; }
+th.di_pnum{width: 7%; }
+th.di_invoice{width: 13%; }
+th.di_billed{width: 10%; }
+th.di_authorised{width: 12%; }
+th.di_del{width: 13%; }
+
+/* delete invoices report table*/
+th.dir_count{width: 3%; }
+th.dir_date{width: 7%; } /* x2 */
+th.dir_doc{width: 12.5%; }
+th.dir_pname{width: 15%; }
+th.dir_pnum{width: 5%; }
+th.dir_ptype{width: 15%; }
+th.dir_invoice{width: 10%; }
+th.dir_billed{width: 10%; }
+th.dir_authorised{width: 10%; }
+th.dir_deleter{width: 12.5%; }
+
+/* payment pledges report*/
+th.ucp_count{width: 4%; }
+th.ucp_pt{width: 15%; }
+th.ucp_pt_num{width: 6%; }
+th.ucp_mobile{width: 8%; }
+th.ucp_biz{width: 10%; }
+th.ucp_bal{width: 9%; }
+th.ucp_date_due{width: 7%; }
+th.ucp_day_past{width: 4%; }
+th.ucp_pledge_date{width: 7%; }
+th.ucp_added_by{width: 10%; }
+th.ucp_comment{width: 20%; }
+
+/* treatment completion report*/
+th.tcr1_ount{width: 3%; }
+th.tcr1_doctor{width: 12%; }
+th.tcr1_date{width: 6%; }
+th.tcr1_patient{width: 15%; }
+
+th.tcr1_procedure{width: 15%; }
+th.tcr1_billed{width: 10%; }
+th.not_started_status{width: 10%; }
+th.started_status{width: 10%; }
+th.finished_status{width: 10%; }
+th.tcr1_authorised{width: 10%; }
+
+
+/* this is for pre-authorisation of invoices*/
+th.inv_auth_date{width: 10%; }
+th.inv_auth_pt{width: 10%; }
+th.inv_auth_type{width: 10%; }
+th.inv_auth_inv{width: 10%; }
+th.inv_auth_pay{width: 10%; }
+th.inv_auth_sent{width: 10%; }
+th.inv_auth_received{width: 10%; }
+th.inv_auth_comment{width: 20%; }
+th.inv_auth_smart{width: 10%; }
+
+
+
+.label2{
+/*font-weight: bold;*/
+color: rgb(157, 159, 163);
+font-size: small;
+}
+.label{
+font-weight: bold;
+color: #FFFFFF;
+font-size: small;
+}
+.small_heading{
+font-weight: bold;
+color: rgb(157, 159, 163);
+font-size: small;
+}
+.page_heading{
+	text-align: center;
+	color:  #FFFFFF;/*#4D87C7;*/
+	/*font-weight: bold;*/	
+	margin-top: 5px;
+	margin-bottom: 5px;
+
+    font-family: "agency-gothic-ct-cond-tt-n5","agency-gothic-ct-cond-tt",arial,sans-serif;
+    font-size: 24px;
+   /* font-weight: 400;
+    padding: 0;*/
+	
+}
+.unregistered_appointment_highlight{
+	color: #F9C107;
+	/*background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%)*/
+}
+caption, .caption{
+
+color: #153f9c;
+background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+padding: 5px 2px;
+ font-weight: bold;
+}
+thead{
+	background-color: #0F161E;
+	
+}
+
+thead th {
+    color: #FFFFFF;
+    font-weight: 400;
+    padding: 10px 2px;
+	 border: 1px solid #98b2d0;
+	 padding: 2px 2px;
+	 font-weight: bold;
+}
+ table {
+    border-spacing: 0;
+    font-family: "ff-meta-web-pro-n4","ff-meta-web-pro",arial,sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: normal;
+    text-align: center;
+    border-collapse: collapse;
+	
+    border-spacing: 0;
+}
+/*tr{background-color: #123567; color: #B0B3B6;}*/
+table:not(.rowspan_table) tr{background-color: #1f6d42; color: #B0B3B6;}
+td {
+    border: 1px solid #d7dbe0;
+    padding: 2px 2px;
+    font-weight: 700;
+}
+tbody  tr:hover,.invoice_view_row:hover, .hover-row:hover, .div_row:hover ,.tplan_table_row:hover, .table_row_click_bg ,
+.waiver_row:hover, .waiver_sub_header,.invoice_table_row:hover ,table.rowspan_table tbody:hover td[rowspan], tr:hover td {
+  background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+   /* border: 0 none;*/
+  
+    color: #275bce;
+	color: #5667cc;
+}
+
+
+.tplan_procedures{
+	padding-bottom: 10px;
+}
+.hover:hover{
+ background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+  color: #7697e2;
+}
+.highlight{
+ background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+  color: #7697e2;
+}
+.teeth_div{
+	display:none;
+	}
+	
+.inner_ir_table
+{display: table-cell;border-collapse:collapse;}	
+.waiver_table3 {
+	display: table;
+	background-color: #2d5794;
+	color: #B0B3B6;
+	border-collapse: collapse; 
+	width: 100%;
+	
+}
+
+.teeth_body, .tplan_table,.invoice_view_table, .waiver_table, .invoice_table, .income_report_invoices_table {
+	display: table;
+	background-color: #2f6dc7;
+	color: #B0B3B6;
+	border-collapse: collapse; 
+	width: 100%;
+	height: 100%;
+}
+.teeth_body2{
+	display: table;
+	background-color: #34588c;
+	color: #B0B3B6;
+	border-collapse: collapse; 
+	width: 100%;
+	
+}
+.teeth_row{
+	display: table-row;
+}
+.inv_view2_80{
+	display: table-cell;
+	width:70%;
+	border: 1px solid;
+	#15212F;
+}
+.inv_view2_10{
+	display: table-cell;
+	width:15%;
+	border: 1px solid;
+	#15212F;
+}
+.inv_view2_10{
+	display: table-cell;
+	width:15%;
+	border: 1px solid;
+	#15212F;
+}
+.inv_view_80{
+	display: table-cell;
+	width:80%;
+	border: 1px solid;
+	#15212F;
+}
+
+.inv_view_20{
+	display: table-cell;
+	width:20%;
+	border: 1px solid;
+	#15212F;
+}
+.teeth_heading_cell{display: table-cell;border: 1px solid #15212F;}
+.tooth_number{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+}
+.3cols{
+	/*display: table;*/
+	width: 70%;
+}
+.tplan_table_row,.invoice_view_row,.tplan_table_row2,.invoice_table_row2, .waiver_table_row2{
+	display: table-row;
+}
+.invoice_view_table{font-weight: bold;}
+.tplan_table_row2, {
+background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+color: black;
+}
+.tplan_procedure_row{
+
+display: table-cell;
+border-collapse: collapse; 
+border-bottom: 1px solid #15212F;
+}
+
+.tplan_created, .tplan_last_seen,.tplan_status{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+
+}
+
+
+.irit_count{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 3%;
+	padding: 0.1em;
+}
+
+.irit_date_invoice,  .irit_uncost{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 7%;
+	padding: 0.1em;
+}
+.irit_paid{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 8%;
+	padding: 0.1em;
+}
+.irit_acost{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 9%;
+	padding: 0.1em;
+}
+
+.irit_inv_num {
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+	padding: 0.1em;
+}
+
+.irit_pname{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 12%;
+	padding: 0.1em;
+}
+.irit_procedure{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 14%;
+	padding: 0.1em;
+}
+.irit_ptype{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 15%;
+	padding: 0.1em;
+}
+
+
+.irit_pay_date{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 43.75%;/*7%;*/
+padding: 0.1em;
+}
+.irit_pay_recipt{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 56.25%;/*9%;*/
+padding: 0.1em;
+}
+.irit_pay_date2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 7%;
+padding: 0.1em;
+border-left: none;
+border-top:none;
+}
+.irit_pay_recipt2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 9%;
+padding: 0.1em;
+border-top:none;
+}
+.irit_pay_details_hold{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 16%;
+padding: 0;
+margin: 0;
+border-bottom: none;
+}
+.irit_total1{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 61%;
+}
+.irit_total11{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 16%;
+}
+.irit_tot_auth{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 9%;
+}
+.irit_tot_bill{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 7%;
+}
+ .irit_tot_pay{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 8%;
+}
+.irit_tot_auth{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 9%;
+}
+.irit_total12
+{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 76%;
+}
+.irit_gross
+{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 24%;
+}
+.tplan_procedure_row3{
+	display: table;
+	/*border: 1px solid #15212F;*/
+	border: 0;
+	text-align: left;
+	width: 100%;
+	
+
+}
+
+.tplan_table_row3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 70%;
+
+}
+.tplan_procedure3_1{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 50.4%;
+}
+.tplan_status3_1, .tplan_last_seen3_1{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 9.8%;
+}
+.tplan_procedure3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 72%;
+	border-left: none;
+	border-top: none;
+}
+.tplan_last_seen3, .tplan_status3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 14%;
+	border-top: none;
+}
+.tplan_last_seen3{
+
+	border-right: none;
+}
+
+.tplan_select,.tplan_id{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+
+}
+.tplan_procedure{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 50%;
+}
+
+.tplan_procedure_table{
+	display: table;
+	background-color: #121923;
+	color: #B0B3B6;
+	border-collapse: collapse; 
+	width: 70%;
+}
+.tplan_table_caption{
+	display:table-caption;
+color: #1F232C;
+background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+padding: 5px 2px;
+ font-weight: bold;	
+}
+.teeth_caption{
+	/*display:table-caption;*/
+color: #1F232C;
+background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+/*padding: 5px 2px;*/
+ font-weight: bold;	
+ 
+}
+
+.waiver_pt_name2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 13%;
+}
+.follow_up_date{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 7%;
+}
+.waiver_pt_name{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 20%;
+}
+.waiver_pt_comment{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 30%;
+}
+.waiver_pt_comment2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 26%;
+}
+.waiver_pt_treatment2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 8%;
+}
+.waiver_pt_bal, .waiver_pt_amount,.waiver_pt_action,.waiver_pt_date_comment,.waiver_pt_user{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 10%;
+}
+.cfu_date_comment{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 10%;
+}
+.cfu_user{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 15%;
+}
+.cfu_comment{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 35%;
+}
+.waiver_pt_date_comment2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 6%;
+}
+.waiver_comments{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 50%;
+}
+.waiver_comments2{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 42%;
+}
+.cfu_tplan{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 10%;
+}
+.cfu_status{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 30%;
+}
+.cfu_comments{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 60%;
+}
+.no_border_right{
+	border-right: none;
+}
+.no_border_bottom{
+	border-bottom: none;
+}
+.procedure_holder{
+	display: table-cell;
+	border: 1px solid #15212F;
+	
+	width: 50%
+}
+.treat_notes_cell{
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 34%;
+	padding: 0;
+}
+th.treat_notes_cell2{width: 34%;}
+th.treat_procedure2{	width: 17%;}
+th.treat_procedure_count2{	width: 1%;}
+th.treat_payment_method2{	width: 6%;}
+th.treat_unaothorised_cost2{	width: 9%;}
+th.treat_auothorised_cost2{	width: 8%;}
+th.treat_status2{	width: 12%;}
+th.treat_invoice2{	width: 13%;}
+
+
+th.treat_notes_cell3{width: 37%;}
+th.treat_procedure3{	width: 17%;}
+th.treat_procedure_date3{	width: 6%;}
+th.treat_payment_method3{	width: 6%;}
+th.treat_unaothorised_cost3{	width: 9%;}
+th.treat_auothorised_cost3{	width: 9%;}
+th.treat_status3{	width: 9%;}
+th.treat_planned_by3{	width: 13%;} 
+
+
+
+.treat_notes3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 50%;/*25%;*/
+	border-bottom:none;
+	border-right:none;
+} 
+ .treat_doctor3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 32%;/*7%;*/
+	border-bottom:none;
+} 
+  .treat_date3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 18%;/*2%;*/
+	border-bottom:none;
+	border-left: none;
+}
+
+.treat_notes{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 50%;/*25%;*/
+	border-bottom:none;
+	border-right:none;
+} 
+ .treat_doctor{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 32%;/*7%;*/
+	border-bottom:none;
+} 
+  .treat_date{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 18%;/*2%;*/
+	border-bottom:none;
+	border-left: none;
+}
+	
+.treat_unaothorised_cost{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 9%;
+}
+.treat_auothorised_cost{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 8%;
+}
+.treat_invoice{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 13%;
+}
+.treat_payment_method{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 6%;
+}
+.treat_procedure_count{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 1%;
+}
+
+.treat_procedure{
+	display: table-cell;
+	border: 1px solid #15212F;
+
+	width: 17%;
+}
+
+
+.treat_status{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: center;
+	width: 12%;
+}
+.white_text{color: #FFFFFF;}
+.hover-row{
+	padding: 5px 0;
+
+}
+
+
+.invoice_table_row,.tplan_table_row2{
+	display: table-row;
+}
+.invoice_created{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+	padding: 0.5em;
+}
+.invoice_select,.invoice_id{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+	/*padding: 0.5em;*/
+}
+.invoice_select,.padding_kidogo{padding: 0.5em;}
+.invoice_procedure3_1{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 30%;
+	padding: 0.5em;
+}
+.invoice_status3_1, .invoice_last_seen3_1{
+	display: table-cell;
+	border: 1px solid #15212F;
+	text-align: left;
+	width: 10%;
+	padding: 0.5em;
+}
+.invoice_procedure_row3{
+	display: table;
+	/*border: 1px solid #15212F;*/
+	border: 0;
+	text-align: left;
+	width: 100%;
+	padding: 0.5em;
+}
+
+
+
+.invoice_procedure3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	
+	width: 60%;
+	border-left: none;
+	border-top: none;
+	padding: 0.5em;
+}
+.invoice_status3,.invoice_last_seen3{
+	display: table-cell;
+	border: 1px solid #15212F;
+	padding: 0.5em;	
+	width: 20%;
+	border-top: none;
+}
+.invoice_last_seen3{
+
+	border-right: none;
+}
+
+
+
+.procedures_table{
+		width: 100%;
+		table-layout: fixed;
+}
+table.procedures_table th.count{width: 5%;}
+table.procedures_table th.proc_border{width: 45%;}
+table.procedures_table th.proc_type{width: 10%;}
+table.procedures_table th.proc_cost{width: 10%;}
+table.procedures_table th.yes_border{width: 10%;}
+table.procedures_table th.no_border{width: 10%;}
+table.procedures_table th.delete{width: 10%;}
+table.insurance_company{
+	width: 50%;
+	table-layout:fixed;
+}
+table.insurance_companydd{
+	width: 100%;
+	table-layout:fixed;
+}
+table.insurance_company2{
+	width: 50%;
+	table-layout:fixed;
+}
+table.expense_type{
+	width: 60%;
+	table-layout:fixed;
+}
+table.add_axray{
+	width: 70%;
+	table-layout:fixed;
+}
+table.drugs{
+	width: 100%;
+	table-layout:fixed;
+}
+table.public_holidays{
+	width: 50%;
+	table-layout:fixed;
+}
+table.working_days{
+	width: 98%;
+	table-layout:fixed;
+}
+
+/*this is for working hours table */
+th.work_day{width: 14%;}
+
+/*prescription drugs table stock in*/
+th.presc_count3{width: 5%;}
+th.presc_name3{width: 70%;}
+th.presc_type3{width: 10%;}
+th.presc_quantity3{width: 15%;}
+
+/*prescription drugs table */
+th.presc_count{width: 5%;}
+th.presc_name{width: 55%;}
+th.presc_type{width: 10%;}
+th.presc_price{width: 15%;}
+th.presc_del{width: 15%;}
+
+/*prescription drugs table */
+th.phol_count{width: 5%;}
+th.phol_month{width: 20%;}
+th.phol_day{width: 20%;}
+th.phol_desc{width: 45%;}
+th.phol_del{width: 10%;}
+
+/*swapped patient report table */
+th.spr_count{width: 5%;}
+th.spr_name{width: 30%;}
+th.spr_pnum_old{width: 15%;}
+th.spr_pnum_new{width: 15%;}
+th.spr_changer{width: 25%;}
+th.spr_date{width: 10%;}
+
+/*patien tlist summary registed report */
+th.srpc_count{width: 10%;}
+th.srpc_type{width: 15%;}
+th.srpc_company{width: 60%;}
+th.srpc_pts{width: 15%;}
+
+/*patien tlist detailed registed report */
+th.srpd_count{width: 5%;}
+th.srpd_registered{width: 6%;}
+th.srpd_pname{width: 13%;}
+th.srpd_pnum{width: 5%;}
+th.srpd_type{width: 15%;}
+th.srpd_mobile{width: 8%;}
+th.srpd_biz_no{width: 10%;}
+th.srpd_email1{width: 13%;}
+th.srpd_email2{width: 13%;}
+th.srpd_address{width: 8%;}
+th.srpd_email{width: 4%;}
+
+/*patient payments table */
+th.pp_count{width: 5%;}
+th.pp_date{width: 10%;}
+th.pp_mode{width: 10%;}
+th.pp_type{width: 50%;}
+th.pp_amount{width: 10%;}
+th.pp_receipt{width: 15%;}
+
+/*expense types table */
+th.exp_count{width: 5%;}
+th.exp_name{width: 80%;}
+th.exp_del{width: 15%;}
+
+/*expenses table */
+th.exp_count2{width: 5%;}
+th.exp_date2{width: 10%;}
+th.exp_name2{width: 35%;}
+th.exp_cost2{width: 10%;}
+th.exp_creator2{width: 20%;}
+th.exp_class2{width: 20%;}
+
+/*delete expenses table */
+th.exp_count22{width: 5%;}
+th.exp_date22{width: 7%;}
+th.exp_name22{width: 33%;}
+th.exp_cost22{width: 10%;}
+th.exp_creator22{width: 20%;}
+th.exp_class22{width: 20%;}
+th.exp_del22{width: 5%;}
+
+/*statement for patient */
+th.st_date{width: 8%;}
+th.st_tx{width: 32%;}
+th.st_deb,th.st_cred{width: 10%;}
+
+/* email address credential */
+th.ema_count{width: 5%}
+th.ema_name{width: 20%}
+th.ema_address{width: 20%}
+th.ema_pasw{width: 15%}
+th.ema_desc{width: 40%}
+
+/* visa summary report */
+th.vbc_count{width: 3%}
+th.vbc_bank{width: 40%}
+th.vbc_charge{width: 12%}
+th.vbc_pay_amount{width: 15%}
+th.vbc_charge_amount{width: 15%}
+th.vbc_credit{width: 15%}
+
+/* drugs sold report */
+th.dsr1_ount{width: 3%}
+th.dsr1_doc{width: 20%}
+th.dsr1_date{width: 7%}
+th.dsr1_tx{width: 10%}
+th.dsr1_pt{width: 20%}
+th.dsr1_drug{width: 20%}
+th.dsr1_cost{width: 10%}
+th.dsr1_presc_num{width: 10%}
+
+/*prescription drugs in treatment done */
+th.presc_name{width: 55%;}
+th.presc_doc{width: 15%;}
+th.presc_date{width: 12%;}
+th.presc_number{width: 18%;}
+
+th.add_axray_rel_count{width: 2%}
+th.add_xray_name{width: 28%}
+th.add_xray_specify{width: 10%}
+th.add_axray_no_specify{width: 15%}
+th.add_axray_del{width: 5%}
+th.add_xray_cost{width: 10%}
+
+th.name {width: 37%}
+th.del {width: 10%}
+th.count, td.count {width: 3%; padding: 0 0 0 5px;}
+
+th.name22 {width: 30%}
+th.inv_limit {width: 7%}
+th.del22 {width: 10%}
+th.count22{width: 3%; padding: 0 0 0 5px;}
+th.ed22 {width: 10%}
+th.ep22 {width: 15%}
+th.day_col {width: 10%}
+th.start_day_col {width: 15%}
+
+table.patient_referrers{
+	width: 50%;
+	table-layout:fixed;
+}
+
+table.insurance_procedure_table{
+	width: 100%;
+	table-layout:fixed;
+}
+
+th.count_iep {width: 5%}
+th.name_iep {width: 75%}
+th.check_iep {width: 20%}
+
+fieldset{
+	border: 2px solid #FFFFFF;/*#C00001;/*041d4a;*/
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	padding: 5px;
+}
+.highlight_on_hover:hover{
+	background-color: #EEEEEE;
+	color: #444444;
+}
+.change_label_color{color: #444444;}
+legend{
+   background-color: #336699;/*#FFFFFF;*/
+    border: 1px solid #AAAAAA;
+    border-radius: 2px 2px 2px 2px;
+  /*  box-shadow: 3px 3px 15px #BBBBBB;*/
+    color: #FFFFFF;/*#444444;*/
+    font-weight: bold;
+    padding: 5px 10px;
+	
+font-size: small;
+/*
+color: #C00001;*/
+
+}
+.grey_bottom_border{
+border-bottom: 1px solid #3A3F48;
+}
+.grey_side_border{
+border-left: 1px solid #3A3F48;
+}
+.get_alias_button{visibility:hidden;}
+.hide_element{visibility:hidden;}
+.blue_higlight:hover{
+	background-color: #15212F;
+	color: #FFFFFF;
+}
+.underline {text-decoration:underline;}
+.line_through {text-decoration:line-through;}
+.remove-inside-padding{padding: 5px 0;}
+.no_padding{padding: 0;}
+.top-bottom-padding{
+	padding-top:50px;
+	padding-bottom: 50px;
+	}
+.put_right{
+			float: right;
+}
+.put_center{
+	text-align: center;
+}
+
+.feedback, .feedback2{
+	margin: 5px 0;}
+
+.show_loader{
+
+	color: #101c8d;
+		-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	margin: 0.5em;
+	padding: 5px 0px 5px 30px;
+}
+.background_yellow{
+		border: 1px solid #FFE57E;
+	background-color:#FFE57E;
+}
+
+#tabs,#cadcam_tabs,#cadcam_tabs2,#cadcam_tabs3,#cadcam_tabs4{border:none;}	
+#cadcam_tabs2{background-color:#2174d6;}
+.tab_link:hover{
+	background-color: #286fc1;
+	color: #ffffff !important;	
+}
+
+a.tab_link.level0 {}	
+
+
+#tabs .ui-tabs-nav , #cadcam_tabs .ui-tabs-nav ,#cadcam_tabs2 .ui-tabs-nav,#cadcam_tabs3 .ui-tabs-nav,#cadcam_tabs4 .ui-tabs-nav{ 
+    padding: 0; 
+    background: #D9D9D9;
+    border: none; 
+	margin: 0;
+	
+} 
+#tabs .ui-tabs-nav li , #cadcam_tabs .ui-tabs-nav li, #cadcam_tabs2 .ui-tabs-nav li, #cadcam_tabs3 .ui-tabs-nav li, #cadcam_tabs4 .ui-tabs-nav li{ 
+    position: static; 
+    margin: 0px; 
+	
+   /* border-bottom: 1px solid #327e04 !important; 
+    -moz-border-radius: 0px; 
+    -webkit-border-radius: 0px; 
+    border-radius: 0px; */
+} 
+#cadcam_tabs2 .ui-tabs-nav li.ui-state-default a,#cadcam_tabs3 .ui-tabs-nav li.ui-state-default a
+,#cadcam_tabs4 .ui-tabs-nav li.ui-state-default a{color:#000000;}
+#cadcam_tabs2 .ui-tabs-nav li.ui-state-default,#cadcam_tabs3 .ui-tabs-nav li.ui-state-default,
+#cadcam_tabs4 .ui-tabs-nav li.ui-state-default{
+	background-color: #D9D9D9;
+	border:none;
+	border-left:1px solid #ffffff;
+
+}
+#cadcam_tabs2 .ui-tabs-nav li.ui-state-active,#cadcam_tabs3 .ui-tabs-nav li.ui-state-active
+,#cadcam_tabs4 .ui-tabs-nav li.ui-state-active{background-color:#15212F;}
+#cadcam_tabs2 .ui-tabs-nav li.ui-state-active a,#cadcam_tabs3 .ui-tabs-nav li.ui-state-active a,#cadcam_tabs4 .ui-tabs-nav li.ui-state-active a{color:#FFFFFF;}
+#cadcam_tabs2 .ui-tabs-nav li.ui-state-default:hover,#cadcam_tabs3 .ui-tabs-nav li.ui-state-default:hover
+,#cadcam_tabs4.ui-tabs-nav li.ui-state-default:hover{color:#FFFFFF;}
+.ui-tabs-panel{
+	padding:5px 0px;
+	background-color:#15212F;
+	border:0px;
+}
+
+/*
+#tabs .ui-tabs-nav li:first-child { 
+    -moz-border-radius: 6px 0px 0px 6px; 
+    -webkit-border-radius: 6px 0px 0px 6px; 
+    border-radius: 6px 0px 0px 6px; 
+} 
+#tabs .ui-tabs-nav li:last-child { 
+    -moz-border-radius: 0px 6px 6px 0px; 
+    -webkit-border-radius: 0px 6px 6px 0px; 
+    border-radius: 0px 6px 6px 0px; 
+} */
+.heading_bg{
+	background-color: #4A4E59;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+.heading_bg_click{
+	background-color: #4A4E59;
+	color: #FFFFFF;
+
+}
+table.allocations tbody tr:hover{
+	background: #4A4E59;
+	color: #FFFFFF;
+}
+
+
+
+.show_element
+{
+visibility:visible;
+}
+.header-fixed { 
+    position: fixed; 
+    top: 0px;
+	
+	display:none;
+	/*visibility:hidden;
+    background-color:white;*/
+}
+
+.float_me_left{
+	float: left;
+	display: block;
+	width: 30px;
+	display: block;
+}
+.servicesdropped {
+display:none;
+text-align:left;
+position:absolute;
+background:#172323;
+font-size:12px;
+width:590px;
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+border:1px solid #000;/*
+margin:10px 0 0 20px;
+padding:10px 20px 20px;
+ left: 0;*/
+ top: 100%;
+ padding: 0; margin: 0;
+}
+
+.servicesdropped p.textleft {
+float:left;
+font-size:12px;
+width:200px;
+margin:10px 0 0;
+padding:0 20px 15px 10px;
+}
+
+.servicesdropped ul.middle {
+text-align:left;
+float:left;
+border-right:1px solid #333;
+border-left:1px solid #333;
+font-size:12px;
+width:180px;
+margin:0;
+padding:0;
+}
+
+.servicesdropped ul.right {
+text-align:left;
+float:left;
+font-size:12px;
+width:178px;
+margin:0;
+padding:0;
+}
+.make_bold{font-weight: bold;}
+.servicesdropped ul.right li a,.servicesdropped ul.middle li a {
+list-style-type:none;
+display:block;
+color:#888;
+font-size:12px;
+margin:0;
+padding:5px 0 5px 20px;
+}
+
+.servicesdropped ul.right li a:hover,.servicesdropped ul.middle li a:hover {
+list-style-type:none;
+color:#9FC54E;
+display:block;
+font-size:12px;
+margin:0;
+padding:5px 0 5px 21px;
+}
+/*
+tr:nth-child(even) {
+    background-color: #0D141C;
+	 
+}*/
+
+table:not(.rowspan_table) tr:nth-child(even) {
+    background-color: #0D141C;
+	 
+}
+.light_blue_background{background-color: #A0D1E0;color: #000000;}
+
+.blue_shade_background{background-color: #53A3C2;color: #000000;}
+
+.total_background{background-color: #EDB90B;color: #000000;}
+tr.total_background{background-color: #EDB90B;color: #000000;}
+tr.blue_shade_background{background-color: #53A3C2;color: #000000;}
+tr.light_blue_background{background-color: #A0D1E0;color: #000000;}
+.in_invoice{color: #82CB78; font-size: small;}
+.invoiced{background-color: #82CB78; color:black;}
+/*.statement_tb td{color: #D8D8D8;}*/
+
+#statement_tb tr th + th  +th,
+#statement_tb tr td  +td  + td, .bal_ins{
+    background-color: #A0D1E0;
+	color: black;
+	
+}	
+
+#statement_tb tr th + th  +th + th + th,
+#statement_tb tr td  +td  + td + td + td, #statement_tb  #self_bal1,#statement_tb   #self_bal2{
+    background-color: #93B3B7;
+}
+
+#statement_tb tr th + th  +th + th + th +th +th,
+#statement_tb tr td  +td  + td + td + td +td +td,#statement_tb  #points_bal1,#statement_tb   #points_bal2{
+    background-color: #53A3C2;
+}
+#statement_tb tr:hover  td ,#statement_tb tr:hover #self_bal2 ,#statement_tb tr:hover #points_bal2,#statement_tb tr:hover #self_bal1
+,#statement_tb tr:hover #points_bal1{background-color: #D8D8D8;
+	position: relative;
+	color: black;
+	
+}
+#statement_tb td { 
+	border-collapse: separate;
+    border-spacing: 0.5px;
+	/*padding: 1px;*/
+}
+
+#statement_tb #totals2{font-weight: bold;}
+.padding_size{padding-left: 10%;}
+th.stock_class2{width:10%;}
+th.type_class2{width:80%;}
+th.stock_class{width:10%;}
+th.type_class{width:90%;}
+input.shade_stock{width: 10%;float:right;vertical-align:top;}
+.padding_shade{padding-left: 20%;}
+span.caption_width{width: 90%;color: red;}
+.caption_width2{float:right;border: 1px solid red;}
+
+/* this will be used to highlight a row e.g. unregisterd patients or totals */
+.row_highlight{background-color: #53A3C2;color: #0E131B;}
+/*.normal_table tbody tr:nth-child(odd){    background-color: #0E131B; }*/
+table.rowspan_table{
+	width: 100%;
+	table-layout: fixed;
+}
+
+table.rowspan_table tbody:nth-child(odd) {background-color: #0D141C; color:#DCDCDC;}
+table.rowspan_table tbody:nth-child(even) {background-color: #121923; color:#DCDCDC;}
+
+.normal_table tbody tr td, .working_days  tbody tr td, .half_width tbody tr td, .rowspan_table tbody tr td{line-height: 2em;}
+.normal_table thead tr th .working_days thead tr th{line-height: 2em;}
+.100_height{height: 100%;}
+.td_div_holder{padding: 0;}
+.background_for_div_in_td
+{
+  background: linear-gradient(to bottom, #E9E9E9 0px, #CCCCCC 100%) repeat scroll 0 0 transparent;
+    border: 0 none;
+    color: #1F232C;#
+}
+
+tr.has_css_div td tplan_table .xrr_shade:first{color: green;}
+.no_top_border{border-top: none;}
+
+td{word-wrap: break-word;}
+
+.wrap_word_in_button{
+	white-space: normal;
+	min-height: 30px;
+	height: 100%;
+	text-align: left;
+}
+.print_on_letter_head{
+    padding-left: 100px;
+    padding-top: 25px;
+	color: white;
+}
+
+.position_relative{
+	position: relative;
+	padding: 0;
+}
+.toa_left_padding{padding-left:0;}
+.show_on_top{
+	position: absolute;
+	top: 0;
+	padding:0;
+}
+
+.new_patient_color{
+	color: #000000;
+	background-color:  #A38E6D;
+}
+
+.new_pts{color: #A38E6D;}
+
+.untreated_patients{
+	color: #000000;
+	background-color:  #B0B3B6;
+}
+
+
+.red_class{color:red;}
+.yellow_class{color: yellow;}
+
+a.unstyled_link:link {color:#b0b3b6;text-decoration: none;}    /* unvisited link */
+a.unstyled_link:visited {color:#b0b3b6;text-decoration: none;} /* visited link */
+a.unstyled_link:hover {color:#E1182F;text-decoration: none;}   /* mouse over link */
+a.unstyled_link:active {color:#b0b3b6;text-decoration: none;}  /* selected link */
+
+a.yellow_class:link {color:yellow;text-decoration: none;}    /* unvisited link */
+a.yellow_class:visited {color:yellow;text-decoration: none;} /* visited link */
+a.yellow_class:hover {color:#E1182F;text-decoration: none;}   /* mouse over link */
+a.yellow_class:active {color:yellow;text-decoration: none;}  /* selected link */
+
+a.red_class:link {color:red;text-decoration: none;}    /* unvisited link */
+a.red_class:visited {color:red;text-decoration: none;} /* visited link */
+a.red_class:hover {color:yellow;text-decoration: none;}   /* mouse over link */
+a.red_class:active {color:red;text-decoration: none;}  /* selected link */
+
+.loader_gif {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+}
+select.admin_inv_action {
+	width:100px;
+}
+.cp_action, input.new_cp_date{
+	width:150px;
+}
+.admin_inv_text, .new_pledge_date1a{
+	display: none;
+}
+
+.red_span{color: red;}
+.white_span{color: white;}
+/* this will be used to highlight a row e.g. unregisterd patients or totals */
+table.normal_table tr.row_highlight{background-color: #53A3C2;color: #0E131B;}
+table.normal_table tr.blue_shade_background{background-color: #53A3C2;color: #000000;}
+table.normal_table tr.auto_appoint_higlight_background{background-color: #EDB90B;color: #000000;}
+.auto_appoint_higlight_background{background-color: #EDB90B;color: #000000;}
+
+/*show submnit appointment button in diff color*/
+.diff_color{
+width: auto;
+  padding:5px;
+  background-color: #edb90c;
+  border: 1px solid #fff;
+  color:#fff;
+  text-decoration:none;
+  font-size: small;
+font-weight: bold;
+}
+

@@ -1,0 +1,16 @@
+hlr gt and PC good
+tcsi suppresion table is good
+hplmnVlrTable  is good
+AllowedgsmSCFTable is good
+camel table is good
+
+
+
+
+
+
+
+
+xxxxxxxxxxxxxxxxxxxxxxxx
+    natSSDownloadTable[3].ssNationalName=5
+    natSSDownloadTable[3].sendInISD=true   is FALSE in before

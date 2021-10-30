@@ -1,0 +1,1736 @@
+//this will add commas to a number for formating
+function addCommas(nStr)
+{
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
+}
+
+
+
+
+
+//this checks password lenght and composition
+function passcheck(pass){
+							//	var pass = $(this).val();
+								var length = pass.length;
+								//alert('pass ni ' + pass + ' na lentgh ni ' + length);
+								//(password itself, number of characters) VALUES FROM INPUT TAG
+								//IF PASSWORD PRESENT, SHOW MESSAGE
+								if(pass)
+								{
+								if(length>=8){ //PASSWORD MIN/MAX NUMBER OF CHARACTERS
+									var alpha = /^[a-zA-Z]+$/; //PATTERN FOR ALPHABETS
+									var number = /^[0-9]+$/; //PATTERN FOR NUMBERS
+
+									//LOOPS THRU PASSWORD TO CHECK FOR AT LEAST ONE OF EACH PATTERN
+									for(i=0; i<length; i++){
+									if(pass.substr(i, 1).match(alpha)){
+									var letters = true; //AT LEAST ONE LETTER EXISTS
+									}
+									if(pass.substr(i, 1).match(number)){
+									var numbers = true; //AT LEAST ONE NUMBER EXISTS
+									}
+									}
+									//IF BOTH LETTERS AND NUMBERS ARE PRESENT...
+									if(letters==true && numbers==true){return true;} 
+									else { return false;}
+									
+								}
+								else {return false;}
+								}
+								else //IF NO PASSWORD PRESENT, NULL THE MESSAGE
+								{return false;}
+			}
+			
+function remove_commas(var1){
+	return var1.replace(/,/g, '');
+    }
+	
+function IsNumeric_jq(sText)
+
+{
+   var ValidChars = "0123456789.";
+   var IsNumber=true;
+   var Char;
+
+ 
+   for (i = 0; i < sText.length && IsNumber == true; i++) 
+      { 
+      Char = sText.charAt(i); 
+      if (ValidChars.indexOf(Char) == -1) 
+         {
+         IsNumber = false;
+	// alert(atext);
+	 return false;	
+         }
+      }
+   return IsNumber;
+   
+}
+
+function error_dialog(element, error_message){
+				
+				$("#dialogs").html('<p>' + error_message + '</p>');
+				$("#dialogs").dialog({
+						//open: function(){$(this).empty();},
+						close: function(){$(this).empty();element.focus();},
+		title: 'ERROR MESSAGE',
+		height: 200,
+		width: 600,
+		modal: true});
+		//element.focus();
+
+}
+
+jQuery.fn.center = function () {
+    this.css("position","absolute");
+    this.css("top", Math.max(0, (($(window).outerHeight() - $(this).outerHeight()) / 2) + 
+                                                $(window).scrollTop()) + "px");
+    this.css("left", Math.max(0, (($(window).outerWidth() - $(this).outerWidth()) / 2) + 
+                                                $(window).scrollLeft()) + "px");
+    return this;
+}
+
+function get_treatment_plan_total_cost(){
+	var total_insurance = total_self = total_point =0;
+	//alert('ggg');
+	var exit_flag = false;
+	//get xray added totals
+	$('.add_xray_to_tplan:checked').each(function(){
+		//insurance
+		if($(this).parent().prev().prev().text() == 'Insurance' ){
+			//check if cost  is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().prev().text()) )) ){			
+					//do math
+					if( $(this).parent().prev().text() != ''){
+						var cost = $(this).parent().prev().text();
+					}
+					else{var cost = 0;}
+					total_insurance = parseFloat(total_insurance) + parseFloat(cost) ;
+				}
+			else{exit_flag = true;}
+		}	
+		//self
+		else if($(this).parent().prev().prev().text() == 'Self' ){
+			//check if cost  is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().prev().text()) )) ){			
+					//do math
+					if( $(this).parent().prev().text() != ''){
+						var cost = $(this).parent().prev().text();
+					}
+					else{var cost = 0;}
+					total_self = parseFloat(total_self) + parseFloat(cost) ;
+				}
+			else{exit_flag = true;}
+		}
+		//points
+		else if($(this).parent().prev().prev().text() == 'Points' ){
+			//check if cost  is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().prev().text()) )) ){			
+					//do math
+					if( $(this).parent().prev().text() != ''){
+						var cost = $(this).parent().prev().text();
+					}
+					else{var cost = 0;}
+					total_point = parseFloat(total_point) + parseFloat(cost) ;
+				}
+			else{exit_flag = true;}
+		}		
+	});
+	
+	
+	$('.pay_method').each(function(){
+
+		//insurance
+		if($(this).find(":selected").text() == 'Insurance' ){
+			//check if cost and discount is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().next().children('.tplan_cost').val()) )) &&
+				(IsNumeric_jq( remove_commas($(this).parent().next().next().children('.tplan_discount').val()) )) ){			
+					//do math
+					if( $(this).parent().next().children('.tplan_cost').val() != ''){
+						var cost = $(this).parent().next().children('.tplan_cost').val();
+					}
+					else{var cost = 0;}
+					if($(this).parent().next().next().children('.tplan_discount').val() != ''){
+						var discount = $(this).parent().next().next().children('.tplan_discount').val();
+					}
+					else{var discount = 0;}
+					total_insurance = parseFloat(total_insurance) + parseFloat(cost) - parseFloat(discount);
+				}
+			else{exit_flag = true;}
+		}//self
+		if($(this).find(":selected").text() == 'Self' ){
+			//check if cost and discount is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().next().children('.tplan_cost').val()) )) &&
+				(IsNumeric_jq( remove_commas($(this).parent().next().next().children('.tplan_discount').val()) )) ){			
+					//do math
+					if( $(this).parent().next().children('.tplan_cost').val() != ''){
+						var cost = $(this).parent().next().children('.tplan_cost').val();
+					}
+					else{var cost = 0;}
+					if($(this).parent().next().next().children('.tplan_discount').val() != ''){
+						var discount = $(this).parent().next().next().children('.tplan_discount').val();
+					}
+					else{var discount = 0;}
+					total_self = parseFloat(total_self) + parseFloat(cost) - parseFloat(discount);
+				}
+			else{exit_flag = true;}
+		}//points
+		if($(this).find(":selected").text() == 'Points' ){
+			//check if cost and discount is numeric
+			if(( IsNumeric_jq( remove_commas($(this).parent().next().children('.tplan_cost').val()) )) &&
+				(IsNumeric_jq( remove_commas($(this).parent().next().next().children('.tplan_discount').val()) )) ){			
+					//do math
+					if( $(this).parent().next().children('.tplan_cost').val() != ''){
+						var cost = $(this).parent().next().children('.tplan_cost').val();
+					}
+					else{var cost = 0;}
+					if($(this).parent().next().next().children('.tplan_discount').val() != ''){
+						var discount = $(this).parent().next().next().children('.tplan_discount').val();
+					}
+					else{var discount = 0;}
+					total_point = parseFloat(total_point) + parseFloat(cost) - parseFloat(discount);
+				}
+			else{exit_flag = true;}
+		}		
+			
+	}); 	
+	if(exit_flag == false){
+		$('#treatment_plan_insurance_total').text(addCommas(total_insurance));
+		$('#treatment_plan_self_total').text(addCommas(total_self));
+		$('#treatment_plan_sum').text(addCommas(parseFloat(total_insurance) + parseFloat(total_self) ));
+		$('#treatment_plan_points_total').text(addCommas(total_point));
+	}
+	else if(exit_flag == true){
+		$('#treatment_plan_insurance_total').text('Invalid number found');
+		//$('#treatment_plan_self_total').text(addCommas(total_self));
+		//$('#treatment_plan_sum').text(addCommas(parseFloat(total_insurance) + parseFloat(total_self) ));
+		//$('#treatment_plan_points_total').text(addCommas(total_point));
+	}	
+	
+}
+
+function  mainmenu(){
+
+//thius will get total for treatment plan costs
+$(document.body).on('mouseleave', '.tplan_discount, .tplan_cost, .add_xray_to_tplan', function(){
+	if( $(this).val()!='' ){get_treatment_plan_total_cost();}
+});
+
+
+
+
+$(".dentition").change(function(){
+	var val = $(this).val();
+	if( val == 'adult'){
+		$('#adult').show();
+		$('#mixed').hide(); 
+		$('#pedo').hide(); 
+	}
+	else if( val == 'mixed'){
+		$('#adult').hide();
+		$('#mixed').show(); 
+		$('#pedo').hide(); 
+	}
+	else if( val == 'pedo'){
+		$('#adult').hide();
+		$('#mixed').hide(); 
+		$('#pedo').show(); 
+	}	
+	
+});
+
+
+//this will remove page loader
+$('#employer_insurance_page_loader').hide();
+$('.employer_form_div').fadeIn();
+$('.show_loader').hide(); 
+//$('.feedback').hide(); 
+//$('.show_spin').find('   <img src="dental_b/ajax-loader-spinner.gif" />').remove();
+
+//check if another invoice has already been raised that day for the patient and ask if this invoice should be 
+//appeneded to that one or anew one should be added
+$('.raise_invoice').change(function(){
+//	if(this.checked){
+//		alert('dddd');
+		//check if invoice already e
+//	}
+});
+
+
+
+
+//this will perform patient search for allocations
+$('.search_pbbatient_2').click(function(){
+	var search_by = $(this).parent().parent().find('.search_by').val();
+	var search_ciretia = $(this).parent().parent().find('.search_ciretia').val();
+	//alert('found ' + search_ciretia + ' jjjjjj  ' + search_by);
+		//now check ni db if the patint exists
+		var element = $(this);
+		var form_data = {search_by: search_by, search_ciretia: search_ciretia}
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert(" An Error occured, unable to complete form submission");
+		e.preventDefault();
+		},
+		success: function(data) {
+		//alert(data);
+			var x = data.split('#');
+			if(x[0] == 'good' || x[0] == 'bad'  ){element.parent().next().html(x[1]);}
+			else{
+				//show bloody table in dialog
+				var width_x = $('.get_width').show().width();
+				$('.div_shower').dialog({
+				title: 'Patient Search Results',
+				height: 500,
+				width: width_x,
+				modal: true}).html(data)
+			}
+		},
+		complete: function() {
+		}
+		});	
+	/*$.post("dental_b/", $(this).serialize())
+	 .done(function(data) {
+		alert("Data Loaded: " + data);
+	if(data != ''){
+		var x = data.split('#');
+		if(x[0] == 'good'){$(this).parent().append().html(data);}
+	}		
+	/*if(action == "#completion"){$('#ui-tabs-6').load("completion/index.php");}
+	else if(action == "#diseases"){$('#ui-tabs-5').load("diseases/index.php");}	
+	else if(action == "#female-patients"){$('#ui-tabs-4').load("female-patients/index.php");}	
+	else if(action == "#medical-information"){$('#ui-tabs-3').load("medical-information/index.php");}		
+	else if(action == "#dental-information"){$('#ui-tabs-2').load("dental-information/index.php");}
+	else if(action == "#treatment-plan"){$('#ui-tabs-8').load("treatment-plan/index.php");}		
+	else if(action == "#treatment-done"){$('#ui-tabs-9').load("treatment-done/index.php");}		
+	else if(action == "#examination"){$('#ui-tabs-7').load("examination/index.php");}		
+	else if(action == "lab_prescription_form"){window.location = "?id=lab-prescription-form";}*/
+	//});
+});
+
+$('.patient_form2').submit(function(e){
+alert('ff');
+//$(document.body).on('submit', '.patient_form', function(e){
+//	if($(this).hasClass('search_patient_2')){alert ('yyyyyyyyyyyyyyyyyyyyyyyyyy');}
+//	else{alert ('nnnnnnnnnnnnnnnnnnnnnn');}
+	var action = $(this).attr("action");
+	var element = $(this);
+	e.preventDefault();
+	$(this).attr('disabled', 'disabled');
+	$('.show_loader').empty().removeClass('success_response').removeClass('error_response').addClass('background_yellow');
+	$('.show_loader').dialog({
+		title: 'Submitting details',
+		width: 400,
+		modal: true}).append('Loading  ').append('<img src="dental_b/ajax-loader.gif" />').show();
+	$.post("dental_b/", $(this).serialize())
+	 .done(function(data) {
+	alert(data);
+		$('.show_loader').dialog('close');
+		var x = data.split('#');
+		if(x[0] == "good"){
+		//alert('action is ' + action);
+			if(x[1] == "treatment-done"){
+				$('#ui-tabs-9').load("treatment-done/index.php");
+			}
+			else if(x[1] == "add_user"){
+				window.location = "?id=add-user";
+			}	
+			else if(x[1] == "roles"){
+				window.location = "?id=roles";
+			}
+			else if(x[1] == "loyalty_points"){
+				window.location = "?id=loyalty-points";
+			}			
+			else if(x[1] == "add_technician"){
+				window.location = "?id=lab-technician";
+			}
+			else if(x[1] == "book_appointment"){
+				window.location = "?id=book-appointment";
+			}			
+			else if(x[1] == "user_privileges"){
+				window.location = "?id=user-privileges";
+			}			
+			else if(x[1] == "add_referrer"){
+				window.location = "?id=xray-referrer";
+			}
+			else if(x[1] == "lab_work"){
+				window.location = "?id=lab-prescription-form";
+			}	
+			else if(x[1] == "patient_allocation"){
+				window.location = "?id=allocate-patients";
+			}				
+			else if(x[1] == "lab-payments"){
+				window.location = "?id=lab-payments";
+			}			
+			else{
+			if(action == "#treatment-plan"){
+				//empty treatment plan so that the guy does not add another one with the same treatments by clicking submit
+				element.find("input[type=text], textarea, select").val("");
+			}		
+											$('.feedback').empty()
+											.removeClass('error_response hide_element')
+											.addClass('success_response')
+											.append(x[1])
+											.show();
+						$('html, body').animate({scrollTop: '0px'}, 300);					
+
+				}//end else		
+		}//end good if
+						
+		else if(x[0] == "bad"){$('.feedback').empty()
+												.removeClass('success_response hide_element')
+												.addClass('error_response')
+												.append(x[1])
+												.show();
+								$('html, body').animate({scrollTop: '0px'}, 0);									
+		}
+	/*	else{
+			//show bloody table in dialog
+			
+			var x2 = data.split('wagonjwawengi');
+		//	alert('x2[0] is ' + x2[0] + ' ggggg');
+		//	alert('x2[1] is ' + x2[1] + ' hhhhh');
+			if(typeof x2[1] === 'undefined'){}
+			else{
+				var width_x = $('.get_width').show().width();
+				$('.div_shower').dialog({
+				title: 'Patient Search Results',
+				height: 500,
+				width: width_x,
+				modal: true}).html(x2[1]);
+				
+				$('.selected_pt').click(function() {
+					
+					var selected_pt = $(this).prev().val();
+					alert('selected is  ' + selected_pt);
+					  element.append('<input type=hidden name=selected_patient value=' + selected_pt + ' />');
+				element.submit();
+				});		
+			}
+		}
+		
+		});
+
+
+	
+});
+
+//submit patient forms via jquery
+$('.patient_form').submit(function(e){
+//$(document.body).on('submit', '.patient_form', function(e){
+	
+//	else{alert ('nnnnnnnnnnnnnnnnnnnnnn');}
+	var action = $(this).attr("action");
+	var element = $(this);
+	e.preventDefault();
+	$(this).attr('disabled', 'disabled');
+	$('.show_loader').empty().removeClass('success_response').removeClass('error_response').addClass('background_yellow');
+	$('.show_loader').dialog({
+		title: 'Submitting details',
+		width: 400,
+		modal: true}).append('Loading  ').append('<img src="dental_b/ajax-loader.gif" />').show();
+	$.post("dental_b/", $(this).serialize())
+	 .done(function(data) {
+//	alert(data);
+		$('.show_loader').dialog('close');
+		var x = data.split('#');
+		if(x[0] == "good"){
+		//alert('action is ' + action);
+			if(x[1] == "treatment-done"){
+				$('#ui-tabs-9').load("treatment-done/index.php");
+			}
+			else if(x[1] == "add_user"){
+				window.location = "?id=add-user";
+			}	
+			else if(x[1] == "roles"){
+				window.location = "?id=roles";
+			}
+			else if(x[1] == "go_to_examination"){
+				window.location = "?id=patient#examination" ;
+			
+			}				
+			else if(x[1] == "loyalty_points"){
+				window.location = "?id=loyalty-points";
+			}			
+			else if(x[1] == "add_technician"){
+				window.location = "?id=lab-technician";
+			}
+			else if(x[1] == "book_appointment"){
+				window.location = "?id=book-appointment";
+			}			
+			else if(x[1] == "user_privileges"){
+				window.location = "?id=user-privileges";
+			}			
+			else if(x[1] == "add_referrer"){
+				window.location = "?id=xray-referrer";
+			}
+			else if(x[1] == "lab_work"){
+				window.location = "?id=lab-prescription-form";
+			}	
+			else if(x[1] == "patient_allocation"){
+				window.location = "?id=allocate-patients";
+			}				
+			else if(x[1] == "lab-payments"){
+				window.location = "?id=lab-payments";
+			}			
+			else{
+			if(action == "#treatment-plan"){
+				//empty treatment plan so that the guy does not add another one with the same treatments by clicking submit
+				element.find("input[type=text], textarea, select").val("");
+			}		
+											$('.feedback').empty()
+											.removeClass('error_response hide_element')
+											.addClass('success_response')
+											.append(x[1])
+											.show();
+						$('html, body').animate({scrollTop: '0px'}, 300);					
+
+				}//end else		
+		}//end good if
+						
+		else if(x[0] == "bad"){$('.feedback').empty()
+												.removeClass('success_response hide_element')
+												.addClass('error_response')
+												.append(x[1])
+												.show();
+								$('html, body').animate({scrollTop: '0px'}, 0);	
+								//check if the form has selected_patient that may need deletion
+								element.find('.selected_patient_input').remove();
+								if(element.hasClass('.check_selected_patient')){
+									alert('ddd');
+									element.find('.selected_patient_input').remove();
+								}
+		}
+		else{
+			//show bloody table in dialog
+			
+			var x2 = data.split('wagonjwawengi');
+		//	alert('x2[0] is ' + x2[0] + ' ggggg');
+		//	alert('x2[1] is ' + x2[1] + ' hhhhh');
+			if(typeof x2[1] === 'undefined'){}
+			else{
+				var width_x = $('.get_width').show().width();
+				$('.div_shower').dialog({
+				title: 'Patient Search Results',
+				height: 500,
+				width: width_x,
+				modal: true}).html(x2[1]);
+				
+				$('.selected_pt').click(function() {
+					
+					var selected_pt = $(this).prev().val();
+					alert('selected is  ' + selected_pt);
+					  element.append('<input type=hidden name=selected_patient class=selected_patient_input value=' + selected_pt + ' />');
+				element.submit();
+				$('.div_shower').dialog("close");
+				});		
+			}
+		}
+		
+		});
+
+
+	
+});
+/*
+$('.btest').click(function(){
+	alert('xxxxxxxxxxxxxxxx');
+});*/
+
+
+
+
+ //this will edit corrporate cover
+ $('.edit_corporate_cover').click(function(){
+	var edit_corporate = $(this).next().val();
+		var width_x = $(this).parent().parent().width();
+		var height_y = 580;//$("#employer_form_div").height();
+		//alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#edit_ins_cover").empty().dialog({
+		title: 'Edit Procedures covered by Insurance',
+		height: height_y,
+		width: width_x,
+		modal: true}).load('dental_b/', {'edit_corporate': edit_corporate });
+ });
+
+//submit a form from a dialog box via jquery
+$(document.body).on('submit', '.dialog_form', function(e){
+//$('.dialog_form').submit(function(e){
+	//e.preventDefault();
+	//alert('ffff');
+	var action = $(this).attr("action");
+	var element = $(this);
+	e.preventDefault();
+	$(this).attr('disabled', 'disabled');
+	/*$('.show_loader').empty().removeClass('success_response').removeClass('error_response').addClass('background_yellow');
+	$('.show_loader').dialog({
+		title: 'Submitting patient diesease details',
+		width: 400,
+		modal: true}).append('Loading  ').append('<img src="dental_b/ajax-loader.gif" />').show();*/
+	$.post("dental_b/", $(this).serialize())
+	 .done(function(data) {
+	// alert(data);
+		//$('.show_loader').dialog('close');
+		$('.feedback_dialog').remove();
+		$('<div class=feedback_dialog ></div>').insertBefore("#edit_covered_procedure");
+		var x = data.split('#');
+		if(x[0] == "good"){
+			//refresh the div to capture new details
+			var edit_corporate = x[2];
+			$("#edit_covered_procedure").load('dental_b/', {'edit_corporate': edit_corporate });
+					
+											$(".feedback_dialog").empty()
+											.removeClass('error_response hide_element')
+											.addClass('success_response')
+											.append(x[1])
+											.show();
+					//	$('html, body').animate({scrollTop: '0px'}, 300);					
+
+		//		}//end else		
+		}//end good if
+						
+		else if(x[0] == "bad"){$('.feedback_dialog').empty()
+												.removeClass('success_response hide_element')
+												.addClass('error_response')
+												.append(x[1])
+												.show();
+								//$('html, body').animate({scrollTop: '0px'}, 0);									
+								}
+		
+		});
+
+
+	
+});
+*/
+//search for a aprtient and get their details
+$('.search_form').submit(function(e){
+	//alert('x');
+	$(this).find('.show_spin').append('   <img src="dental_b/ajax-loader-spinner.gif" />');
+	//$('.show_spin').append('   <img src="dental_b/ajax-loader-spinner.gif" />');
+	e.preventDefault();
+	var action = $(this).attr("action");
+	$.post("dental_b/", $(this).serialize())
+	 .done(function(data) {
+		alert("Data Loaded: " + data);
+			
+	if(action == "#completion"){$('#ui-tabs-6').load("completion/");}
+	else if(action == "#diseases"){$('#ui-tabs-5').load("diseases/");}	
+	else if(action == "#female-patients"){$('#ui-tabs-4').load("female-patients/");}	
+	else if(action == "#medical-information"){$('#ui-tabs-3').load("medical-information/");}		
+	else if(action == "#dental-information"){$('#ui-tabs-2').load("dental-information/");}
+	else if(action == "#treatment-plan"){$('#ui-tabs-8').load("treatment-plan/");}		
+	else if(action == "#treatment-done"){$('#ui-tabs-9').load("treatment-done/");}		
+	else if(action == "#examination"){$('#ui-tabs-7').load("examination/");}		
+	else if(action == "#contacts"){$('#ui-tabs-1').load("patient-contacts/");}		
+	else if(action == "lab_prescription_form"){window.location = "?id=lab-prescription-form";}
+	});
+	//alert('now reloading tab');
+
+	//var current_index = $tabs.tabs("option","selected");
+	//alert('current index is  ' + current_index);
+	//$tabs.tabs('load',current_index);
+	//$("#tabs").tabs('load', $("#tabs").tabs('option', 'selected'));
+});
+
+//$(".teeth_div").css({display: "none"});$('.select_user')
+
+//this will clear a form
+$('.clear_form').submit(function(e){
+	e.preventDefault();
+	var action = $(this).attr("action");
+	var form_class = $('.patient_form');
+	//alert('1');
+	$.post("dental_b/", { clear_form: "clear_form" })
+	 .done(function(data) {
+	//	alert('data is ' + data);
+	
+	if(action == "#completion"){$('#ui-tabs-6').load("completion/index.php");}
+	else if(action == "#diseases"){$('#ui-tabs-5').load("diseases/index.php");}		
+	else if(action == "#female-patients"){$('#ui-tabs-4').load("female-patients/index.php");}	
+	else if(action == "#medical-information"){$('#ui-tabs-3').load("medical-information/index.php");}
+	else if(action == "#dental-information"){$('#ui-tabs-2').load("dental-information/index.php");}	
+	else if(action == "#treatment-plan"){$('#ui-tabs-8').load("treatment-plan/index.php");}		
+	else if(action == "#examination"){$('#ui-tabs-7').load("examination/index.php");}		
+	});
+	//alert('now reloading tab');
+	//var current_index = $("#tabs").tabs("option","selected");
+	//$("#tabs").tabs('load',current_index);
+	//alert('fff');
+});
+
+		//this is for menu drop down
+		/*$(" #nav1 ul ").css({display: "none"}); // Opera Fix
+		$(".nav_tabs ul ").css({display: "none"}); // Opera Fix
+		$(" #nav1 li").hover(function(){
+		$(this).find('ul:first').css({visibility: "visible",display: "none"}).show(400);
+		},function(){
+		$(this).find('ul:first').css({visibility: "hidden"});
+		});
+
+		//for mulit level menu
+		$(" #nav1 li ul").hover(function(){
+		$(this).find('ul:first').css({visibility: "visible",display: "none"}).show(400);
+		},function(){
+		$(this).find('ul:first').css({visibility: "hidden"});
+		});	*/
+		
+/*	//$('.tab_form').submit(function(){alert('ff');});	
+$('.tab_form').submit(function(e){
+
+var var_form = e;
+var var_tabs = $('#tabs').tabs();
+var set_tab_id = var_tabs.tabs('option', 'selected'); 
+		var form_data = {set_tab_id: set_tab_id}
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert("g An Error occured, unable to complete form submission");
+		e.preventDefault();
+		},
+		success: function(data) {
+		//alert(data);
+		//	if (data == 'set') {var_form.submit();}
+		},
+		complete: function() {
+		}
+		});	
+});*/
+	//var pathname = $(this).attr("action");
+	//alert('ddd pathname is ' + pathname);
+	/*
+$('.tab_link').click(function(){	
+	var pathname = document.URL;
+	var	x = pathname.split('?');
+	alert ('path is ' + x[0] + ' part 2 is ' + x[1]);
+		if(x[1] == 'open=patient'){
+			alert('xxxxx');
+			 $("#tabs").tabs({
+				// cache: true,
+				 active: 4,
+				beforeLoad: function( event, ui ) {
+					ui.jqXHR.error(function() {
+					ui.panel.html("ERROR: Unable to load content");
+					});
+				}
+
+			});
+	}
+
+});	*/
+/*
+ $("#tabs").tabs({
+ 			   select: function(event, ui) {
+						var selectedTabTitle = $(ui.tab).text();
+						var url= $(ui.tab).attr("href")
+						//alert('url is ' + urlis);
+						if(url == '#patient-contacts'){
+							var load_customer_invoice ='yes';
+							$('.patient-contacts').empty();
+							//$('.patient-contacts').append('<img src="inventory_jquery/ajax-loader.gif" />');
+							$('.patient-contacts').load('patient-contacts/index.php'); 
+						}
+						else if(url == '#dental-information'){
+							var load_customer_contacts ='yes';
+							$('.dental-information').empty();
+							//$('.dental-information').append('<img src="inventory_jquery/ajax-loader.gif" />');
+							$('.dental-information').load('dental-information/index.php'); 
+						}
+						}
+ 
+ });*/
+
+ //$("table tbody ").delegate("tr", "click", function() {
+ 
+$(document.body).on('click', 'table tbody tr', function(){
+	//check if this is allocations table and apply diffenre  background class
+	if($(this).parent().parent().hasClass('allocations')){ 
+		$(this).toggleClass("heading_bg_click");
+		$(this).siblings().removeClass("heading_bg_click");
+	}
+	else {  
+		$(this).toggleClass("table_row_click_bg");
+		$(this).siblings().removeClass("table_row_click_bg");}
+});
+
+ 
+ //highlight textfields when mouse hover the row containing them
+ $('tr').hover(function(){$(this).find('input, select').addClass('text_field_highlight'); },
+	function(){$(this).find('input, select').removeClass('text_field_highlight'); }
+ );
+ 
+ 
+
+ 
+ 
+//this is for styling the tabs for some reason it's not working from css file #15212F'
+$("div.ui-tabs-panel").css('padding','5px 0px');
+$("div.ui-tabs-panel").css('backgroundColor',' #15212F');
+$("div.ui-tabs-panel").css('border','0px');
+//$("div.ui-widget-content").css('border','0px');
+//$("div.ui-tabs").css('padding','0px');
+//$("div.ui-widget-content").css('color','#ffffff');
+$("div.ui-widget-content").addClass("ui-widget-content_custom");
+//$("div.ui-tabs-panel").addClass("ui-tabs-panel_custom");
+$("div.ui-#tabs").addClass("ui-tabs_custom");
+$('#tabs .ui-tabs-nav li.ui-state-default a').css('color','#000000');
+$('#tabs .ui-tabs-nav li.ui-state-default ').css({'backgroundColor':' #D9D9D9',
+											'border':'none',
+											
+											'border-left':'1px solid #ffffff',
+											});
+$('#tabs .ui-tabs-nav li').removeClass('ui-corner-top');
+$('#tabs .ui-tabs-nav').removeClass('ui-corner-all');
+
+$('#tabs .ui-tabs-nav li.ui-state-active').css('backgroundColor',' #15212F');
+$('#tabs .ui-tabs-nav li.ui-state-active a').css('color','#FFFFFF');
+$('#tabs .ui-tabs-nav li.ui-state-default:hover').css('color','#FFFFFF');
+/*$('#tabs .ui-tabs-nav li.ui-state-active').css('border','#15212F');
+,
+											'border-left':'1px solid #15212F',
+											'border-bottom':'1px solid #15212F'
+*/
+$('.tab_link:hover').css('color','#FFFFFF');
+//	$(document.body).on('change', '.product_id_quote', function(){
+	//this is for datepicket
+$('.date_picker').datepicker( { dateFormat: "yy-mm-dd" , 
+								changeMonth: true,
+								changeYear: true});	
+
+
+$('.role_priv_check').css({display: "none"});							
+$('.select_user').css({display: "none"});	
+$('#role_privileges').css({display: "none"});	
+$('#individual_privileges').css({display: "none"});	
+$('#show_surgery').css({display: "none"});		
+			
+//this will show users when adding a user
+$('.add_user_action').change(function(){
+//$(".tooth_checkbox").change(function() {
+	//alert($(this).val());
+    if($(this).val() == 'edit_user' || $(this).val() == 'edit_role' ) {
+        $('.select_user').slideDown();
+    }
+	else {
+        $('.select_user').slideUp();
+    }
+});	
+		
+//this will show surgery when editing waiting list
+$('.edit_type').change(function(){
+//$(".tooth_checkbox").change(function() {
+	//alert($(this).val());
+    if($(this).val() == 'change_surgery') {
+        $('#show_surgery').slideDown();
+    }
+	else {
+       $('#show_surgery').slideUp();
+    }
+});			
+		
+//this will select action type when allocating patients
+$('.allocate_action').change(function(){
+//$(".tooth_checkbox").change(function() {
+	//alert($(this).val());
+    if($(this).val() == 'add'){
+		$('#add_to_waiting_list').slideDown();
+        $('#edit_waiting_list').slideUp();
+    }
+	else if($(this).val() == 'edit'){
+		$('#add_to_waiting_list').slideUp();
+        $('#edit_waiting_list').slideDown();
+    }
+});	
+
+
+
+//this will select registered or unregistered patient when allocating a patient to a surgery
+$('.allocate_patient_type').change(function(){
+//$(".tooth_checkbox").change(function() {
+	//alert($(this).val());
+    if($(this).val() == 'registered'){
+		$('#allocate_registered').slideDown();
+        $('#allocate_unregistered').slideUp();
+    }
+	else if($(this).val() == 'unregistered'){
+		$('#allocate_registered').slideUp();
+        $('#allocate_unregistered').slideDown();
+    }
+});
+		
+//this will role or individual privilege assignment
+$('.privilege_type').change(function(){
+   if($(this).val() == 'individual' ) {
+		$('.role_priv_check').empty().css({display: "none"});;
+        $('#role_privileges').css({display: "none"});
+		$('#individual_privileges').show();
+		//check if the user has any roles assigned
+		var check_for_roles = 'check_for_roles'; 
+		var form_data = {check_for_roles: check_for_roles}
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert(" An Error occured, unable to check for user roles");
+		e.preventDefault();
+		},
+		success: function(data) {
+			alert(data);
+			if (data == 'has_role') {$('.role_priv_check').addClass('error_response')
+												.append('This user has at least one role assigned, the role(s) will be lost if privileges are granted individually')
+												.show();}
+		},
+		complete: function() {
+		}
+		});
+
+												
+    }
+	else if($(this).val() == 'role' ) {
+		//check if the user has any privileges assigned
+		$('.role_priv_check').empty().css({display: "none"});;
+		var check_for_individual_privileges = 'check_for_individual_privileges'; 
+		var form_data = {check_for_individual_privileges: check_for_individual_privileges}
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert(" An Error occured, unable to check for user privileges");
+		e.preventDefault();
+		},
+		success: function(data) {
+			alert(data);
+			if (data == 'has_privilege') {$('.role_priv_check').addClass('error_response')
+												.append('This user has at least one individual privilege assigned, the privilege(s) will be lost if privileges are granted by role(s)')
+												.show();}
+		},
+		complete: function() {
+		}
+		});
+		$('#role_privileges').show();
+		$('#individual_privileges').css({display: "none"});
+    }
+});									
+								
+//this will highlight the selected tooth
+$(document.body).on('change', '.tooth_checkbox', function(){
+//$(".tooth_checkbox").change(function() {
+    if(this.checked) {
+        $(this).parent().addClass('highlight');//Do stuff
+    }
+	else {
+        $(this).parent().removeClass('highlight');//Do stuff
+    }
+});			
+
+//this will add new procedure
+$('.add_new_procedure').click(function(){
+	var extra_procedure = $('.procedure_count').last().text();
+	//alert ('i is ' + i);
+		var form_data = {extra_procedure: extra_procedure}
+		element = $(this);
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert(" An Error occured, unable to add extra procedure");
+		e.preventDefault();
+		},
+		success: function(data) {
+	//	alert('data is ' + data);
+			$('.procedure_container').append(data);
+		},
+		complete: function() {
+		}
+		});	
+	//$('.procedure_container').append().load('dental_b/', {'extra_procedure': extra_procedure });;
+});
+	
+	
+//this is for enabling/disableing tplan cost and tplan discount
+$(document.body).on('change', '.pay_method', function(){
+		//empty other fields when payment method
+		$(this).parent().next().children('.tplan_cost').val('');
+		$(this).parent().next().next().children('.tplan_discount').val('');
+		get_treatment_plan_total_cost();
+	//this will ensure that in tplan only aviallable fields are not disabled
+		if( $(this).val() !='' ){
+			$(this).parent().next().children('.tplan_cost').prop('disabled', false);		
+			$(this).parent().next().next().children('.tplan_discount').prop('disabled', false);		
+		}
+		else{
+			$(this).parent().next().children('.tplan_cost').prop('disabled', true);		
+			$(this).parent().next().next().children('.tplan_discount').prop('disabled', true);		
+
+		}
+});		
+
+//this is for showing teeth when selecting a procedure
+$(document.body).on('change', '.select_procedure', function(){
+//$('.select_procedure').change(function(){
+			var add_procedure = $(this).val();
+	
+		//empty other fields when procedure chnges
+		$(this).parent().next().children('.tplan_details').val('');
+		$(this).parent().next().next().children('.pay_method').val('');
+		$(this).parent().next().next().next().children('.tplan_cost').val('');
+		$(this).parent().next().next().next().next().children('.tplan_discount').val('');
+		get_treatment_plan_total_cost();
+	//this will ensure that in tplan only aviallable fields are not disabled
+		//alert('value is ' + $(this).val());
+		if( $(this).val() !='' ){
+			//details
+			$(this).parent().next().children('.tplan_details').prop('disabled', false);
+			//payment method
+			$(this).parent().next().next().children('.pay_method').prop('disabled', false);		
+			$(this).parent().next().next().next().children('.tplan_cost').prop('disabled', true);
+			$(this).parent().next().next().next().next().children('.tplan_discount').prop('disabled', true);				
+		}
+		else{
+			$(this).parent().next().children('.tplan_details').prop('disabled', true);
+			$(this).parent().next().next().children('.pay_method').prop('disabled', true);
+			$(this).parent().next().next().next().children('.tplan_cost').prop('disabled', true);
+			$(this).parent().next().next().next().next().children('.tplan_discount').prop('disabled', true);	
+
+		}
+
+
+
+
+
+	//alert('vals is ' + add_procedure);
+
+		var form_data = {add_procedure: add_procedure}
+		element = $(this);
+		$.ajax({
+		type: "POST",
+		url: "dental_b/",
+		data: form_data,
+		error: function() {
+		alert(" An Error occured, unable to select teeth for this procedure");
+		e.preventDefault();
+		},
+		success: function(data) {
+	//	alert('data is ' + data);
+			if (data == 'show_teeth') {element.next().addClass('teeth_body').slideDown("slow");}
+			else if (data == 'do_not_show_teeth') {element.next().
+													slideUp("slow").
+													removeClass('teeth_body').
+													find(':checked').each(function() {
+																	$(this).removeAttr('checked');
+																	$(this).parent().removeClass('highlight');
+																	});
+													
+													}
+		},
+		complete: function() {
+		}
+		});	
+});								
+								
+//this is to keep table headers fixed
+//$('table.normal_table').fixedHeaderTable({ height: '400', altClass: 'odd', themeClass: 'fancyDarkTable' });/*
+//$('table.normal_table').fixedHeaderTable({ height: '400',footer: true,   fixedColumn: false, autoShow: true });
+/*
+var tableOffset = $(".normal_table").offset().top;
+var $header = $(".normal_table > thead").clone();
+var $fixedHeader = $("#header-fixed").append($header);
+
+$(window).bind("scroll", function() {
+    var offset = $(this).scrollTop();
+
+    if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
+        $fixedHeader.show();
+    }
+    else if (offset < tableOffset) {
+        $fixedHeader.hide();
+    }
+});		*/	
+/*    function scrolify(tblAsJQueryObject, height){
+        var oTbl = tblAsJQueryObject;
+
+        // for very large tables you can remove the four lines below
+        // and wrap the table with <div> in the mark-up and assign
+        // height and overflow property  
+        var oTblDiv = $("<div/>");
+        oTblDiv.css('height', height);
+        oTblDiv.css('overflow','scroll');               
+        oTbl.wrap(oTblDiv);
+
+        // save original width
+        oTbl.attr("data-item-original-width", oTbl.width());
+        oTbl.find('thead tr td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        }); 
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        });                 
+
+
+        // clone the original table
+        var newTbl = oTbl.clone();
+
+        // remove table header from original table
+        oTbl.find('thead').remove();    
+		oTbl.find('caption').remove();    		
+        // remove table body from new table
+        newTbl.find('tbody').remove();   
+
+        oTbl.parent().parent().prepend(newTbl);
+        newTbl.wrap("<div/>");
+
+        // replace ORIGINAL COLUMN width                
+        newTbl.width(newTbl.attr('data-item-original-width'));
+        newTbl.find('thead tr td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });     
+        oTbl.width(oTbl.attr('data-item-original-width'));      
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });                 
+    }
+scrolify($('.normal_table'), 260); // 160 is height			*/
+/*
+ $(".normal_table").chromatable({
+	width: "100%",
+    height: "400px",
+    scrolling: "yes" 
+ });*/
+ 
+//this will show form for adding patient refferes
+	$('#add_new_patient_referrer').click(function(){
+		var width_x = $("#add_new_patient_referrer").parent().width();
+		var height_y = 260;//$("#employer_form_div").height();
+	//	alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#patient_referrer_form_div").dialog({
+		open: function(){
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		close: function() {
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		title: 'New Patient Referrer',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});	 
+ 
+ //this will show a lab
+ $('.view_lab').click(function(){
+	var view_lab = $(this).val();
+		var width_x = $(this).parent().parent().width();
+		var height_y = 430;//$("#employer_form_div").height();
+		//alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#view_lab").empty().dialog({
+		title: 'LAB WORK NUMBER: ' + view_lab,
+		height: height_y,
+		width: width_x,
+		modal: true}).load('dental_b/', {'view_lab': view_lab });
+ });
+ 
+ //this will edit corrporate cover
+ $('.edit_corporate_cover').click(function(){
+	var edit_corporate = $(this).next().val();
+		var width_x = $(this).parent().parent().width();
+		var height_y = 580;//$("#employer_form_div").height();
+		//alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#edit_ins_cover").empty().dialog({
+		title: 'Edit Procedures covered by Insurance',
+		height: height_y,
+		width: width_x,
+		modal: true}).load('dental_b/', {'edit_corporate': edit_corporate });
+ });
+ 
+
+//this will show book appointment div
+/*
+$('.book_appointment').click(function(){
+	var appointment_date = $(this).parent().prev().children('input').val();
+	if(appointment_date == ''){alert('Please specify the appointment date');}
+	else{
+		//alert('date is ' + appointment_date);
+		$('#appointment_div').show().load('dental_b/', {'appointment_date': appointment_date });
+	}
+});*/
+
+$('.appointment_date_date').change(function(){
+ //$(document.body).on('input', '.appointment_date_date', function(){
+	//alert('dd');
+	var appointment_date = $(this).val();
+	if(appointment_date == ''){alert('Please specify the appointment date');}
+	else{
+		//alert('date is ' + appointment_date);
+		$('#appointment_div').show().load('dental_b/', {'appointment_date': appointment_date });
+	}
+});
+
+
+
+
+ //this will show pop up form to create an appointment
+ $(document.body).on('click', '.create_appointment', function(){
+ //$('.create_appointment').click(function(){
+	//alert('fff');
+	var create_appointment = $(this).prev().val();
+	//	alert('create_appointment is ' + create_appointment);
+		var width_x = $('#appointment_div').width();
+		var height_y = 160;
+		$("#appointment_div2").empty().dialog({
+		title: 'Registered Patient Appointment',
+		height: height_y,
+		width: width_x,
+		modal: true}).load('dental_b/', {'create_appointment': create_appointment });
+ });
+ 
+  //this will show a search box to search for patient type in appointments
+ $(document.body).on('change', '.appointment_patient_type', function(){
+	var appointment_patient_type = $(this).val();
+		//alert('create_appointment is ' + create_appointment);
+		//var width_x = $('#appointment_patient_search').width();
+		//var height_y = 280;
+		if(appointment_patient_type == 'registered'){title = 'Registered Patient Search';}
+		else if(appointment_patient_type == 'unregistered'){title = 'Un-registered Patient Details';}
+		$("#appointment_patient_search").empty().show().load('dental_b/', {'appointment_patient_type': appointment_patient_type });
+ });
+
+	//hide the dialogs div
+		$('#dialogs').hide();
+		
+ 		//this will check insured compnaies when adding a new corprate
+		$(document.body).on('submit', '#employer_form', function(){
+					var exit_flag = false;
+					var employer = document.employer_form.employer_name;
+					var ins_name = document.employer_form.ins_name;
+				//	$('.old_ins').each(function(){
+					var co_pay_type = document.employer_form.co_pay;
+					var co_pay_value =document.employer_form.co_pay_value;
+					var start_date = document.employer_form.start_date;
+					var end_date =document.employer_form.end_date;
+					var cover_type = document.employer_form.cover_type;
+					var cover_limit = document.employer_form.cover_limit;		
+				if(ins_name.value != ''){
+					
+
+					//check co-pay type and value 
+					if(co_pay_type.value !='' && co_pay_value.value == '' ){
+							error_dialog(co_pay_value,'Co-Pay Type has been set but no corresponding value has been set');
+							exit_flag = true;
+					}
+					//check co-pay-value and type 
+					if(co_pay_type.value =='' && co_pay_value.value != '' ){
+							error_dialog(co_pay_type,'Co-Pay Value has been set but no corresponding Co-Pay Type has been set');
+							exit_flag = true;
+					}
+					//check start date 
+					if(start_date.value =='' || start_date.value == null ){
+							error_dialog(start_date,'Please specify when the insurance cover starts');
+							exit_flag = true;
+					}
+					//check end date 
+					if(end_date.value == '' || end_date.value == null ){
+							error_dialog(end_date,'Please specify when the insurance cover will end');
+							exit_flag = true;
+					}
+					//check cover type 
+					if(cover_type.value == '' || cover_type.value == null ){
+							error_dialog(cover_type,'Please specify the insurance cover type');
+							exit_flag = true;
+					}
+					//check cover limit 
+					if(cover_limit.value == '' || cover_limit.value == null ){
+							error_dialog(cover_limit,'Please specify the insurance cover limit');
+							exit_flag = true;
+					}//var n=data.split("#");		
+					//check cover limit 
+					if(!IsNumeric_jq(cover_limit.value) ){
+							error_dialog(cover_limit,'The cover limit specified is not a valid number');
+							exit_flag = true;
+					}					
+					if(!IsNumeric_jq(co_pay_value.value )){
+							error_dialog(co_pay_value,'The Co-Pay Value specified is not a valid number');
+							exit_flag = true;
+					}	
+					//	if (!IsNumeric_jq($(this).value)){alert($(this).value + ' is not a valid number');return false;}
+				//	sum += parseFloat($(this).value.replace(",",""));
+					//alert('sum ndani is ' + sum);
+				}
+				//now check when ins is emoty
+				else if(ins_name.value == ''){
+					//insurer must be specified
+							error_dialog(ins_name,'An insurer must be specified for each corprate.');
+							exit_flag = true;					
+					//check co-pay type and value 
+					/*if(co_pay_type.value !=''  ){
+							error_dialog(co_pay_value,'Co-Pay Type has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check co-pay-value and type 
+					if( co_pay_value.value != '' ){
+							error_dialog(co_pay_value,'Co-Pay Value has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check start date 
+					if(start_date.value !=''  ){
+							error_dialog(start_date,'Insurance cover start date has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check end date 
+					if(end_date.value !=  ''){
+							error_dialog(end_date,'Insurance cover end date has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check cover type 
+					if(cover_type.value != ''  ){
+							error_dialog(cover_type,'Insurance cover type has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check cover limit 
+					if(cover_limit.value != '' ){
+							error_dialog(cover_limit,'Insurance cover limit has been set for an uninsured company');
+							exit_flag = true;
+					}	*/
+					//	if (!IsNumeric_jq($(this).val())){alert($(this).val() + ' is not a valid number');return false;}
+				//	sum += parseFloat($(this).val().replace(",",""));
+					//alert('sum ndani is ' + sum);
+				}				
+			//});*/
+
+
+			if (!exit_flag ){	return true;}
+			else{return false;}
+		});
+		
+ 		//this will check insured compnaies subsmissions if they are okay
+		$(document.body).on('submit', '#insured_companies', function(){
+					var exit_flag = false;
+					$('.old_ins').each(function(){
+					var co_pay_type = $(this).parent().next().next().next().children('select');
+					var co_pay_value = $(this).parent().next().next().next().next().children('input');
+					var start_date = $(this).parent().next().next().next().next().next().children('input');
+					var end_date = $(this).parent().next().next().next().next().next().next().children('input');
+					var cover_type = $(this).parent().next().next().next().next().next().next().next().children('select');
+					var cover_limit = $(this).parent().next().next().next().next().next().next().next().next().children('input');					
+				if($(this).val() != ''){
+					
+
+					//check co-pay type and value 
+					if(co_pay_type.val() !='' && co_pay_value.val() == '' ){
+							error_dialog(co_pay_value,'Co-Pay Type has been set but no corresponding value has been set');
+							exit_flag = true;
+					}
+					//check co-pay-value and type 
+					if(co_pay_type.val() =='' && co_pay_value.val() != '' ){
+							error_dialog(co_pay_type,'Co-Pay Value has been set but no corresponding Co-Pay Type has been set');
+							exit_flag = true;
+					}
+					//check start date 
+					if(start_date.val() =='' || start_date.val() == null ){
+							error_dialog(start_date,'Please specify when the insurance cover starts');
+							exit_flag = true;
+					}
+					//check end date 
+					if(end_date.val() == '' || end_date.val() == null ){
+							error_dialog(end_date,'Please specify when the insurance cover will end');
+							exit_flag = true;
+					}
+					//check cover type 
+					if(cover_type.val() == '' || cover_type.val() == null ){
+							error_dialog(cover_type,'Please specify the insurance cover type');
+							exit_flag = true;
+					}
+					//check cover limit 
+					if(cover_limit.val() == '' || cover_limit.val() == null ){
+							error_dialog(cover_limit,'Please specify the insurance cover limit');
+							exit_flag = true;
+					}//var n=data.split("#");		
+					//check cover limit 
+					if(!IsNumeric_jq(cover_limit.val()) ){
+							error_dialog(cover_limit,'The cover limit specified is not a valid number');
+							exit_flag = true;
+					}					
+					if(!IsNumeric_jq(co_pay_value.val() )){
+							error_dialog(co_pay_value,'The Co-Pay Value specified is not a valid number');
+							exit_flag = true;
+					}	
+					//	if (!IsNumeric_jq($(this).val())){alert($(this).val() + ' is not a valid number');return false;}
+				//	sum += parseFloat($(this).val().replace(",",""));
+					//alert('sum ndani is ' + sum);
+				}
+				//now check when ins is emoty
+				else if($(this).val() == ''){
+					//check co-pay type and value 
+					if(co_pay_type.val() !=''  ){
+							error_dialog(co_pay_value,'Co-Pay Type has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check co-pay-value and type 
+					if( co_pay_value.val() != '' ){
+							error_dialog(co_pay_value,'Co-Pay Value has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check start date 
+					if(start_date.val() !=''  ){
+							error_dialog(start_date,'Insurance cover start date has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check end date 
+					if(end_date.val() !=  ''){
+							error_dialog(end_date,'Insurance cover end date has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check cover type 
+					if(cover_type.val() != ''  ){
+							error_dialog(cover_type,'Insurance cover type has been set for an uninsured company');
+							exit_flag = true;
+					}
+					//check cover limit 
+					if(cover_limit.val() != '' ){
+							error_dialog(cover_limit,'Insurance cover limit has been set for an uninsured company');
+							exit_flag = true;
+					}	
+					//	if (!IsNumeric_jq($(this).val())){alert($(this).val() + ' is not a valid number');return false;}
+				//	sum += parseFloat($(this).val().replace(",",""));
+					//alert('sum ndani is ' + sum);
+				}				
+			});
+
+
+			if (!exit_flag ){	return true;}
+			else{return false;}
+		});
+
+//this will show dialog for adding new patient company
+//	$('#employer_form_div').hide();
+	$('#add_new_patient_employer').click(function(){
+		var width_x = $("#add_new_patient_employer").parent().width();
+		var height_y = 380;//$("#employer_form_div").height();
+		//alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#employer_form_div").dialog({
+		open: function(){
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		close: function() {
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		title: 'New Patient Employer',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});
+	
+//this will show dialog for adding new teratment procedure
+//	$('#employer_form_div').hide();
+	$('#add_new_treatment_procedure').click(function(){
+		var width_x = $("#add_new_treatment_procedure").parent().width();
+		var height_y = 480;//$("#employer_form_div").height();
+		//alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#new_procedure_form_div").dialog({
+		open: function(){
+		   $(this).find("input[type=text]").val("");
+		    $(input[type=radio]).prop('checked', false);
+		},
+		close: function() {
+		   $(this).find("input[type=text]").val("");
+		    $(input[type=radio]).prop('checked', false);
+		},
+		title: 'New Treatment Procedure',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});	
+	
+//this will show form for adding lab techhnicians
+	$('#add_new_lab_technician').click(function(){
+	//alert('ff');
+		var width_x = $("#add_new_lab_technician").parent().width();
+		var height_y = 260;//$("#employer_form_div").height();
+	//	alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#lab_technician_form_div").dialog({
+		open: function(){
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		close: function() {
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		title: 'New Lab Technician',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});		
+	
+//this will show form for adding x-ray referrer
+	$('#add_new_xray_referrer').click(function(){
+	//alert('ff');
+		var width_x = $("#xray_refeffer_form_div").parent().width();
+		var height_y = 260;//$("#employer_form_div").height();
+	//	alert(' width is ' + width_x + ' height is ' + height_y);
+		$("#xray_refeffer_form_div").dialog({
+		open: function(){
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		close: function() {
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		title: 'New X-ray Referrer',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});	
+
+
+	
+//this will show pop up forms when needed
+	$('.pop_up_form').click(function(){
+		var width_x = $(this).parent().width();
+		var height_y = 150;
+	//	alert(' width is ' + width_x + ' height is ' + height_y);
+		$(this).next().dialog({
+		open: function(){
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		close: function() {
+		   $(this).find("input[type=text], textarea, select").val("");
+		},
+		//title: 'New Patient Referrer',
+		height: height_y,
+		width: width_x,
+		modal: true});
+	});		
+	/*
+$("fieldset").hover(function(){	$(this).find('label').addClass('change_label_color');},
+function(){	$(this).find('label').removeClass('change_label_color');});*/
+
+//this will show the covered companies for a slected patien type
+	$('.ptype').change(function(){
+		var get_company = $(this).val();
+		alert('vals is ' + get_company);
+		$(this).closest('form').find(".covered_company").append().load('dental_b/', {'get_company': get_company });
+	});	
+
+//this will make heights of diseases equal
+$(function(){
+	$(".hide_first").addClass("hide_element");
+	//row1
+    var H = 0;
+    $(".row1").each(function(i){
+        var h = $(".row1").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row1").height(H);
+	//row2
+    var H = 0;
+    $(".row2").each(function(i){
+        var h = $(".row2").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row2").height(H);
+	//row3
+    var H = 0;
+    $(".row3").each(function(i){
+        var h = $(".row3").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row3").height(H);
+	//row4
+    var H = 0;
+    $(".row4").each(function(i){
+        var h = $(".row4").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row4").height(H);	
+	//row5
+    var H = 0;
+    $(".row5").each(function(i){
+        var h = $(".row5").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row5").height(H);	
+	//row6
+    var H = 0;
+    $(".row6").each(function(i){
+        var h = $(".row6").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row6").height(H);	
+	//row7
+    var H = 0;
+    $(".row7").each(function(i){
+        var h = $(".row7").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row7").height(H);	
+	//row8
+    var H = 0;
+    $(".row8").each(function(i){
+        var h = $(".row8").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row8").height(H);	
+	//row9
+    var H = 0;
+    $(".row9").each(function(i){
+        var h = $(".row9").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row9").height(H);	
+	//row10
+    var H = 0;
+    $(".row10").each(function(i){
+        var h = $(".row10").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row10").height(H);	
+	//row11
+    var H = 0;
+    $(".row11").each(function(i){
+        var h = $(".row11").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row11").height(H);	
+	//row12
+    var H = 0;
+    $(".row12").each(function(i){
+        var h = $(".row12").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row12").height(H);	
+	//row13
+    var H = 0;
+    $(".row13").each(function(i){
+        var h = $(".row13").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row13").height(H);	
+	//row14
+    var H = 0;
+    $(".row14").each(function(i){
+        var h = $(".row14").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row14").height(H);	
+	//row15
+    var H = 0;
+    $(".row15").each(function(i){
+        var h = $(".row15").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row15").height(H);	
+	//row16
+    var H = 0;
+    $(".row16").each(function(i){
+        var h = $(".row16").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row16").height(H);	
+	//row17
+    var H = 0;
+    $(".row17").each(function(i){
+        var h = $(".row17").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row17").height(H);	
+	//row18
+    var H = 0;
+    $(".row18").each(function(i){
+        var h = $(".row18").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row18").height(H);	
+	//row19
+    var H = 0;
+    $(".row19").each(function(i){
+        var h = $(".row19").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row19").height(H);		
+	//row1b
+    var H = 0;
+    $(".row1b").each(function(i){
+        var h = $(".row1b").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row1b").height(H);
+	//row2b
+    var H = 0;
+    $(".row2b").each(function(i){
+        var h = $(".row2b").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row2b").height(H);
+	//row3b
+    var H = 0;
+    $(".row3b").each(function(i){
+        var h = $(".row3b").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row3b").height(H);	
+	//row 1examination 1e
+    var H = 0;
+    $(".row1e").each(function(i){
+        var h = $(".row1e").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row1e").height(H);
+	//row 2examination 2e
+    var H = 0;
+    $(".row2e").each(function(i){
+        var h = $(".row2e").eq(i).height();
+        if(h > H) H = h;
+    });
+    $(".row2e").height(H);	
+	$(".hide_first").removeClass("hide_element");
+});
+
+
+
+/*
+ //float table header
+var off1;
+off1 = $(".replace_header").offset();
+//alert('off13 is ' + $(".replace_header").offset());
+if(off1  == 'undefined'){}//alert('cccc');}
+else if(off1  !== 'undefined'){//alert('cccffffc ' + off1.top);
+	 var tableOffset = off1.top;
+	//var header = $(".float_table_header > thead").clone().addClass('header-fixed');
+	//var fixedHeader = $("#header-fixed").append(header);
+	var fixedHeader = $(".header-fixed ");
+	fixedHeader.width($(".replace_header").width() );
+	//fixedHeader.show();
+	//alert(fixedHeader.css('display'));
+	$(window).bind("scroll", function() {
+		var offset = $(this).scrollTop();
+		//alert('offset is ' + offset + ' and tableoffet is ' + tableOffset);
+		//if (offset >= tableOffset && fixedHeader.is(":hidden")) {
+		if (offset >= tableOffset ) {
+			fixedHeader.show();
+			//alert('cc');
+		}
+		else if (offset < tableOffset) {
+			fixedHeader.hide();
+		}
+	});
+}*/ 
+}
+
+	
+ $(document).ready(function(){	
+
+	mainmenu();
+	
+});

@@ -1,0 +1,9 @@
+[12:19:30 PM] jemmy: 
+192.168.152.12 nacds1.netact.tigo.sn nacds1
+192.168.152.13 nacds2.netact.tigo.sn nacds2
+192.168.152.14 nacas1.netact.tigo.sn nacas1
+192.168.152.15 nacas2.netact.tigo.sn nacas2
+
+
+jemmy
+Password12
