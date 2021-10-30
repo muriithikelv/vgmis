@@ -1,2 +1,2 @@
 # vgmis
-vgmis 
+cuspid-dental-management 
